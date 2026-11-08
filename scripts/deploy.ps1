@@ -25,7 +25,8 @@ $destination = [string]$config.DeployDestination
 $remoteHost = [string]$config.DeployRemoteHost
 $remoteAssets = [string]$config.DeployRemoteAssets
 $remoteIcons = $remoteAssets -replace '/assets/?$', '/icons'
-if ($remoteIcons -eq $remoteAssets) { throw 'DeployRemoteAssets must end with /assets so icon permissions can be set.' }
+$remoteSounds = $remoteAssets -replace '/assets/?$', '/sounds'
+if ($remoteIcons -eq $remoteAssets) { throw 'DeployRemoteAssets must end with /assets so icon and sound permissions can be set.' }
 if ($remoteAssets.Contains("'")) { throw "DeployRemoteAssets cannot contain a single quote in the remote chmod command." }
 $sshPort = 0
 if (-not [int]::TryParse([string]$config.DeploySshPort, [ref]$sshPort) -or $sshPort -lt 1 -or $sshPort -gt 65535) {
@@ -52,22 +53,26 @@ try {
     }
 
     $iconDir = Join-Path $buildDir 'icons'
+    $soundDir = Join-Path $buildDir 'sounds'
     $manifest = Join-Path $buildDir 'manifest.json'
     $index = Join-Path $buildDir 'index.html'
     $worker = Join-Path $buildDir 'sw.js'
-    foreach ($file in @($iconDir, $manifest, $worker)) {
+    foreach ($file in @($iconDir, $soundDir, $manifest, $worker)) {
         if (-not (Test-Path -LiteralPath $file)) { throw "Build output is missing $file; deployment stopped." }
     }
+    if (@(Get-ChildItem -LiteralPath $soundDir -File -Filter '*.wav').Count -eq 0) {
+        throw 'Build output contains no WAV sounds; deployment stopped.'
+    }
 
-    Write-Host "Uploading application assets and icons to $destination"
-    & scp -r -P $sshPort $assetDir $iconDir $destination
+    Write-Host "Uploading application assets, icons, and sounds to $destination"
+    & scp -r -P $sshPort $assetDir $iconDir $soundDir $destination
     if ($LASTEXITCODE -ne 0) { throw 'Asset upload failed.' }
 
     & scp -P $sshPort $manifest $index $destination
     if ($LASTEXITCODE -ne 0) { throw 'Page upload failed.' }
 
-    & ssh -p $sshPort $remoteHost "chmod -R a+rX '$remoteAssets' '$remoteIcons'"
-    if ($LASTEXITCODE -ne 0) { throw 'Could not set permissions on uploaded assets and icons.' }
+    & ssh -p $sshPort $remoteHost "chmod -R a+rX '$remoteAssets' '$remoteIcons' '$remoteSounds'"
+    if ($LASTEXITCODE -ne 0) { throw 'Could not set permissions on uploaded assets, icons, and sounds.' }
 
     & scp -P $sshPort $worker $destination
     if ($LASTEXITCODE -ne 0) { throw 'Service worker upload failed.' }
