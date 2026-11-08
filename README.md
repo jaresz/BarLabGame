@@ -4,7 +4,7 @@ Bar Lab is a browser-based structural playground. Build with elastic steel beams
 
 **[Play Bar Lab](https://barlab.jakubreiter.pl/)** · [Player guide](docs/user-guide.md) · [Development guide](docs/development.md)
 
-[Solver algorithms](docs/solvers/README.md): [Basic XPBD Solver](docs/solvers/original.md) · [Serpentine](docs/solvers/serpentine.md) · [Backward](docs/solvers/backward.md). Includes labelled diagrams, worked calculations and simulation animations.
+[Solver algorithms](docs/solvers/README.md): [Basic XPBD Solver](docs/solvers/original.md) · [Serpentine](docs/solvers/serpentine.md). Includes labelled diagrams, worked calculations and simulation animations.
 
 ![Bar Lab on desktop](docs/images/frame-lab-desktop.png)
 

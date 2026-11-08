@@ -3,7 +3,7 @@ import test from 'node:test';
 import { emptyProject, exportProject, importProject, MAX_LENGTH, length } from '../src/model';
 import { example } from '../src/examples';
 import { DT, World, type PhysicsOptions, type SoundEvent } from '../src/physics';
-import { BackwardTree, serpentineMemberOrder } from '../src/solver-strategies';
+import { serpentineMemberOrder } from '../src/solver-strategies';
 
 const suspendedBeam = () => importProject(JSON.stringify({
  metadata: { size: [32, 18], gameVersion: '0.4.0', formatVersion: 3 },
@@ -67,7 +67,7 @@ test('Eiffel and Sydney examples stay intact in every solver for 20 simulated se
 
     // Serpentine randomly chooses its starting side in the app, so both directions
     // need independent runs. The other solvers have a single deterministic order.
-    for (const [solver, serpentineFromRight] of [['original', false], ['serpentine', false], ['serpentine', true], ['backward', false]] as const) {
+    for (const [solver, serpentineFromRight] of [['original', false], ['serpentine', false], ['serpentine', true]] as const) {
       const world = new World(project, { solver, serpentineFromRight });
       const initialX = Float64Array.from(world.x), initialY = Float64Array.from(world.y);
       for (let step = 0; step < Math.round(20 / DT); step++) world.step();
@@ -196,53 +196,6 @@ test('Both Serpentine starting sides run with stable member IDs and fixed suppor
   assert.notDeepEqual(left.world.x,right.world.x, 'The starting side must change actual solving, not just its label');
   assert.ok(left.offsetAtTenSeconds < -5.5, 'Left-first scan reproduces the left collapse');
   assert.ok(right.offsetAtTenSeconds > 5.5, 'Right-first scan must also change joint references and reverse this fixture collapse');
-});
-
-test('Backward propagation accumulates cantilever weight and lever-arm moment at the clamp', () => {
-  const p = emptyProject(); p.beams = [{ endpoints: [0,5,4,5], profile: 's' }, { endpoints: [4,5,4,2], profile: 's' }];
-  const w = new World(p,{solver:'backward'}), tree = new BackwardTree(w);
-  tree.update();
-  const root = w.members[0].start;
-  const weight = w.mass.reduce((sum,m) => sum + m*w.options.gravity,0);
-  const moment = w.mass.reduce((sum,m,i) => sum + m*w.options.gravity*w.x[i],0);
-  assert.ok(Math.abs(tree.forces[root]-weight) < 1e-10, 'Every downstream particle contributes its weight once');
-  assert.ok(Math.abs(tree.moments[root]-moment) < 1e-10, 'Moment includes each downstream horizontal lever arm');
-  assert.ok(tree.stresses[0] > 0, 'Carried moment contributes to relative stress');
-  w.step();
-  assert.ok(w.members[0].stress > 0, 'The backward estimate reaches the simulation stress output');
-});
-
-test('Backward propagation releases hinge moments and never gives ropes compression', () => {
-  const p = emptyProject(); p.beams = [{ endpoints: [0,5,4,5], profile:'s' },{ endpoints:[4,5,8,5], profile:'s' }];
-  const rigid = new World(p), rigidTree = new BackwardTree(rigid); rigidTree.update();
-  p.joints['4,5'] = 'o';
-  const hinged = new World(p), hingedTree = new BackwardTree(hinged); hingedTree.update();
-  assert.ok(hingedTree.moments[0] < rigidTree.moments[0], 'A hinge releases the outer branch bending moment');
-  assert.equal(hingedTree.forces[0],rigidTree.forces[0], 'A hinge still transfers branch weight');
-  // A rope rising from a floor support would require compression to carry itself.
-  const ropeProject = emptyProject(); ropeProject.ropes = [[4,10,4,6]];
-  const ropeWorld = new World(ropeProject), ropeTree = new BackwardTree(ropeWorld); ropeTree.update();
-  assert.equal(ropeTree.stresses[0],0);
-  assert.equal(ropeTree.forces[0],ropeWorld.mass[0]*ropeWorld.options.gravity, 'The floor receives no compressive rope load');
-});
-
-test('Backward propagation handles cycles, multiple supports, free components and fracture', () => {
-  const p = importProject(JSON.stringify({ metadata:{size:[12,12],gameVersion:'0.4.54',formatVersion:3}, objects:{
-    b:[[-6,0,-2,0,'s'],[-2,0,2,0,'s'],[2,0,6,0,'s'],[-2,0,0,3,'s'],[0,3,2,0,'s'],[-1,-3,1,-3,'l']],
-  }}));
-  const w = new World(p,{solver:'backward',damage:false}), tree = new BackwardTree(w);
-  tree.update();
-  const free = p.beams.findIndex(b => b.endpoints[1] === 9);
-  assert.ok(free >= 0);
-  assert.equal(tree.stresses[free],0, 'Unsupported components have no estimated static reaction');
-  const reactions = [...w.invMass.keys()].filter(i => w.invMass[i] === 0).reduce((sum,i) => sum+tree.forces[i],0);
-  const supportedWeight = [...w.mass.keys()].filter(i => tree.depth[i] >= 0).reduce((sum,i) => sum+w.mass[i]*w.options.gravity,0);
-  assert.ok(Math.abs(reactions-supportedWeight)<1e-9, 'Multiple support paths must not duplicate the applied load');
-  // Release an internal midpoint weld and rebuild the load graph before stepping.
-  w.members[0].broken = true; tree.update();
-  assert.ok([...tree.forces,...tree.moments,...tree.stresses].every(Number.isFinite));
-  for (let step = 0; step < 240; step++) w.step();
-  assert.ok([...w.x,...w.y].every(Number.isFinite), 'Cyclic and fractured structures must simulate without graph recursion or NaNs');
 });
 
 test('Impact sounds identify material and surface, then stop at rest', () => {

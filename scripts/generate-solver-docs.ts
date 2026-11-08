@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { DT, World, type PhysicsOptions } from '../src/physics';
 import { GAME_VERSION, importProject, type Point } from '../src/model';
-import { BackwardTree, serpentineMemberOrder } from '../src/solver-strategies';
+import { serpentineMemberOrder } from '../src/solver-strategies';
 
 // Use the public JSON fixture, not hand-animated geometry. Explicit Serpentine
 // sides document both possible random outcomes without rerolling during a run.
@@ -15,7 +15,6 @@ const variants: {id:string; options:PhysicsOptions}[] = [
   {id:'original',options:{solver:'original'}},
   {id:'serpentine-left',options:{solver:'serpentine',serpentineFromRight:false}},
   {id:'serpentine-right',options:{solver:'serpentine',serpentineFromRight:true}},
-  {id:'backward',options:{solver:'backward'}},
 ];
 const runs = variants.map(({id,options}) => {
   const w = new World(project,options);
@@ -34,17 +33,6 @@ const runs = variants.map(({id,options}) => {
   return {id,options,members:w.members,tracked,frames,measurements};
 });
 
-// Audit the worked load example: A--B--D is horizontal, with a B--C branch.
-const branch = importProject(JSON.stringify({metadata:fixture.metadata,objects:{b:[[-6,0,-2,0,'s'],[-2,0,-2,3,'s'],[-2,0,2,0,'s']]}}));
-const w = new World(branch,{solver:'backward'}), tree = new BackwardTree(w); tree.update();
-const root = [...w.invMass.keys()].find(i=>w.invMass[i]===0)!;
-const weight = w.mass.reduce((sum,m)=>sum+m*9.81,0);
-const moment = w.mass.reduce((sum,m,i)=>sum+m*9.81*w.x[i],0);
-assert.ok(Math.abs(weight-194.238)<1e-9);
-assert.ok(Math.abs(moment-776.952)<1e-9);
-assert.ok(Math.abs(tree.forces[root]-weight)<1e-9);
-assert.ok(Math.abs(tree.moments[root]-moment)<1e-9);
-
 // A standard interior particle beside half-unit segments has mass 1.8*0.5=0.9.
 const alpha=(0.5/2e6)/(DT*DT), inverseMass=1/0.9;
 const deltaLambda=-0.01/(2*inverseMass+alpha), correction=-inverseMass*deltaLambda;
@@ -53,11 +41,10 @@ const report = {
   gameVersion:GAME_VERSION, dt:DT, fixture, project, nodes, runs,
   scan:{left:serpentineMemberOrder(project),right:serpentineMemberOrder(project,true)},
   distanceExample:{alpha,deltaLambda,correction,correctedLength:0.51-2*correction},
-  branch:{project:branch,mass:w.mass.reduce((sum,m)=>sum+m,0),weight,moment,stresses:[...tree.stresses],members:w.members,root},
-};
+  };
 mkdirSync('screenshots/solver-docs',{recursive:true});
 mkdirSync('docs/solvers',{recursive:true});
 writeFileSync('screenshots/solver-docs/frames.json',JSON.stringify(report));
 writeFileSync('docs/solvers/tower.json',JSON.stringify(fixture,null,2)+'\n');
 writeFileSync('docs/solvers/measurements.json',JSON.stringify({...report,runs:runs.map(({frames, ...rest})=>rest)},null,2)+'\n');
-console.log(JSON.stringify({distanceExample:report.distanceExample,branch:report.branch,runs:runs.map(({id,measurements})=>({id,measurements}))},null,2));
+console.log(JSON.stringify({distanceExample:report.distanceExample,runs:runs.map(({id,measurements})=>({id,measurements}))},null,2));

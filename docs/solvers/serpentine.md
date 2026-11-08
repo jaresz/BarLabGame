@@ -1,6 +1,6 @@
 # Serpentine — Random Starting Side and Row-Wise Scan
 
-[All solvers and labels A–E](README.md) · [Basic XPBD Solver](original.md) · [Backward](backward.md)
+[All solvers and labels A–E](README.md) · [Basic XPBD Solver](original.md)
 
 Serpentine retains the [Basic XPBD Solver's](original.md) particle model, gravity, local corrections, iteration count, breaking thresholds, and deformation measurements. It changes the order in which members are visited and which beam serves as the reference at a rigid joint. It pseudorandomly chooses a starting side once when a simulation starts.
 

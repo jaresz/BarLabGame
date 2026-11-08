@@ -1,6 +1,6 @@
 # Basic XPBD Solver — Local XPBD Corrections
 
-[All solvers and labels A–E](README.md) · [Serpentine](serpentine.md) · [Backward](backward.md)
+[All solvers and labels A–E](README.md) · [Serpentine](serpentine.md)
 
 Basic XPBD Solver (internal ID: original) preserves the game's established behavior. It uses extended position-based dynamics (XPBD): instead of finding the global equilibrium of the whole structure at once, it repeatedly adjusts particle positions to satisfy length and angle constraints. Neighboring corrections affect one another, so a finite iteration count leaves some dependence on processing order.
 

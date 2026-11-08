@@ -1,5 +1,5 @@
 import { PROFILES, boundary, key, type Project, type Point, type Material, type BeamProfile } from './model';
-import { BackwardTree, serpentineMemberOrder, type Solver } from './solver-strategies';
+import { serpentineMemberOrder, type Solver } from './solver-strategies';
 export const DT = 1 / 120;
 const TAU = 2 * Math.PI;
 const wrap = (v: number) => ((v + Math.PI) % TAU + TAU) % TAU - Math.PI;
@@ -24,7 +24,6 @@ export class World {
   private pins: [number, number, number][] = [];
   private ids = new Int32Array(4); private gx = new Float64Array(4); private gy = new Float64Array(4);
   private sweepDistances: Distance[] = []; private sweepAngles: Angle[] = [];
-  private backward?: BackwardTree;
   private particleOwner: number[] = [];
   private lastSound: Record<SoundKind, number> = { beamStress: -1, ropeStress: -1, ropeBreak: -1, beamWall: -1, beamGround: -1, ropeGround: -1 };
   private pendingSounds = new Map<SoundKind, SoundEvent>();
@@ -96,7 +95,7 @@ export class World {
       const priority = (c: Distance | Angle) => c.owner >= 0 ? rank[c.owner] : Math.min(particleRank[c.a],particleRank[c.b],...('c' in c && c.c >= 0 ? [particleRank[c.c],particleRank[c.d]] : []));
       this.sweepDistances = [...this.distances].sort((a,b) => priority(a)-priority(b));
       this.sweepAngles = [...this.angles].sort((a,b) => priority(a)-priority(b));
-    } else if (this.options.solver === 'backward') this.backward = new BackwardTree(this);
+    }
   }
   private queueSound(kind: SoundKind, x: number, intensity: number, length = 1): void {
     if (this.time - this.lastSound[kind] < SOUND_INTERVAL[kind]) return;
@@ -172,18 +171,6 @@ export class World {
     for (let i = 0; i < count; i++) { const id = this.ids[i], w = this.invMass[id] * dl; this.x[id] += w * this.gx[i]; this.y[id] += w * this.gy[i]; }
   }
   step(): void {
-    if (this.backward) {
-      this.backward.update();
-      const tree = this.backward;
-      // Visit distal branches first, feeding their corrections toward supports.
-      // Accumulated branch weight breaks depth ties; an opposite return sweep
-      // then carries the support corrections back to the leaves.
-      const depth = (c: Distance | Angle) => Math.max(tree.depth[c.a],tree.depth[c.b],...('c' in c && c.c >= 0 ? [tree.depth[c.c],tree.depth[c.d]] : []));
-      const load = (c: Distance | Angle) => Math.abs(tree.forces[c.a])+Math.abs(tree.forces[c.b]);
-      const compare = (a: Distance | Angle,b: Distance | Angle) => depth(b)-depth(a) || load(b)-load(a);
-      this.sweepDistances = [...this.distances].sort(compare);
-      this.sweepAngles = [...this.angles].sort(compare);
-    }
     this.oldX.set(this.x); this.oldY.set(this.y);
     const damping = Math.exp(-this.options.damping * DT);
     for (let i = 0; i < this.x.length; i++) if (this.invMass[i] > 0) {
@@ -228,12 +215,6 @@ export class World {
     for (const c of this.angles) if (c.internal && !this.members[c.owner].broken) {
       const angle = wrap(Math.atan2(this.y[c.d] - this.y[c.c], this.x[c.d] - this.x[c.c]) - Math.atan2(this.y[c.b] - this.y[c.a], this.x[c.b] - this.x[c.a]) - c.rest);
       this.members[c.owner].stress = Math.max(this.members[c.owner].stress, Math.abs(angle) / c.scale / (0.95 * PROFILES[this.members[c.owner].profile].curvature));
-    }
-    if (this.backward) {
-      // Estimate loads on the corrected geometry. Combining this static branch
-      // estimate with deformation also exposes carried loads before large bending.
-      this.backward.update();
-      this.members.forEach((m,i) => { if (!m.broken) m.stress = Math.max(m.stress,this.backward!.stresses[i]); });
     }
     for (const [index, m] of this.members.entries()) if (!m.broken) {
       m.overload = m.stress > 1 ? m.overload + DT : 0;

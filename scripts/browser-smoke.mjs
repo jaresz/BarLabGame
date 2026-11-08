@@ -646,10 +646,6 @@ async function testSolvers(browser, base) {
     assert.deepEqual(await page.evaluate(() => window.solverStarts.at(-1)),{solver:'serpentine',serpentineFromRight:false});
     await page.locator('#pause').click(); await page.locator('#pause').click();
     assert.equal(await page.evaluate(() => window.solverDrawCount),1,'Pause/resume does not redraw the direction');
-    await page.locator('#back').click();
-    await choose('backward'); await start();
-    assert.equal(await page.evaluate(() => window.solverStarts.at(-1).solver),'backward');
-    await page.locator('#back').click();
     await choose('original'); await start();
     assert.equal(await page.evaluate(() => window.solverStarts.at(-1).solver),'original');
     await page.locator('#back').click();
@@ -674,7 +670,7 @@ async function testSolvers(browser, base) {
     await settings.click();
     assert.equal(await page.locator('input[name="solver"][value="serpentine"]').isChecked(),true);
     await page.locator('#close-settings').click();
-    assert.deepEqual(errors,[],`${name}: all three solvers run without page errors`);
+    assert.deepEqual(errors,[],`${name}: both solvers run without page errors`);
     await context.close();
   }
   console.log('Solvers: settings and keyboard access, Serpentine default, direct Run, real workers, independent direction draws and reload reset verified.');

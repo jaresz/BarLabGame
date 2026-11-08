@@ -440,7 +440,7 @@ let cost = projectCost(history.project);
 let tool: Tool = 'beam', joint: JointType = 'x', cursor: Point | null = null, start: Point | null = null, selected: Selection[] = [];
 
 let frame: Frame | null = null, members: PhysicsMember[] = [], worker: Worker | null = null, running = false, paused = false, busy = false, touch = false;
-// Solver choice lasts for this page session; Serpentine has no direction history.
+// Serpentine has no direction history.
 let solver: Solver = 'serpentine';
 
 let stress = false, recycled: { positions: ArrayBuffer; stresses: ArrayBuffer; broken: ArrayBuffer } | undefined, elapsed = 0, needsDraw = true, previewAnimating = false;
@@ -477,6 +477,7 @@ function refreshUI(): void {
   runButton.dataset.solver = solver;
   runButton.title = `Run simulation (Space) — ${SOLVERS[solver]}`;
   document.querySelectorAll<HTMLInputElement>('#settings-dialog input[name="solver"]').forEach(input => { input.checked = input.value === solver; });
+
   $('beam-profile-indicator').textContent = profile.toUpperCase();
   const beamButton = document.querySelector<HTMLButtonElement>('[data-tool="beam"]')!;
   beamButton.dataset.profile = profile;
@@ -664,7 +665,7 @@ function runSimulation(): void {
     worker.onerror = () => { stopSimulation(); notify('Simulation could not start. Please reload and try again.'); };
 
     worker.postMessage({ type: 'start', project: history.project, options: { solver, serpentineFromRight } });
-    $('status').textContent = `${SOLVERS[solver]}${solver === 'serpentine' ? ` · ${serpentineFromRight ? '↙' : '↘'}` : ''} · Gravity is doing its thing.`;
+    $('status').textContent = `Serpentine${serpentineFromRight ? ' · ↙' : ' · ↘'} · Gravity is doing its thing.`;
 
   } catch { stopSimulation(); notify('Web Workers are unavailable in this browser.'); }
 

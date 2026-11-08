@@ -32,7 +32,7 @@ Open the local URL printed by Vite. Changes to source files reload automatically
 | `src/fragment.ts` | Clipboard fragment coordinates, reflections, paste previews and atomic paste validation. |
 | `src/coordinates.ts` | Conversion between centered project coordinates and internal grid coordinates. |
 | `src/physics.ts` and `src/simulation.worker.ts` | Physics solver and its Web Worker entry point. |
-| `src/solver-strategies.ts` | Serpentine member ordering and support-rooted backward load propagation. |
+| `src/solver-strategies.ts` | Serpentine member ordering. |
 | `src/style.css` | Application layout, responsive behavior, and visual styles. |
 | `src/examples.ts` | Starter structure and built-in examples. |
 | `tests/` | Model, coordinate, and physics checks. |
@@ -42,9 +42,7 @@ Open the repository folder in your IDE. Start with `src/main.ts` for user intera
 
 Basic XPBD Solver keeps the original XPBD constraint ordering. Serpentine is selected when the app opens; the Settings dialog can change the solver for the current page session. Alternative solvers retain stable member IDs and change constraint visit order rather than exported geometry. Serpentine also selects each welded joint's reference member in scan order; changing sweeps alone would leave that directional bias in place. Each Serpentine start independently samples `Math.random() < 0.5` for its starting side. No previous side is stored. The worker receives that explicit side, so the trajectory is reproducible once the choice is known; pause/resume does not redraw it.
 
-The backward solver builds breadth-first layers from positional supports, accumulates gravity force and lever-arm moment from distal branches, and visits constraints from leaves toward supports with a return sweep. Trees count each particle's weight once; cyclic frames split loads between equally short inward paths, weighted by axial stiffness. Same-layer cross-links remain in XPBD but are omitted from the gravity estimate. Hinges and ropes release moment; pinned supports have no estimated reaction moment, and ropes do not propagate compressive gravity loads. Unsupported components have no static reaction. Fractured midpoint welds trigger graph rebuilding. Estimated force and moment are normalized using the rods' axial/bending stiffness and existing strain/curvature limits, then combined with dynamic deformation for stress and damage. This estimate describes gravity load paths, not inertial or contact forces or a full stiffness-matrix solution.
-
-Detailed solver explanations include labelled figures, worked numerical examples and actual solver animations: [Overview and common fixture](solvers/README.md), [Basic XPBD Solver](solvers/original.md), [Serpentine](solvers/serpentine.md), [Backward](solvers/backward.md). Recreate the media with `node --import tsx scripts/generate-solver-docs.ts` followed by `python scripts/render-solver-docs.py` (Python 3 and Pillow required). The first command audits the worked force/moment example and writes measurements; the second renders the diagrams and GIFs from the sampled World trajectories.
+Detailed solver explanations include labelled figures, worked numerical examples and actual solver animations: [Overview and common fixture](solvers/README.md), [Basic XPBD Solver](solvers/original.md), [Serpentine](solvers/serpentine.md). Recreate the media with `node --import tsx scripts/generate-solver-docs.ts` followed by `python scripts/render-solver-docs.py` (Python 3 and Pillow required). The first command audits the worked XPBD example and writes measurements; the second renders the diagrams and GIFs from sampled World trajectories.
 
 ## Configuration and versions
 

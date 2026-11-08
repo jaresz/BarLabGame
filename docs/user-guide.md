@@ -70,9 +70,7 @@ Open **Settings** (the gear icon) to choose a simulation solver and change the c
 
 - **1 · Basic XPBD Solver** retains the original XPBD behavior.
 - **2 · Serpentine** is selected on every page load. It visits members from the highest occupied row downward, reversing horizontal direction on each grid row. Each start independently draws top left or top right with equal probability; repeating the same side is possible. Pause/resume keeps the direction of the current run.
-- **3 · Backward** propagates estimated branch weight and bending moment toward supports, then uses leaf-to-support and return constraint sweeps. Relative stress includes both the load estimate and dynamic deformation. Cyclic frames share estimated loads along equally short routes to supports; this is an approximation rather than a full structural analysis.
 
-See [Solver algorithms](solvers/README.md) for labelled diagrams, worked calculations, measured comparisons and real simulation animations: [Basic XPBD Solver](solvers/original.md), [Serpentine](solvers/serpentine.md), [Backward](solvers/backward.md).
 
 ## Beam profiles and costs
 

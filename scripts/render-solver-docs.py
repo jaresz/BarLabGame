@@ -98,25 +98,6 @@ def scan_diagram():
     im.save(OUT/'serpentine-scan.png')
 
 def branch_diagram():
-    im,d=canvas('Backward: branches and support moment A', 'Standard: linear density ρ = 1.8. Labels use export coordinates.')
-    pts={'A':(100,420),'B':(420,420),'C':(420,180),'D':(740,420)}
-    for a,b in [('A','B'),('B','C'),('B','D')]: d.line([pts[a],pts[b]],fill=BLUE,width=6)
-    support(d,*pts['A'],vertical=True)
-    for name,xy in pts.items():
-        x,y=xy; d.ellipse((x-6,y-6,x+6,y+6),fill=BLUE)
-        label(d,(x-12,y+18),name,BLUE,22)
-    label(d,(210,365),'e1 = AB: 4',BLUE)
-    label(d,(445,270),'e2 = BC: 3',BLUE)
-    label(d,(545,365),'e3 = BD: 4',BLUE)
-    # The load arrows act at each rod's initial center of mass, not at its endpoint.
-    for x,y,name in [(260,420,'W1'),(420,300,'W2'),(580,420,'W3')]:
-        arrow(d,(x,y+8),(x,y+83)); label(d,(x+10,y+55),name,ORANGE)
-    arrow(d,(690,535),(460,535)); arrow(d,(380,535),(145,535))
-    text(d,(185,570),'Propagation: C, D → B → A',23,ORANGE,True)
-    for i,line in enumerate(['A = (−6, 0)','B = (−2, 0)','C = (−2, 3)','D = (2, 0)','W1 = W3 = 70.632','W2 = 52.974','FA = 194.238','MA = 776.952']):
-        text(d,(850,150+i*48),line,20,INK,i>=6)
-    text(d,(35,668),'Figure 4 · W1–W3 use game force units; MA is force × distance.',17,MUTED)
-    im.save(OUT/'backward-branches.png')
 
 def movie_panel(d, run, index, left, top, scale):
     frame=run['frames'][index]; initial=run['frames'][0]
@@ -171,5 +152,4 @@ tower_diagram(); distance_diagram(); scan_diagram(); branch_diagram()
 if '--diagrams-only' not in sys.argv:
     movie('original.gif',['original'],'1 · Basic XPBD Solver')
     movie('serpentine.gif',['serpentine-left','serpentine-right'],'2 · Serpentine: both starting sides')
-    movie('backward.gif',['backward'],'3 · Backward')
 print(f'Rendered diagrams and animations in {OUT}')
