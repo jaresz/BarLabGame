@@ -14,7 +14,7 @@ export type JointType = 'x' | 'o';
 export type Material = 'beam' | 'rope';
 export interface Project { size: Point; beams: Beam[]; ropes: Member[]; joints: Record<string, JointType>; anchors: Record<string, JointType> }
 // Bump this after every application change; the status bar and exported project metadata use it.
-export const GAME_VERSION = '0.4.64';
+export const GAME_VERSION = '0.4.67';
 export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 6, rope: 10 };
 
 /** Resolve a snapped drawing target without changing import/member validation. */

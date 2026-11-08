@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { emptyProject, importProject } from '../src/model';
+import { emptyProject, exportProject, importProject, MAX_LENGTH, length } from '../src/model';
+import { example } from '../src/examples';
 import { DT, World, type PhysicsOptions } from '../src/physics';
 import { BackwardTree, serpentineMemberOrder } from '../src/solver-strategies';
 
@@ -55,6 +56,34 @@ test('Profiles carry different mass and bend less as stiffness increases under t
   assert.ok(results[0].stress>results[1].stress && results[1].stress>results[2].stress);
   assert.ok(Math.abs(results[0].mass/results[1].mass-0.5)<1e-10);
   assert.ok(Math.abs(results[2].mass/results[1].mass-2)<1e-10);
+});
+
+test('Eiffel and Sydney examples stay intact in every solver for 20 simulated seconds', () => {
+  for (const name of ['eiffel', 'sydneyHarbour'] as const) {
+    const project = example(name);
+    assert.deepEqual(importProject(exportProject(project)), project, `${name}: project text round trip`);
+    for (const beam of project.beams) assert.ok(length(beam.endpoints) <= MAX_LENGTH.beam, `${name}: beam length`);
+    for (const rope of project.ropes) assert.ok(length(rope) <= MAX_LENGTH.rope, `${name}: rope length`);
+
+    // Serpentine randomly chooses its starting side in the app, so both directions
+    // need independent runs. The other solvers have a single deterministic order.
+    for (const [solver, serpentineFromRight] of [['original', false], ['serpentine', false], ['serpentine', true], ['backward', false]] as const) {
+      const world = new World(project, { solver, serpentineFromRight });
+      const initialX = Float64Array.from(world.x), initialY = Float64Array.from(world.y);
+      for (let step = 0; step < Math.round(20 / DT); step++) world.step();
+
+      const label = `${name} / ${solver}${serpentineFromRight ? ' from right' : ''}`;
+      assert.ok(world.members.every(member => !member.broken), `${label}: no broken members`);
+      assert.ok([...world.x, ...world.y, ...world.vx, ...world.vy].every(Number.isFinite), `${label}: finite state`);
+      // Track every physics particle, including beam interiors, so a folded span
+      // cannot pass just because its endpoint nodes remain near their design positions.
+      let maxDisplacement = 0;
+      for (let i = 0; i < world.x.length; i++) {
+        maxDisplacement = Math.max(maxDisplacement, Math.hypot(world.x[i] - initialX[i], world.y[i] - initialY[i]));
+      }
+      assert.ok(maxDisplacement <= 2.5, `${label}: maximum displacement ${maxDisplacement} exceeds 2.5 grid units`);
+    }
+  }
 });
 
 const symmetricTowerText = JSON.stringify({

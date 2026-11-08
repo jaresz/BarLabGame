@@ -443,7 +443,7 @@ try {
     await page.locator('#examples').tap();
     const dialogBounds = await page.locator('#examples-dialog').boundingBox();
     assert.ok(dialogBounds.x >= 0 && dialogBounds.y >= 0 && dialogBounds.x + dialogBounds.width <= viewport.width && dialogBounds.y + dialogBounds.height <= viewport.height, `${name}: examples dialog fits viewport`);
-    assert.equal(await page.locator('[data-example]').count(), 4);
+    assert.equal(await page.locator('[data-example]').count(), 5);
     await page.screenshot({ path: join(tmpdir(), `frame-lab-${name}-examples.png`) });
     await page.locator('[data-example="blank"]').tap();
     assert.equal(await page.locator('#beam-count').textContent(), '0', `${name}: touch loads example`);
@@ -985,27 +985,57 @@ async function testExamples(page, original) {
   const open = async () => { await page.locator('#examples').click(); assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), true); };
   const read = async () => { await page.locator('#project-text').click(); const value = await page.locator('#project-json').inputValue(); await page.locator('#close-text').click(); return value; };
   await open();
-  assert.equal(await page.locator('[data-example]').count(), 4);
+  assert.equal(await page.locator('[data-example]').count(), 5);
+  assert.equal(await page.locator('[data-example="suspension"], [data-example="cantilever"]').count(), 0);
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), false);
   assert.equal(await read(), original, 'Closing the examples dialog preserves the project');
   await open(); await page.locator('#close-examples').click();
   assert.equal(await read(), original);
-  const expected = { bridge: [31, 0, 'Warren bridge'], suspension: [16, null, 'Suspension study'], cantilever: [5, 0, 'The cantilever'], blank: [0, 0, 'Blank canvas'] };
-  // Load every example card, checking its thumbnail and material counts; undo each load
-  // and compare project text with the original before proceeding to the next card.
-  for (const [name, [beams, ropes, title]] of Object.entries(expected)) {
+  const expected = {
+    bridge: { beams: 31, ropes: 0, size: [32, 18], title: 'Warren bridge' },
+    eiffel: { beams: 38, ropes: 0, size: [18, 32], title: 'Eiffel Tower' },
+    goldenGate: { beams: 36, ropes: 15, size: [32, 18], title: 'Golden Gate Bridge' },
+    sydneyHarbour: { beams: 46, ropes: 0, size: [32, 18], title: 'Sydney Harbour Bridge' },
+    blank: { beams: 0, ropes: 0, size: [16, 10], title: 'Blank canvas' },
+  };
+  // Load each card and check its drawn geometry, then undo both example loading and
+  // a project-text round trip before moving to the next landmark.
+  for (const [name, { beams, ropes, size, title }] of Object.entries(expected)) {
     await open();
     const card = page.locator(`[data-example="${name}"]`);
     assert.equal(await card.locator('svg').count(), 1);
+    assert.equal(await card.locator('span').textContent(), title);
+    assert.equal(await card.locator('.example-beams polyline').count() > 0, beams > 0, `${name}: thumbnail geometry`);
+    if (name === 'eiffel') {
+      const board = await card.locator('.example-board').evaluate(el => ({ width: Number(el.getAttribute('width')), height: Number(el.getAttribute('height')) }));
+      assert.ok(board.height > board.width, 'Eiffel thumbnail uses a portrait board');
+      assert.ok(board.height <= 76 && board.width <= 136, 'Portrait board fits the thumbnail');
+    }
     await card.click();
     assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), false);
     assert.equal(Number(await page.locator('#beam-count').textContent()), beams, `${name}: beam count`);
-    if (ropes !== null) assert.equal(Number(await page.locator('#rope-count').textContent()), ropes, `${name}: rope count`);
-    else assert.ok(Number(await page.locator('#rope-count').textContent()) > 0, `${name}: ropes are loaded`);
+    assert.equal(Number(await page.locator('#rope-count').textContent()), ropes, `${name}: rope count`);
+    const exported = await read();
+    assert.deepEqual(JSON.parse(exported).metadata.size, size, `${name}: board size`);
+    assert.equal(JSON.parse(exported).metadata.gameVersion, GAME_VERSION, `${name}: export version`);
+    if (name === 'goldenGate') assert.equal(JSON.parse(exported).checksum, 'fnv1a32:3fbdc70d', 'Golden Gate matches the supplied design');
+    if (name === 'eiffel' || name === 'goldenGate' || name === 'sydneyHarbour') {
+      await page.locator('#run').click();
+      await page.locator('#back').click();
+      assert.equal(await read(), exported, `${name}: simulation leaves the design intact`);
+    }
     assert.equal(await page.locator('#project-name').count(), 0, 'Project heading is removed');
     await page.locator('#undo').click();
     assert.equal(await read(), original, `${name}: Undo restores previous project`);
+    if (name === 'eiffel' || name === 'goldenGate' || name === 'sydneyHarbour') {
+      await page.locator('#project-text').click();
+      await page.locator('#project-json').fill(exported);
+      await page.locator('#load').click();
+      assert.equal(await read(), exported, `${name}: export imports without changes`);
+      await page.locator('#undo').click();
+      assert.equal(await read(), original, `${name}: Undo restores after import`);
+    }
   }
   // Use Enter to open the chooser and load Blank canvas; inspect its empty design, then
   // undo and compare project text to cover accessible keyboard loading.

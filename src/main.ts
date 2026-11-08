@@ -217,7 +217,7 @@ function exampleThumbnail(name: Example): string {
   const lines = (members: Member[]) => members.map(member => `<polyline points="${segment(member)}"/>`).join('');
   return `<svg viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect x="${left}" y="${top}" width="${width * scale}" height="${height * scale}" class="example-board"/><g class="example-grid">${grid}</g><g class="example-beams">${lines(project.beams.map(beam => beam.endpoints))}</g><g class="example-ropes">${lines(project.ropes)}</g></svg>`;
 }
-const exampleChoices: Example[] = ['bridge', 'suspension', 'cantilever', 'blank'];
+const exampleChoices: Example[] = ['bridge', 'eiffel', 'goldenGate', 'sydneyHarbour', 'blank'];
 const solverChoices = Object.entries(SOLVERS).map(([id, name]) => `<label class="solver-option"><input type="radio" name="solver" value="${id}" ${id === 'serpentine' ? 'checked' : ''}><span>${name}</span></label>`).join('');
 
 $('app').innerHTML = `
