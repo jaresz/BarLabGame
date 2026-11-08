@@ -1,0 +1,601 @@
+{
+  "gameVersion": "0.4.59",
+  "dt": 0.008333333333333333,
+  "fixture": {
+    "metadata": {
+      "size": [
+        12,
+        12
+      ],
+      "gameVersion": "0.4.59",
+      "formatVersion": 3
+    },
+    "objects": {
+      "b": [
+        [
+          -3,
+          0,
+          0,
+          5,
+          "l"
+        ],
+        [
+          0,
+          5,
+          0,
+          0,
+          "l"
+        ],
+        [
+          0,
+          5,
+          3,
+          0,
+          "l"
+        ],
+        [
+          0,
+          0,
+          0,
+          -6,
+          "l"
+        ]
+      ]
+    },
+    "checksum": "fnv1a32:55d881f8"
+  },
+  "project": {
+    "size": [
+      12,
+      12
+    ],
+    "beams": [
+      {
+        "endpoints": [
+          3,
+          6,
+          6,
+          1
+        ],
+        "profile": "l"
+      },
+      {
+        "endpoints": [
+          6,
+          1,
+          6,
+          6
+        ],
+        "profile": "l"
+      },
+      {
+        "endpoints": [
+          6,
+          1,
+          9,
+          6
+        ],
+        "profile": "l"
+      },
+      {
+        "endpoints": [
+          6,
+          6,
+          6,
+          12
+        ],
+        "profile": "l"
+      }
+    ],
+    "ropes": [],
+    "joints": {},
+    "anchors": {}
+  },
+  "nodes": {
+    "A": [
+      6,
+      12
+    ],
+    "B": [
+      6,
+      6
+    ],
+    "C": [
+      6,
+      1
+    ],
+    "D": [
+      3,
+      6
+    ],
+    "E": [
+      9,
+      6
+    ]
+  },
+  "runs": [
+    {
+      "id": "original",
+      "options": {
+        "solver": "original"
+      },
+      "members": [
+        {
+          "start": 0,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.015894701596041044,
+          "overload": 0
+        },
+        {
+          "start": 14,
+          "count": 12,
+          "half": 6,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.10340527700590571,
+          "overload": 0
+        },
+        {
+          "start": 26,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.09035120758353081,
+          "overload": 0
+        },
+        {
+          "start": 40,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.2343742359656924,
+          "overload": 0
+        }
+      ],
+      "tracked": {
+        "A": [
+          53
+        ],
+        "B": [
+          25,
+          40
+        ],
+        "C": [
+          13,
+          14,
+          26
+        ],
+        "D": [
+          0
+        ],
+        "E": [
+          39
+        ]
+      },
+      "measurements": [
+        {
+          "seconds": 0,
+          "topOffset": 0,
+          "broken": 0
+        },
+        {
+          "seconds": 1,
+          "topOffset": -0.0022869692904983197,
+          "broken": 0
+        },
+        {
+          "seconds": 5,
+          "topOffset": -0.5197413384369831,
+          "broken": 0
+        },
+        {
+          "seconds": 10,
+          "topOffset": -5.995179457282439,
+          "broken": 0
+        },
+        {
+          "seconds": 12,
+          "topOffset": -5.9969054472396754,
+          "broken": 0
+        }
+      ]
+    },
+    {
+      "id": "serpentine-left",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false
+      },
+      "members": [
+        {
+          "start": 0,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.02131223052385084,
+          "overload": 0
+        },
+        {
+          "start": 14,
+          "count": 12,
+          "half": 6,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.09763055749866723,
+          "overload": 0
+        },
+        {
+          "start": 26,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.06682628472127396,
+          "overload": 0
+        },
+        {
+          "start": 40,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.24202005029714793,
+          "overload": 0
+        }
+      ],
+      "tracked": {
+        "A": [
+          53
+        ],
+        "B": [
+          25,
+          40
+        ],
+        "C": [
+          13,
+          14,
+          26
+        ],
+        "D": [
+          0
+        ],
+        "E": [
+          39
+        ]
+      },
+      "measurements": [
+        {
+          "seconds": 0,
+          "topOffset": 0,
+          "broken": 0
+        },
+        {
+          "seconds": 1,
+          "topOffset": 0.0021299875111617794,
+          "broken": 0
+        },
+        {
+          "seconds": 5,
+          "topOffset": -0.33251679061996153,
+          "broken": 0
+        },
+        {
+          "seconds": 10,
+          "topOffset": -5.993631029937168,
+          "broken": 0
+        },
+        {
+          "seconds": 12,
+          "topOffset": -5.996954876857101,
+          "broken": 0
+        }
+      ]
+    },
+    {
+      "id": "serpentine-right",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true
+      },
+      "members": [
+        {
+          "start": 0,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.09791876281225553,
+          "overload": 0
+        },
+        {
+          "start": 14,
+          "count": 12,
+          "half": 6,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.09153620436274044,
+          "overload": 0
+        },
+        {
+          "start": 26,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.02706717568089816,
+          "overload": 0
+        },
+        {
+          "start": 40,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.24585066677320802,
+          "overload": 0
+        }
+      ],
+      "tracked": {
+        "A": [
+          53
+        ],
+        "B": [
+          25,
+          40
+        ],
+        "C": [
+          13,
+          14,
+          26
+        ],
+        "D": [
+          0
+        ],
+        "E": [
+          39
+        ]
+      },
+      "measurements": [
+        {
+          "seconds": 0,
+          "topOffset": 0,
+          "broken": 0
+        },
+        {
+          "seconds": 1,
+          "topOffset": 0.0018178685210470391,
+          "broken": 0
+        },
+        {
+          "seconds": 5,
+          "topOffset": 0.400613593224044,
+          "broken": 0
+        },
+        {
+          "seconds": 10,
+          "topOffset": 5.989180448710085,
+          "broken": 0
+        },
+        {
+          "seconds": 12,
+          "topOffset": 5.9971308674768125,
+          "broken": 0
+        }
+      ]
+    },
+    {
+      "id": "backward",
+      "options": {
+        "solver": "backward"
+      },
+      "members": [
+        {
+          "start": 0,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.04180141284050106,
+          "overload": 0
+        },
+        {
+          "start": 14,
+          "count": 12,
+          "half": 6,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.09014044255125439,
+          "overload": 0
+        },
+        {
+          "start": 26,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.04576513770208142,
+          "overload": 0
+        },
+        {
+          "start": 40,
+          "count": 14,
+          "half": 7,
+          "material": "beam",
+          "profile": "l",
+          "broken": false,
+          "stress": 0.2052326843250468,
+          "overload": 0
+        }
+      ],
+      "tracked": {
+        "A": [
+          53
+        ],
+        "B": [
+          25,
+          40
+        ],
+        "C": [
+          13,
+          14,
+          26
+        ],
+        "D": [
+          0
+        ],
+        "E": [
+          39
+        ]
+      },
+      "measurements": [
+        {
+          "seconds": 0,
+          "topOffset": 0,
+          "broken": 0
+        },
+        {
+          "seconds": 1,
+          "topOffset": 0.008826407921744384,
+          "broken": 0
+        },
+        {
+          "seconds": 5,
+          "topOffset": -0.39639790721150003,
+          "broken": 0
+        },
+        {
+          "seconds": 10,
+          "topOffset": -5.99372889411718,
+          "broken": 0
+        },
+        {
+          "seconds": 12,
+          "topOffset": -5.996117836460011,
+          "broken": 0
+        }
+      ]
+    }
+  ],
+  "scan": {
+    "left": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "right": [
+      2,
+      1,
+      0,
+      3
+    ]
+  },
+  "distanceExample": {
+    "alpha": 0.0036,
+    "deltaLambda": -0.004492721790699068,
+    "correction": 0.004991913100776742,
+    "correctedLength": 0.5000161737984465
+  },
+  "branch": {
+    "project": {
+      "size": [
+        12,
+        12
+      ],
+      "beams": [
+        {
+          "endpoints": [
+            0,
+            6,
+            4,
+            6
+          ],
+          "profile": "s"
+        },
+        {
+          "endpoints": [
+            4,
+            3,
+            4,
+            6
+          ],
+          "profile": "s"
+        },
+        {
+          "endpoints": [
+            4,
+            6,
+            8,
+            6
+          ],
+          "profile": "s"
+        }
+      ],
+      "ropes": [],
+      "joints": {},
+      "anchors": {}
+    },
+    "mass": 19.799999999999994,
+    "weight": 194.2380000000001,
+    "moment": 776.9520000000001,
+    "stresses": [
+      0.0817844210526316,
+      0.00024279750000000003,
+      0.014869894736842106
+    ],
+    "members": [
+      {
+        "start": 0,
+        "count": 10,
+        "half": 5,
+        "material": "beam",
+        "profile": "s",
+        "broken": false,
+        "stress": 0,
+        "overload": 0
+      },
+      {
+        "start": 10,
+        "count": 8,
+        "half": 4,
+        "material": "beam",
+        "profile": "s",
+        "broken": false,
+        "stress": 0,
+        "overload": 0
+      },
+      {
+        "start": 18,
+        "count": 10,
+        "half": 5,
+        "material": "beam",
+        "profile": "s",
+        "broken": false,
+        "stress": 0,
+        "overload": 0
+      }
+    ],
+    "root": 0
+  }
+}

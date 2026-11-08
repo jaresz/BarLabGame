@@ -1,0 +1,6 @@
+{
+  "DeployDestination": "<user>@<host>:<remote-public-html-path>/",
+  "DeployRemoteHost": "<user>@<host>",
+  "DeployRemoteAssets": "<remote-public-html-path>/assets",
+  "DeploySshPort": 22
+}

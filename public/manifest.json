@@ -1,0 +1,18 @@
+{
+  "name": "Bar Lab — A structural playground",
+  "short_name": "Bar Lab",
+  "description": "Build and test little structures, even offline.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "related_applications": [
+    { "platform": "webapp", "url": "./manifest.json", "id": "https://barlab.jakubreiter.pl/" }
+  ],
+  "display": "standalone",
+  "background_color": "#f4f3ef",
+  "theme_color": "#f4f3ef",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

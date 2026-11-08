@@ -1,0 +1,13 @@
+node_modules/
+dist/
+public_html/
+public/user-guide.html
+public/user-guide-images/
+*.log
+.DS_Store
+.openai/hosting.json
+scripts/deploy.local.ps1
+scripts/deploy.local.json
+.playwright-browsers/
+screenshots/
+*S.md
