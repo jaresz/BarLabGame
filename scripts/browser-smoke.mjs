@@ -115,6 +115,7 @@ try {
   await testVersionHighlight(browser, base);
   await testPeriodicUpdates(browser, base);
   await testSolvers(browser, base);
+  await testSoundControls(browser, base);
   // Run the editor integration suite in desktop, portrait touch and wide touch contexts. Inspect
   // startup layout, dialogs, simulation and real input gestures, collecting all unhandled page errors.
   for (const { name, viewport, mobile } of [
@@ -492,6 +493,35 @@ try {
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));
+}
+
+async function testSoundControls(browser, base) {
+  for (const { name, viewport, mobile } of [
+    { name: 'desktop', viewport: { width: 1440, height: 900 }, mobile: false },
+    { name: 'mobile', viewport: { width: 390, height: 844 }, mobile: true },
+  ]) {
+    const context = await browser.newContext({ viewport, hasTouch: mobile, isMobile: mobile });
+    const page = await context.newPage();
+    await page.goto(base, { waitUntil: 'load' });
+    const button = page.locator('#sound');
+    assert.equal(await button.isVisible(), true, `${name}: sound control is visible in build mode`);
+    assert.equal(await button.getAttribute('aria-pressed'), 'true', 'Sound is enabled by default');
+    await button.click();
+    assert.equal(await button.getAttribute('aria-pressed'), 'false');
+    assert.equal(await page.evaluate(() => localStorage.getItem('bar-lab:sound-enabled:v1')), 'false');
+    await page.reload();
+    assert.equal(await button.getAttribute('aria-pressed'), 'false', 'Mute persists across reloads');
+    await button.click();
+    assert.equal(await button.getAttribute('aria-pressed'), 'true');
+    await page.locator('#run').click();
+    assert.equal(await button.isVisible(), true, `${name}: sound control is visible during simulation`);
+    await button.click();
+    assert.equal(await button.getAttribute('aria-pressed'), 'false', 'Simulation can be muted immediately');
+    await page.locator('#back').click();
+    assert.equal(await button.isVisible(), true, `${name}: sound control returns to build mode`);
+    await context.close();
+  }
+  console.log('Sound: default, persistent mute and controls in both modes on desktop/mobile verified.');
 }
 
 // Use the settings dialog on desktop and touch layouts, then inspect worker
@@ -1949,6 +1979,12 @@ async function testContinuousDrawing(page, mobile, point, readProject) {
 // Copy an asymmetric mixed group, place it with mouse/touch under every reflection combination
 // and inspect exports and storage writes; verify repeated use, cancellation, camera transforms and reload.
 async function testClipboard(page, mobile) {
+  await page.evaluate(() => {
+    window.soundTones = 0;
+    const original = AudioContext.prototype.createOscillator;
+    AudioContext.prototype.createOscillator = function () { window.soundTones++; return original.call(this); };
+  });
+  const tones = () => page.evaluate(() => window.soundTones);
   const session=mobile ? await page.context().newCDPSession(page) : null;
   const touch=(type,...touchPoints)=>session.send('Input.dispatchTouchEvent',{type,touchPoints});
   let view={zoom:1,pan:[0,0]};
@@ -1979,6 +2015,7 @@ async function testClipboard(page, mobile) {
   });
   const writes=()=>page.evaluate(()=>window.clipboardWrites);
   if(mobile)await page.locator('#copy-selection').click();else await page.keyboard.press('Control+c');
+  assert.ok(await tones() > 0, 'A successful copy plays its confirmation sound');
   assert.deepEqual(await read(),original);assert.equal(await writes(),0);
   assert.equal(await page.locator('#paste-selection').isEnabled(),true);
 
@@ -2004,6 +2041,7 @@ async function testClipboard(page, mobile) {
       await page.screenshot({path:resolve('screenshots',`clipboard-preview-${mobile?'touch':'mouse'}.png`)});
     }
     if(mobile)await page.locator('#paste-place').click();else{await down(await point(18,10));await up();}
+    assert.ok(await tones() > 1, 'A changed paste plays its placement sound');
     assert.equal(await writes(),beforeWrites+1);await count(5);
     const result=await read(),beamY=flipY?-4:-1,ropeX=flipX?2:6;
     assert.ok(result.b.some(b=>JSON.stringify(b)===JSON.stringify([2,beamY,6,beamY,'h'])));
@@ -2018,7 +2056,9 @@ async function testClipboard(page, mobile) {
   assert.equal(await page.locator('#paste-flip-x').getAttribute('aria-pressed'),'false');
   if(mobile){await down(await point(8,6));await up();}else await move(await point(8,6));
   const noOpWrites=await writes();
+  const noOpTones=await tones();
   await page.locator('#paste-place').click();assert.equal(await writes(),noOpWrites);await count(5);
+  assert.equal(await tones(), noOpTones, 'A paste that adds nothing stays silent');
   await page.locator('#paste-selection').click();
   if(mobile){await down(await point(30,16));await up();}else await move(await point(30,16));
   assert.equal(await page.locator('#paste-place').isEnabled(),false);

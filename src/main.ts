@@ -13,7 +13,8 @@ import { copySelection, pastedSelection, selectionNodes, selectionContains, tran
 
 import { fragmentPreview, pasteFragment, transformFragment, type Fragment, type FragmentPlacement } from './fragment';
 
-import type { Frame, PhysicsMember } from './physics';
+import type { Frame, PhysicsMember, SoundEvent } from './physics';
+import { SoundEngine } from './sound';
 import { SOLVERS, type Solver } from './solver-strategies';
 
 const PROJECT_STORAGE_KEY = 'bar-lab:last-project:v1';
@@ -170,6 +171,8 @@ const paths: Record<string, string> = {
   hingeJoint: '<path d="M3 12h5m8 0h5M12 3v5"/><circle cx="12" cy="12" r="4"/>',
 
   stress: '<path d="M4 12h16M4 9v6m16-6v6M8 4v4m-2-2 2 2 2-2M16 20v-4m-2 2 2-2 2 2"/>',
+  sound: '<path d="M4 9h4l5-4v14l-5-4H4zM17 9a5 5 0 0 1 0 6m2-9a9 9 0 0 1 0 12"/>',
+  soundOff: '<path d="M4 9h4l5-4v14l-5-4H4zM17 9l5 6m0-6-5 6"/>',
 
   folder: '<path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
 
@@ -238,7 +241,7 @@ $('app').innerHTML = `
 
 <div class="canvas-note"><span class="coordinate" id="coordinate">X — &nbsp; Y —</span><span>1 square = 1 unit · Y ↑</span></div>
 
-<div class="toolbar-wrap"><div id="paste-actions" class="paste-actions" role="group" aria-label="Paste placement" hidden><button id="paste-flip-x" class="outline-button" aria-pressed="false">Flip left–right</button><button id="paste-flip-y" class="outline-button" aria-pressed="false">Flip up–down</button><button id="paste-place" class="primary-button">Place</button><button id="paste-cancel" class="outline-button">Cancel</button></div><div id="touch-actions" class="touch-actions" hidden><button id="cancel-draw" class="outline-button">Cancel</button></div><div id="profile-picker" class="profile-picker" role="group" aria-label="Beam profile" hidden><span>Beam profile</span><button data-profile="l">${icon('beam')}<span>Light (L)</span></button><button data-profile="s" class="active">${icon('beam')}<span>Standard (S)</span></button><button data-profile="h">${icon('beam')}<span>Heavy (H)</span></button><span id="material-rate">8 cr / unit</span></div><div class="toolbar" role="toolbar" aria-label="Construction tools"><button data-tool="select" title="Select (V)" aria-label="Select">${icon('select')}<span>Select</span><kbd>V</kbd></button><span class="tool-divider"></span><button data-tool="beam" class="active" title="Beam (B) — hold or press Down arrow to choose profile" aria-label="Beam — hold or press Down arrow to choose profile" aria-haspopup="true" aria-expanded="false">${icon('beam')}<span>Beam <small id="beam-profile-indicator">S</small></span><kbd>B</kbd></button><button data-tool="rope" title="Rope (R)" aria-label="Rope">${icon('rope')}<span>Rope</span><kbd>R</kbd></button><button data-tool="erase" title="Erase (E)" aria-label="Erase">${icon('erase')}<span>Erase</span><kbd>E</kbd></button><span class="tool-divider"></span><div class="joint-choice" role="group" aria-label="New node connection type"><button data-joint="x" class="active" title="Rigid connections" aria-label="Rigid connections">${icon('rigidJoint')}</button><button data-joint="o" title="Hinge connections" aria-label="Hinge connections">${icon('hingeJoint')}</button></div><button id="copy-selection" class="icon-button" title="Copy selection (Ctrl/⌘ C)" aria-label="Copy selection">${icon('copy')}</button><button id="paste-selection" class="icon-button" title="Paste selection (Ctrl/⌘ V)" aria-label="Paste selection">${icon('paste')}</button><button id="guide" class="icon-button" aria-label="Info" title="Info">${icon('info')}</button><button id="undo" class="icon-button" title="Undo (Ctrl/⌘ Z)" aria-label="Undo">${icon('undo')}</button><button id="redo" class="icon-button" title="Redo (Ctrl/⌘ Shift Z)" aria-label="Redo">${icon('redo')}</button><button id="settings" class="icon-button" title="Settings" aria-label="Settings" aria-haspopup="dialog" aria-controls="settings-dialog">${icon('settings')}</button><button id="clear-canvas" class="icon-button" title="Clear the canvas (can be undone)" aria-label="Clear canvas">${icon('trash')}</button><button id="examples" class="icon-button" aria-label="Load an example" title="Load an example" aria-haspopup="dialog">${icon('folder')}</button><button id="project-text" class="outline-button" aria-label="Project text" title="Project text">${icon('code')}<span>Project text</span></button><button id="run" class="icon-button" aria-label="Run simulation" title="Run simulation (Space)">${icon('play')}</button><button id="stress" class="stress-control" type="button" aria-label="Show stress" title="Show stress" aria-pressed="false">${icon('stress')}</button></div><div class="toolbar-caption" id="hint">Choose a start point, then an endpoint. <span>Beams: 6 · Ropes: 10 units.</span></div></div>
+<div class="toolbar-wrap"><div id="paste-actions" class="paste-actions" role="group" aria-label="Paste placement" hidden><button id="paste-flip-x" class="outline-button" aria-pressed="false">Flip left–right</button><button id="paste-flip-y" class="outline-button" aria-pressed="false">Flip up–down</button><button id="paste-place" class="primary-button">Place</button><button id="paste-cancel" class="outline-button">Cancel</button></div><div id="touch-actions" class="touch-actions" hidden><button id="cancel-draw" class="outline-button">Cancel</button></div><div id="profile-picker" class="profile-picker" role="group" aria-label="Beam profile" hidden><span>Beam profile</span><button data-profile="l">${icon('beam')}<span>Light (L)</span></button><button data-profile="s" class="active">${icon('beam')}<span>Standard (S)</span></button><button data-profile="h">${icon('beam')}<span>Heavy (H)</span></button><span id="material-rate">8 cr / unit</span></div><div class="toolbar" role="toolbar" aria-label="Construction tools"><button data-tool="select" title="Select (V)" aria-label="Select">${icon('select')}<span>Select</span><kbd>V</kbd></button><span class="tool-divider"></span><button data-tool="beam" class="active" title="Beam (B) — hold or press Down arrow to choose profile" aria-label="Beam — hold or press Down arrow to choose profile" aria-haspopup="true" aria-expanded="false">${icon('beam')}<span>Beam <small id="beam-profile-indicator">S</small></span><kbd>B</kbd></button><button data-tool="rope" title="Rope (R)" aria-label="Rope">${icon('rope')}<span>Rope</span><kbd>R</kbd></button><button data-tool="erase" title="Erase (E)" aria-label="Erase">${icon('erase')}<span>Erase</span><kbd>E</kbd></button><span class="tool-divider"></span><div class="joint-choice" role="group" aria-label="New node connection type"><button data-joint="x" class="active" title="Rigid connections" aria-label="Rigid connections">${icon('rigidJoint')}</button><button data-joint="o" title="Hinge connections" aria-label="Hinge connections">${icon('hingeJoint')}</button></div><button id="copy-selection" class="icon-button" title="Copy selection (Ctrl/⌘ C)" aria-label="Copy selection">${icon('copy')}</button><button id="paste-selection" class="icon-button" title="Paste selection (Ctrl/⌘ V)" aria-label="Paste selection">${icon('paste')}</button><button id="guide" class="icon-button" aria-label="Info" title="Info">${icon('info')}</button><button id="undo" class="icon-button" title="Undo (Ctrl/⌘ Z)" aria-label="Undo">${icon('undo')}</button><button id="redo" class="icon-button" title="Redo (Ctrl/⌘ Shift Z)" aria-label="Redo">${icon('redo')}</button><button id="settings" class="icon-button" title="Settings" aria-label="Settings" aria-haspopup="dialog" aria-controls="settings-dialog">${icon('settings')}</button><button id="clear-canvas" class="icon-button" title="Clear the canvas (can be undone)" aria-label="Clear canvas">${icon('trash')}</button><button id="examples" class="icon-button" aria-label="Load an example" title="Load an example" aria-haspopup="dialog">${icon('folder')}</button><button id="project-text" class="outline-button" aria-label="Project text" title="Project text">${icon('code')}<span>Project text</span></button><button id="run" class="icon-button" aria-label="Run simulation" title="Run simulation (Space)">${icon('play')}</button><button id="sound" class="sound-control" type="button" aria-label="Mute sounds" aria-pressed="true" title="Mute sounds"></button><button id="stress" class="stress-control" type="button" aria-label="Show stress" title="Show stress" aria-pressed="false">${icon('stress')}</button></div><div class="toolbar-caption" id="hint">Choose a start point, then an endpoint. <span>Beams: 6 · Ropes: 10 units.</span></div></div>
 
 <div id="simulation-controls" class="simulation-controls" hidden><button id="pause" class="outline-button" aria-label="Pause simulation" title="Pause simulation">${icon('pause')}</button><button id="back" class="primary-button" aria-label="Stop simulation and return to build" title="Stop simulation and return to build">${icon('stopSquare')}</button></div>
 
@@ -428,7 +431,7 @@ document.body.append($('profile-picker'));
 const runButton = $<HTMLButtonElement>('run');
 $('hide-inspector').setAttribute('aria-label', 'Close selection properties');
 
-const canvas = $<HTMLCanvasElement>('canvas'), renderer = new Renderer(canvas), history = new History(await loadSavedProject());
+const canvas = $<HTMLCanvasElement>('canvas'), renderer = new Renderer(canvas), history = new History(await loadSavedProject()), sound = new SoundEngine();
 
 let profile: BeamProfile = 's';
 
@@ -514,6 +517,7 @@ function refreshUI(): void {
   if ($('project-text').parentElement !== editingToolbar) editingToolbar.insertBefore($('project-text'), $('run'));
   const stressContainer = running ? $('simulation-controls') : editingToolbar;
   if ($('stress').parentElement !== stressContainer) stressContainer.append($('stress'));
+  if ($('sound').parentElement !== stressContainer) stressContainer.insertBefore($('sound'), $('stress'));
   const focusSimulation = running && focusedControl === $('run');
   const focusRun = !running && (focusedControl === $('pause') || focusedControl === $('back')); 
   $('run').hidden = running;
@@ -522,7 +526,7 @@ function refreshUI(): void {
   if (splitControls.matches) {
     if (running) rightControls.append($('pause'), $('back'));
     else rightControls.append($('undo'), $('redo'), $('project-text'), $('run'));
-    rightControls.append($('stress'), $('fit'));
+    rightControls.append($('sound'), $('stress'), $('fit'));
   }
   if (focusSimulation) $('pause').focus();
   if (focusRun) $('run').focus();
@@ -546,6 +550,11 @@ function refreshUI(): void {
   $('stress-legend').hidden = !stress;
   $('stress').setAttribute('aria-pressed', String(stress));
   $('stress').classList.toggle('active', stress);
+  $('sound').setAttribute('aria-pressed', String(sound.enabled));
+  $('sound').setAttribute('aria-label', sound.enabled ? 'Mute sounds' : 'Turn on sounds');
+  $('sound').title = sound.enabled ? 'Mute sounds' : 'Turn on sounds';
+  $('sound').innerHTML = icon(sound.enabled ? 'sound' : 'soundOff');
+  $('sound').classList.toggle('active', sound.enabled);
 
   const allNodes = selected.length > 0 && selected.every(s => 'node' in s);
 
@@ -630,6 +639,7 @@ function runSimulation(): void {
   if (running) { stopSimulation(); return; }
 
   if (!history.project.beams.length && !history.project.ropes.length) { notify('Add a beam or rope first.'); return; }
+  sound.activate();
 
   // Draw once per Serpentine run, independently of previous runs. Passing the
   // chosen side to the worker keeps the entire trajectory deterministic thereafter.
@@ -641,11 +651,12 @@ function runSimulation(): void {
 
     worker = new Worker(new URL('./simulation.worker.ts', import.meta.url), { type: 'module' });
 
-    worker.onmessage = ({ data }: MessageEvent<{ type: string; frame: Frame; members?: PhysicsMember[] }>) => {
+    worker.onmessage = ({ data }: MessageEvent<{ type: string; frame: Frame; members?: PhysicsMember[]; sounds?: SoundEvent[] }>) => {
 
       if (frame) recycled = { positions: frame.positions.buffer as ArrayBuffer, stresses: frame.stresses.buffer as ArrayBuffer, broken: frame.broken.buffer as ArrayBuffer };
 
       frame = data.frame; if (data.members) members = data.members; busy = false; invalidate();
+      if (!paused && data.sounds) for (const event of data.sounds) sound.playSimulation(event, history.project.size[0]);
 
     };
 
@@ -669,8 +680,12 @@ function finishMember(): void {
   const end = drawingEndpoint(start, cursor, tool, history.project.size);
   if (end[0] === start[0] && end[1] === start[1]) return;
   try {
+    const beamCenterX = (start[0] + end[0]) / (2 * history.project.size[0]);
     const next = addMember(history.project, tool, [...start, ...end], joint, profile);
+    const createdNode = !nodes(history.project).has(key(end));
     recordProject(next); start = end; selected = []; lastClick = null; lastName = 'Untitled structure';
+    if (tool === 'beam') sound.playEdit('beamPlace', beamCenterX);
+    if (createdNode) sound.playEdit('nodeCreate', end[0] / history.project.size[0]);
     $('status').textContent = 'Element added. Choose the next endpoint.'; refreshUI();
   }
 
@@ -831,7 +846,7 @@ function copyGroup(): void {
   if (running || pasteState) return;
   const fragment = copySelection(history.project,selected);
   if (!fragment) { notify('Select beams, ropes, or both ends of a connection to copy.'); return; }
-  clipboardFragment = fragment; notify('Selection copied. Paste it as many times as you like.'); refreshUI();
+  clipboardFragment = fragment; sound.playEdit('copy'); notify('Selection copied. Paste it as many times as you like.'); refreshUI();
 }
 
 function beginPaste(): void {
@@ -869,7 +884,7 @@ function placePaste(): void {
   const state = pasteState; if (!state) return;
   if (!state.valid) { notify(state.error ?? 'Choose a valid position.'); return; }
   pasteState = null; pointerDown = null; lastClick = null;
-  if (state.changed) { recordProject(state.valid); lastName = 'Untitled structure'; }
+  if (state.changed) { recordProject(state.valid); lastName = 'Untitled structure'; sound.playEdit('paste', (state.placement.origin[0] + state.fragment.size[0] / 2) / history.project.size[0]); }
   selected = pastedSelection(state.valid,state.fragment,state.placement);
   $('status').textContent = state.changed ? 'Selection pasted.' : 'Existing elements selected; no new elements added.';
   refreshUI();
@@ -1325,6 +1340,8 @@ $('fit').onclick = () => { renderer.fit(); invalidate(); };
 
 $('stress').onclick = () => { stress = !stress; refreshUI(); };
 $('stress').addEventListener('keydown', e => { if (e.code === 'Space') e.stopPropagation(); });
+$('sound').onclick = () => { sound.setEnabled(!sound.enabled); sound.activate(); refreshUI(); };
+$('sound').addEventListener('keydown', e => { if (e.code === 'Space') e.stopPropagation(); });
 
 $('hide-inspector').onclick = () => { selected = []; refreshUI(); };
 

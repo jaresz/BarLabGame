@@ -166,6 +166,12 @@
 
 /* In compact phone landscape, simulation controls sit to the right of the canvas. */
 .right-controls{display:none}
+#sound{width:36px;height:36px;min-width:36px;padding:0;border:0;border-radius:6px;color:#687960}
+#sound svg{width:20px;height:20px}
+#sound.active{color:#b9552c}
+.simulation-controls #sound{align-self:center}
+/* Keep the update prompt clear of the narrow right-hand tool rail. */
+@media (orientation:landscape) and (max-height:500px) and (max-width:900px){#update-app{right:auto;left:50%;top:6px;bottom:auto;transform:translateX(-50%)}}
 @media (orientation:landscape) and (max-height:500px) and (max-width:900px) and (hover:none) and (pointer:coarse){
   .right-controls:not([hidden]){display:grid;grid-auto-flow:column;grid-template-rows:repeat(var(--tool-rows, 5),36px);grid-auto-columns:36px;align-content:start;justify-items:center;gap:2px;flex:0 0 auto;padding:4px;border-left:1px solid var(--line);background:#fafbf7}
   .right-controls #run,.right-controls #stress,.right-controls #fit,.right-controls #pause,.right-controls #back{width:36px;height:36px;min-width:36px;padding:0}

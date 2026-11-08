@@ -8,6 +8,9 @@ interface Angle { a: number; b: number; c: number; d: number; rest: number; comp
 export interface PhysicsMember { start: number; count: number; half: number; material: Material; profile: BeamProfile; broken: boolean; stress: number; overload: number }
 export interface PhysicsOptions { gravity?: number; damage?: boolean; bending?: number; axial?: number; iterations?: number; damping?: number; solver?: Solver; serpentineFromRight?: boolean }
 export interface Frame { positions: Float32Array; stresses: Float32Array; broken: Uint8Array; time: number; stepMs: number; points: number; constraints: number }
+export type SoundKind = 'beamStress' | 'ropeBreak' | 'beamWall' | 'beamGround' | 'ropeGround';
+export interface SoundEvent { kind: SoundKind; x: number; intensity: number }
+const SOUND_INTERVAL: Record<SoundKind, number> = { beamStress: 0.36, ropeBreak: 0.09, beamWall: 0.12, beamGround: 0.12, ropeGround: 0.16 };
 interface Endpoint { p: number; neighbor: number; material: Material; direction: number; owner: number }
 export class World {
   readonly x: Float64Array; readonly y: Float64Array; readonly vx: Float64Array; readonly vy: Float64Array;
@@ -20,6 +23,10 @@ export class World {
   private ids = new Int32Array(4); private gx = new Float64Array(4); private gy = new Float64Array(4);
   private sweepDistances: Distance[] = []; private sweepAngles: Angle[] = [];
   private backward?: BackwardTree;
+  private particleOwner: number[] = [];
+  private lastSound: Record<SoundKind, number> = { beamStress: -1, ropeBreak: -1, beamWall: -1, beamGround: -1, ropeGround: -1 };
+  private pendingSounds = new Map<SoundKind, SoundEvent>();
+  private previousStress: number[] = [];
   time = 0; stepMs = 0;
   constructor(readonly project: Project, options: PhysicsOptions = {}) {
     // Short steel beams should appear straight under their own weight. A modest
@@ -28,7 +35,7 @@ export class World {
     const scanRank = new Int32Array(project.beams.length+project.ropes.length);
     if (this.options.solver === 'serpentine') serpentineMemberOrder(project,this.options.serpentineFromRight).forEach((owner,index) => { scanRank[owner] = index; });
     const positions: Point[] = [], masses: number[] = [], endpoints = new Map<string, Endpoint[]>();
-    const addPoint = (x: number, y: number) => { const id = positions.length; positions.push([x, y]); masses.push(0); return id; };
+    const addPoint = (x: number, y: number, owner: number) => { const id = positions.length; positions.push([x, y]); masses.push(0); this.particleOwner.push(owner); return id; };
     for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes]] as const) for (const [index, m] of list.entries()) {
       const profile = material === 'beam' ? project.beams[index].profile : 's', properties = PROFILES[profile];
       const len = Math.hypot(m[2] - m[0], m[3] - m[1]);
@@ -39,7 +46,7 @@ export class World {
       // Two half-rods share a position, but not a particle. Breaking releases the midpoint weld.
       for (let side = 0; side < 2; side++) {
         const sideStart = positions.length;
-        for (let j = 0; j < half; j++) { const t = (side * (n / 2) + j) / n; addPoint(m[0] + (m[2] - m[0]) * t, m[1] + (m[3] - m[1]) * t); }
+        for (let j = 0; j < half; j++) { const t = (side * (n / 2) + j) / n; addPoint(m[0] + (m[2] - m[0]) * t, m[1] + (m[3] - m[1]) * t, owner); }
         for (let j = 0; j < half - 1; j++) {
           const a = sideStart + j, b = a + 1, density = material === 'beam' ? 1.8 * properties.mass : 0.22;
           masses[a] += density * h / 2; masses[b] += density * h / 2;
@@ -76,6 +83,7 @@ export class World {
       }
     }
     this.sweepDistances = this.distances; this.sweepAngles = this.angles;
+    this.previousStress = this.members.map(() => 0);
     if (this.options.solver === 'serpentine') {
       const rank = scanRank, particleRank = new Int32Array(this.x.length);
       // Keep member/particle IDs stable for rendering; only the constraint visit
@@ -85,6 +93,18 @@ export class World {
       this.sweepDistances = [...this.distances].sort((a,b) => priority(a)-priority(b));
       this.sweepAngles = [...this.angles].sort((a,b) => priority(a)-priority(b));
     } else if (this.options.solver === 'backward') this.backward = new BackwardTree(this);
+  }
+  private queueSound(kind: SoundKind, x: number, intensity: number): void {
+    if (this.time - this.lastSound[kind] < SOUND_INTERVAL[kind]) return;
+    const event = { kind, x: Math.max(0, Math.min(this.project.size[0], x)), intensity: Math.min(1, intensity) };
+    // Keep only the strongest contact of each material and surface in a physics tick.
+    if (event.intensity > (this.pendingSounds.get(kind)?.intensity ?? 0)) this.pendingSounds.set(kind, event);
+  }
+  drainSounds(): SoundEvent[] {
+    const sounds = [...this.pendingSounds.values()];
+    for (const sound of sounds) this.lastSound[sound.kind] = this.time;
+    this.pendingSounds.clear();
+    return sounds;
   }
   private solveDistance(c: Distance): void {
     if (c.cut && this.members[c.owner].broken) return;
@@ -149,7 +169,19 @@ export class World {
       // Alternate sweeps to reduce directional bias on long structures.
       if (iteration % 2) { for (let i = this.sweepDistances.length - 1; i >= 0; i--) this.solveDistance(this.sweepDistances[i]); for (let i = this.sweepAngles.length - 1; i >= 0; i--) this.solveAngle(this.sweepAngles[i]); }
       else { for (const c of this.sweepDistances) this.solveDistance(c); for (const c of this.sweepAngles) this.solveAngle(c); }
-      for (let i = 0; i < this.x.length; i++) { this.x[i] = Math.max(0, Math.min(this.project.size[0], this.x[i])); this.y[i] = Math.max(0, Math.min(this.project.size[1], this.y[i])); }
+      for (let i = 0; i < this.x.length; i++) {
+        if (iteration === 0 && this.invMass[i] > 0) {
+          const member = this.members[this.particleOwner[i]];
+          // Old positions must lie inside the board: a resting contact should not
+          // become a new impact every time gravity pushes it into the boundary.
+          const speedX = (this.x[i] - this.oldX[i]) / DT, speedY = (this.y[i] - this.oldY[i]) / DT;
+          if (member.material === 'beam' && this.oldX[i] > 1e-6 && this.oldX[i] < this.project.size[0] - 1e-6 && (this.x[i] < 0 || this.x[i] > this.project.size[0]) && Math.abs(speedX) > 1.5)
+            this.queueSound('beamWall', this.x[i], Math.abs(speedX) / 12);
+          if (this.oldY[i] < this.project.size[1] - 1e-6 && this.y[i] > this.project.size[1] && speedY > 1.5)
+            this.queueSound(member.material === 'beam' ? 'beamGround' : 'ropeGround', this.x[i], speedY / 12);
+        }
+        this.x[i] = Math.max(0, Math.min(this.project.size[0], this.x[i])); this.y[i] = Math.max(0, Math.min(this.project.size[1], this.y[i]));
+      }
       for (const [id, x, y] of this.pins) { this.x[id] = x; this.y[id] = y; }
     }
     for (let i = 0; i < this.x.length; i++) {
@@ -176,9 +208,15 @@ export class World {
       this.backward.update();
       this.members.forEach((m,i) => { if (!m.broken) m.stress = Math.max(m.stress,this.backward!.stresses[i]); });
     }
-    for (const m of this.members) if (!m.broken) {
+    for (const [index, m] of this.members.entries()) if (!m.broken) {
       m.overload = m.stress > 1 ? m.overload + DT : 0;
-      if (this.options.damage && m.overload + 1e-9 >= 0.05) m.broken = true;
+      if (m.material === 'beam' && m.stress > 0.48 && m.stress > this.previousStress[index] + 0.035)
+        this.queueSound('beamStress', this.x[m.start + m.half - 1], m.stress / 1.5);
+      if (this.options.damage && m.overload + 1e-9 >= 0.05) {
+        m.broken = true;
+        if (m.material === 'rope') this.queueSound('ropeBreak', this.x[m.start + m.half - 1], Math.max(0.5, m.stress / 1.5));
+      }
+      this.previousStress[index] = m.stress;
     }
   }
   frame(buffers?: { positions: ArrayBuffer; stresses: ArrayBuffer; broken: ArrayBuffer }): Frame {

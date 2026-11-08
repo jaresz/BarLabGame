@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { emptyProject, exportProject, importProject, MAX_LENGTH, length } from '../src/model';
 import { example } from '../src/examples';
-import { DT, World, type PhysicsOptions } from '../src/physics';
+import { DT, World, type PhysicsOptions, type SoundEvent } from '../src/physics';
 import { BackwardTree, serpentineMemberOrder } from '../src/solver-strategies';
 
 const suspendedBeam = () => importProject(JSON.stringify({
@@ -243,4 +243,50 @@ test('Backward propagation handles cycles, multiple supports, free components an
   assert.ok([...tree.forces,...tree.moments,...tree.stresses].every(Number.isFinite));
   for (let step = 0; step < 240; step++) w.step();
   assert.ok([...w.x,...w.y].every(Number.isFinite), 'Cyclic and fractured structures must simulate without graph recursion or NaNs');
+});
+
+test('Impact sounds identify material and surface, then stop at rest', () => {
+  for (const material of ['beam', 'rope'] as const) {
+    const project = emptyProject();
+    if (material === 'beam') project.beams.push({ endpoints: [3, 6, 5, 6], profile: 's' });
+    else project.ropes.push([3, 6, 5, 6]);
+    const world = new World(project, { gravity: 200, damage: false });
+    const heard = [];
+    for (let step = 0; step < 100; step++) { world.step(); heard.push(...world.drainSounds()); }
+    const expected = material === 'beam' ? 'beamGround' : 'ropeGround';
+    assert.ok(heard.some(event => event.kind === expected), `${material} should strike the floor`);
+    assert.ok(heard.filter(event => event.kind === expected).length <= 2, 'A resting member should not repeatedly sound');
+    assert.ok(heard.every(event => event.x >= 0 && event.x <= project.size[0] && event.intensity <= 1));
+  }
+  const project = emptyProject(); project.beams.push({ endpoints: [3, 4, 5, 4], profile: 's' });
+  const world = new World(project, { gravity: 0, damage: false });
+  world.vx.fill(-100);
+  const heard = [];
+  for (let step = 0; step < 10; step++) { world.step(); heard.push(...world.drainSounds()); }
+  assert.ok(heard.some(event => event.kind === 'beamWall'), 'A moving beam should sound at the wall');
+});
+
+test('Many simultaneous contacts yield one sound per kind per worker tick', () => {
+  const project = emptyProject();
+  for (let x = 1; x < 15; x++) project.beams.push({ endpoints: [x, 8, x + 1, 8], profile: 's' });
+  const world = new World(project, { gravity: 300, damage: false });
+  let sounds: SoundEvent[] = [];
+  for (let step = 0; step < 40; step++) { world.step(); sounds = world.drainSounds(); if (sounds.some(event => event.kind === 'beamGround')) break; }
+  assert.equal(sounds.filter(event => event.kind === 'beamGround').length, 1);
+});
+
+test('Rising beam stress and a rope fracture emit their distinct sounds once', () => {
+  for (const material of ['beam', 'rope'] as const) {
+    const project = emptyProject();
+    if (material === 'beam') project.beams.push({ endpoints: [3, 4, 5, 4], profile: 's' });
+    else project.ropes.push([3, 4, 5, 4]);
+    const world = new World(project, { gravity: 0, iterations: 0 });
+    // With solver iterations disabled, this displacement stays strained long
+    // enough to exercise the sound transition and the normal damage threshold.
+    world.x[1] += 1;
+    const heard: SoundEvent[] = [];
+    for (let step = 0; step < 8; step++) { world.step(); heard.push(...world.drainSounds()); }
+    const expected = material === 'beam' ? 'beamStress' : 'ropeBreak';
+    assert.equal(heard.filter(event => event.kind === expected).length, 1);
+  }
 });
