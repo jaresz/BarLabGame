@@ -8,8 +8,6 @@ Bar Lab is a browser-based structural playground. Build with elastic steel beams
 
 ![Bar Lab on desktop](docs/images/frame-lab-desktop.png)
 
-![Bar Lab on a phone](docs/images/frame-lab-mobile.png)
-
 ![A bridge responding to gravity in the Bar Lab simulation](docs/images/frame-lab-simulation.gif)
 
 ## Features
