@@ -290,3 +290,46 @@ test('Rising beam stress and a rope fracture emit their distinct sounds once', (
     assert.equal(heard.filter(event => event.kind === expected).length, 1);
   }
 });
+
+test('Stress beds summarize count, length and load by material and stereo zone', () => {
+  const project = emptyProject(); project.size = [12, 8];
+  project.beams.push({ endpoints: [1, 2, 2, 2], profile: 's' }, { endpoints: [1, 3, 5, 3], profile: 's' });
+  project.ropes.push([8, 2, 12, 2]);
+  const world = new World(project);
+  world.members[0].stress = .5; world.members[1].stress = .9; world.members[2].stress = .7;
+  const beds = world.stressBeds();
+  const beams = beds.find(bed => bed.material === 'beam' && bed.zone === 0)!;
+  const rope = beds.find(bed => bed.material === 'rope' && bed.zone === 2)!;
+  assert.equal(beds.length, 2);
+  assert.equal(beams.count, 2); assert.ok(beams.load > 0 && beams.length > 1 && beams.length < 4);
+  assert.ok(beams.stress > .5 && beams.stress < .9 && beams.x > 1 && beams.x < 5);
+  assert.equal(rope.count, 1); assert.equal(rope.length, 4);
+  world.members[1].broken = true;
+  assert.equal(world.stressBeds().find(bed => bed.material === 'beam')?.count, 1, 'Broken steel leaves the load bed');
+});
+
+test('Dense stressed structures still produce at most six bed controls', () => {
+  const project = emptyProject();
+  for (let index = 0; index < 120; index++) {
+    const x = 1 + index % 12;
+    if (index % 2) project.beams.push({ endpoints: [x, 3, x + 1, 3], profile: 's' });
+    else project.ropes.push([x, 5, x + 1, 5]);
+  }
+  const world = new World(project);
+  for (const member of world.members) member.stress = .8;
+  assert.ok(world.stressBeds().length <= 6);
+  assert.equal(world.stressBeds().reduce((sum, bed) => sum + bed.count, 0), 120);
+});
+
+test('Ordinary supported steel and cable loads reach the quiet tension bed', () => {
+  const project = emptyProject();
+  project.beams.push({ endpoints: [4, 6, 8, 6], profile: 's' });
+  project.ropes.push([4, 0, 4, 6], [8, 0, 8, 6]);
+  const world = new World(project);
+  for (let step = 0; step < 240; step++) world.step();
+  const beds = world.stressBeds();
+  assert.ok(beds.some(bed => bed.material === 'rope'), 'A hanging cable is audible below failure-level stress');
+  const beam = new World({ ...emptyProject(), beams: [{ endpoints: [0, 2, 6, 2], profile: 'l' }] });
+  for (let step = 0; step < 120; step++) beam.step();
+  assert.ok(beam.stressBeds().some(bed => bed.material === 'beam'), 'A flexing cantilever has a quiet bed');
+});

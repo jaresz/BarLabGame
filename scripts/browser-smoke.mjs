@@ -26,7 +26,7 @@ async function checkGuideLink(browser, base) {
     await context.close();
   }
 }
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/manifest+json', '.png': 'image/png', '.woff2': 'font/woff2' };
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/manifest+json', '.png': 'image/png', '.wav': 'audio/wav', '.woff2': 'font/woff2' };
 let workerOverride;
 let workerUnavailable = false;
 const server = createServer(async (req, res) => {
@@ -50,7 +50,10 @@ try {
     args: ['--no-sandbox', '--disable-dev-shm-usage'],
   });
   const base = `http://127.0.0.1:${server.address().port}`;
-  if (process.argv.includes('--solvers-only')) {
+  if (process.argv.includes('--sound-only')) {
+    await testSoundControls(browser, base);
+    await testTensionPlayback(browser, base);
+  } else if (process.argv.includes('--solvers-only')) {
     await testSolvers(browser, base);
   } else {
   // Verify root and subdirectory deployments by opening each URL, collecting failed asset/page
@@ -116,6 +119,7 @@ try {
   await testPeriodicUpdates(browser, base);
   await testSolvers(browser, base);
   await testSoundControls(browser, base);
+  await testTensionPlayback(browser, base);
   // Run the editor integration suite in desktop, portrait touch and wide touch contexts. Inspect
   // startup layout, dialogs, simulation and real input gestures, collecting all unhandled page errors.
   for (const { name, viewport, mobile } of [
@@ -524,6 +528,37 @@ async function testSoundControls(browser, base) {
   console.log('Sound: default, persistent mute and controls in both modes on desktop/mobile verified.');
 }
 
+async function testTensionPlayback(browser, base) {
+  for (const side of ['left', 'right', 'rope']) {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await page.addInitScript(() => {
+      window.soundSources = []; window.soundPanners = []; window.soundLoopEnded = 0;
+      const source = AudioContext.prototype.createBufferSource;
+      const panner = AudioContext.prototype.createStereoPanner;
+      AudioContext.prototype.createBufferSource = function () { const node = source.call(this); node.addEventListener('ended', () => { if (node.loop) window.soundLoopEnded++; }); window.soundSources.push(node); return node; };
+      AudioContext.prototype.createStereoPanner = function () { const node = panner.call(this); window.soundPanners.push(node); return node; };
+    });
+    await page.goto(base, { waitUntil: 'load' });
+    const objects = side === 'rope'
+      ? { b: [[-4, -1, 0, -1, 's']], r: [[-4, 5, -4, -1], [0, 5, 0, -1]] }
+      : { b: [side === 'left' ? [-8, 3, -2, 3, 'l'] : [2, 3, 8, 3, 'l']] };
+    await page.locator('#project-text').click();
+    await page.locator('#project-json').fill(JSON.stringify({ metadata: { size: [16, 10], gameVersion: GAME_VERSION, formatVersion: 3 }, objects }));
+    await page.locator('#load').click();
+    await page.locator('#run').click();
+    await page.waitForFunction(() => window.soundSources.some(source => source.loop), undefined, { timeout: 10000 });
+    await page.waitForTimeout(250);
+    const result = await page.evaluate(() => ({ loops: window.soundSources.filter(source => source.loop).length, pans: window.soundPanners.map(panner => panner.pan.value) }));
+    assert.ok(result.loops >= 1 && result.loops <= 6, 'Loaded material plays a bounded WAV loop');
+    if (side !== 'rope') assert.ok(result.pans.some(pan => side === 'left' ? pan < -.2 : pan > .2), `${side} steel pans toward its side`);
+    await page.locator('#pause').click();
+    await page.waitForFunction(() => window.soundLoopEnded >= window.soundSources.filter(source => source.loop).length);
+    await context.close();
+  }
+  console.log('Tension WAV: loaded steel and cable loops, six-loop cap, left/right stereo and pause verified.');
+}
+
 // Use the settings dialog on desktop and touch layouts, then inspect worker
 // starts to verify solver routing and independent Serpentine direction draws.
 async function testSolvers(browser, base) {
@@ -890,7 +925,7 @@ async function testOffline(browser, base) {
     const cache = await caches.open(keys.find(name => name.startsWith('bar-lab-static-')));
     return (await cache.keys()).map(request => new URL(request.url).pathname);
   });
-  for (const suffix of ['/index.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png', '.css', '.js', '.woff2']) {
+  for (const suffix of ['/index.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png', '.css', '.js', '.woff2', '.wav']) {
     assert.ok(cached.some(path => path.endsWith(suffix)), `Offline cache contains ${suffix}`);
   }
   await page.evaluate(async () => {
@@ -909,6 +944,14 @@ async function testOffline(browser, base) {
   page = await context.newPage();
   await page.goto(base, { waitUntil: 'load' });
   assert.equal(await page.locator('#beam-count').textContent(), '1', 'Last project is restored offline');
+  const offlineSound = await page.evaluate(async () => {
+    const response = await fetch('sounds/ropeTensionLoop.wav');
+    const context = new AudioContext();
+    try { const buffer = await context.decodeAudioData(await response.arrayBuffer()); return { status: response.status, seconds: buffer.duration }; }
+    finally { await context.close(); }
+  });
+  assert.equal(offlineSound.status, 200, 'The rope WAV is precached for offline play');
+  assert.ok(offlineSound.seconds > 2, 'An offline browser can decode the tension loop');
   // Fetch root/index URLs with query strings, an uncached script and a temporarily uncached
   // document; inspect cached HTML and controlled plain-text 503 responses instead of rejected fetches.
   const offlineDocuments = await page.evaluate(async () => {
@@ -1980,11 +2023,11 @@ async function testContinuousDrawing(page, mobile, point, readProject) {
 // and inspect exports and storage writes; verify repeated use, cancellation, camera transforms and reload.
 async function testClipboard(page, mobile) {
   await page.evaluate(() => {
-    window.soundTones = 0;
-    const original = AudioContext.prototype.createOscillator;
-    AudioContext.prototype.createOscillator = function () { window.soundTones++; return original.call(this); };
+    window.soundSamples = 0;
+    const original = AudioContext.prototype.createBufferSource;
+    AudioContext.prototype.createBufferSource = function () { window.soundSamples++; return original.call(this); };
   });
-  const tones = () => page.evaluate(() => window.soundTones);
+  const samples = () => page.evaluate(() => window.soundSamples);
   const session=mobile ? await page.context().newCDPSession(page) : null;
   const touch=(type,...touchPoints)=>session.send('Input.dispatchTouchEvent',{type,touchPoints});
   let view={zoom:1,pan:[0,0]};
@@ -2015,7 +2058,14 @@ async function testClipboard(page, mobile) {
   });
   const writes=()=>page.evaluate(()=>window.clipboardWrites);
   if(mobile)await page.locator('#copy-selection').click();else await page.keyboard.press('Control+c');
-  assert.ok(await tones() > 0, 'A successful copy plays its confirmation sound');
+  await page.waitForFunction(() => window.soundSamples > 0);
+  assert.ok(await samples() > 0, 'A successful copy plays its WAV confirmation');
+  await page.waitForTimeout(300);
+  const beforeBurst=await samples();
+  await page.evaluate(() => { for (let i = 0; i < 12; i++) document.querySelector('#copy-selection').click(); });
+  await page.waitForTimeout(50);
+  assert.ok((await samples()) - beforeBurst <= 4, 'A rapid burst never starts more than four short effects');
+  await page.waitForTimeout(300);
   assert.deepEqual(await read(),original);assert.equal(await writes(),0);
   assert.equal(await page.locator('#paste-selection').isEnabled(),true);
 
@@ -2041,7 +2091,8 @@ async function testClipboard(page, mobile) {
       await page.screenshot({path:resolve('screenshots',`clipboard-preview-${mobile?'touch':'mouse'}.png`)});
     }
     if(mobile)await page.locator('#paste-place').click();else{await down(await point(18,10));await up();}
-    assert.ok(await tones() > 1, 'A changed paste plays its placement sound');
+    await page.waitForFunction(() => window.soundSamples > 1);
+    assert.ok(await samples() > 1, 'A changed paste plays its WAV placement');
     assert.equal(await writes(),beforeWrites+1);await count(5);
     const result=await read(),beamY=flipY?-4:-1,ropeX=flipX?2:6;
     assert.ok(result.b.some(b=>JSON.stringify(b)===JSON.stringify([2,beamY,6,beamY,'h'])));
@@ -2056,9 +2107,9 @@ async function testClipboard(page, mobile) {
   assert.equal(await page.locator('#paste-flip-x').getAttribute('aria-pressed'),'false');
   if(mobile){await down(await point(8,6));await up();}else await move(await point(8,6));
   const noOpWrites=await writes();
-  const noOpTones=await tones();
+  const noOpSamples=await samples();
   await page.locator('#paste-place').click();assert.equal(await writes(),noOpWrites);await count(5);
-  assert.equal(await tones(), noOpTones, 'A paste that adds nothing stays silent');
+  assert.equal(await samples(), noOpSamples, 'A paste that adds nothing stays silent');
   await page.locator('#paste-selection').click();
   if(mobile){await down(await point(30,16));await up();}else await move(await point(30,16));
   assert.equal(await page.locator('#paste-place').isEnabled(),false);

@@ -13,7 +13,7 @@ import { copySelection, pastedSelection, selectionNodes, selectionContains, tran
 
 import { fragmentPreview, pasteFragment, transformFragment, type Fragment, type FragmentPlacement } from './fragment';
 
-import type { Frame, PhysicsMember, SoundEvent } from './physics';
+import type { Frame, PhysicsMember, SoundEvent, StressBed } from './physics';
 import { SoundEngine } from './sound';
 import { SOLVERS, type Solver } from './solver-strategies';
 
@@ -632,14 +632,14 @@ function commit(p: Project): void { recordProject(p); resetInteraction(); select
 
 function chooseTool(next: Tool): void { if (running) return; resetInteraction(); tool = next; start = null; selected = []; refreshUI(); }
 
-function stopSimulation(): void { worker?.terminate(); worker = null; running = paused = busy = false; frame = null; recycled = undefined; elapsed = 0; members = []; $('status').textContent = 'Original design restored. Try another idea.'; refreshUI(); }
+function stopSimulation(): void { sound.setSimulationActive(false); worker?.terminate(); worker = null; running = paused = busy = false; frame = null; recycled = undefined; elapsed = 0; members = []; $('status').textContent = 'Original design restored. Try another idea.'; refreshUI(); }
 
 function runSimulation(): void {
 
   if (running) { stopSimulation(); return; }
 
   if (!history.project.beams.length && !history.project.ropes.length) { notify('Add a beam or rope first.'); return; }
-  sound.activate();
+  sound.setSimulationActive(true);
 
   // Draw once per Serpentine run, independently of previous runs. Passing the
   // chosen side to the worker keeps the entire trajectory deterministic thereafter.
@@ -651,12 +651,13 @@ function runSimulation(): void {
 
     worker = new Worker(new URL('./simulation.worker.ts', import.meta.url), { type: 'module' });
 
-    worker.onmessage = ({ data }: MessageEvent<{ type: string; frame: Frame; members?: PhysicsMember[]; sounds?: SoundEvent[] }>) => {
+    worker.onmessage = ({ data }: MessageEvent<{ type: string; frame: Frame; members?: PhysicsMember[]; sounds?: SoundEvent[]; beds?: StressBed[] }>) => {
 
       if (frame) recycled = { positions: frame.positions.buffer as ArrayBuffer, stresses: frame.stresses.buffer as ArrayBuffer, broken: frame.broken.buffer as ArrayBuffer };
 
       frame = data.frame; if (data.members) members = data.members; busy = false; invalidate();
       if (!paused && data.sounds) for (const event of data.sounds) sound.playSimulation(event, history.project.size[0]);
+      if (!paused && data.beds) sound.updateBeds(data.beds, history.project.size[0]);
 
     };
 
@@ -671,7 +672,7 @@ function runSimulation(): void {
 
 }
 
-function togglePause(): void { if (!running) return; paused = !paused; elapsed = 0; refreshUI(); }
+function togglePause(): void { if (!running) return; paused = !paused; sound.setSimulationActive(!paused); elapsed = 0; refreshUI(); }
 
 function finishMember(): void {
 
