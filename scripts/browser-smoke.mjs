@@ -29,10 +29,22 @@ async function checkGuideLink(browser, base) {
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/manifest+json', '.png': 'image/png', '.wav': 'audio/wav', '.woff2': 'font/woff2' };
 let workerOverride;
 let workerUnavailable = false;
+let versionReply;
+let versionRequests = 0;
 const server = createServer(async (req, res) => {
   try {
     let pathname = new URL(req.url, 'http://localhost').pathname;
     if (pathname.startsWith('/frameLab/')) pathname = pathname.slice('/frameLab'.length);
+    if (pathname === '/version.json') {
+      versionRequests++;
+      if (versionReply) {
+        const reply = versionReply;
+        if (reply.delay) await new Promise(resolve => setTimeout(resolve, reply.delay));
+        res.writeHead(reply.status || 200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+        res.end(reply.body);
+        return;
+      }
+    }
     if (pathname === '/sw.js' && workerUnavailable) { res.writeHead(503).end(); return; }
     const file = resolve(root, '.' + (pathname === '/' ? '/index.html' : pathname));
     if (!file.startsWith(root + sep)) { res.writeHead(403).end(); return; }
@@ -116,6 +128,7 @@ try {
   console.log('Install: Safari and Chrome on iOS/iPadOS, Edge on Windows, and unsupported browsers verified.');
   await testInstallReminder(browser, base);
   await testVersionHighlight(browser, base);
+  await testVersionInformation(browser, base);
   await testPeriodicUpdates(browser, base);
   await testSolvers(browser, base);
   await testSoundControls(browser, base);
@@ -646,6 +659,8 @@ async function testSolvers(browser, base) {
     assert.deepEqual(await page.evaluate(() => window.solverStarts.at(-1)),{solver:'serpentine',serpentineFromRight:false});
     await page.locator('#pause').click(); await page.locator('#pause').click();
     assert.equal(await page.evaluate(() => window.solverDrawCount),1,'Pause/resume does not redraw the direction');
+    // Settings are disabled during simulation; return to editing before choosing another solver.
+    await page.locator('#back').click();
     await choose('original'); await start();
     assert.equal(await page.evaluate(() => window.solverStarts.at(-1).solver),'original');
     await page.locator('#back').click();
@@ -805,6 +820,136 @@ async function testVersionHighlight(browser, base) {
     await mobileContext.close();
   }
   console.log('Version highlight: first upgrade, same-version reload, second tab, five-second timeout, and mobile layouts verified.');
+}
+
+// Exercise metadata discovery through the controlling worker and both download policies.
+async function testVersionInformation(browser, base) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const panel = page.locator('#version-panel');
+  const guide = page.locator('#guide-dialog');
+  const latest = panel.locator('[data-latest]');
+  const reopen = async () => { await page.locator('.status-bar .version').click(); };
+  const waitLatest = text => page.waitForFunction(text => document.querySelector('#version-panel [data-latest]').textContent.includes(text), text);
+  try {
+    await page.goto(base);
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
+    await page.reload();
+    await page.waitForFunction(() => document.querySelector('#toast').textContent === 'Game files are ready offline.');
+    assert.equal(await page.evaluate(async () => (await caches.match(new URL('version.json', location.href))) === undefined), true, 'Version metadata is never precached');
+    await reopen();
+    await waitLatest('You are up to date');
+    assert.match(await panel.textContent(), new RegExp(`Current versionv${GAME_VERSION}`));
+    assert.equal(await panel.locator('[data-version-action]').isVisible(), false);
+    await page.keyboard.press('Escape');
+    assert.equal(await panel.isVisible(), false);
+    assert.equal(await page.locator('.status-bar .version').evaluate(el => el === document.activeElement), true);
+
+    // Delay a real network reply through the controlling worker and open Info
+    // during the request: both entry points must share one metadata fetch.
+    versionReply = { body: JSON.stringify({ version: GAME_VERSION }), delay: 700 };
+    const before = versionRequests;
+    await reopen();
+    assert.match(await latest.textContent(), /Checking/);
+    await page.locator('#clear-canvas').click();
+    assert.equal(await page.locator('#beam-count').textContent(), '0', 'Editing remains responsive during version discovery');
+    await page.locator('#undo').click();
+    await page.locator('#guide').click();
+    await page.waitForFunction(() => document.querySelector('#guide-dialog [data-latest]').textContent.includes('up to date'));
+    assert.equal(versionRequests - before, 1, 'Two entry points join the pending metadata check');
+    await page.locator('#close-guide').click();
+
+    for (const reply of [{ status: 503, body: 'Unavailable' }, { body: '{invalid' }, { body: '{"version":"wrong"}' }]) {
+      versionReply = reply;
+      await reopen();
+      await waitLatest('Could not check');
+    }
+    // Shorten only the application's metadata deadline, leaving browser/test
+    // timeouts and worker installation clocks untouched.
+    await page.evaluate(() => {
+      const nativeTimeout = window.setTimeout;
+      window.setTimeout = (callback, delay, ...args) => nativeTimeout(callback, delay === 10000 ? 100 : delay, ...args);
+    });
+    versionReply = { body: JSON.stringify({ version: GAME_VERSION }), delay: 500 };
+    await reopen();
+    await waitLatest('Could not check');
+    await context.setOffline(true);
+    versionReply = undefined;
+    await reopen();
+    await waitLatest('Could not check');
+    await page.locator('#run').click();
+    await page.waitForFunction(() => /[1-9]\d*\.\d S/.test(document.querySelector('#performance').textContent));
+    await page.locator('#back').click();
+    await context.setOffline(false);
+
+    versionReply = { body: '{"version":"99.0.0"}' };
+    await page.evaluate(() => {
+      const nativeUpdate = ServiceWorkerRegistration.prototype.update;
+      window.explicitUpdateCalls = 0;
+      ServiceWorkerRegistration.prototype.update = function () { window.explicitUpdateCalls++; return nativeUpdate.call(this); };
+      window.beforeVersionReload = true;
+    });
+    await reopen();
+    await waitLatest('99.0.0');
+    assert.equal(await page.evaluate(() => window.explicitUpdateCalls), 0, 'Status panel discovery does not start downloading');
+    workerUnavailable = true;
+    await panel.locator('[data-version-action]').click();
+    await page.waitForFunction(() => document.querySelector('#version-panel [data-download]').textContent.includes('could not be downloaded'));
+    assert.match(await latest.textContent(), /99\.0\.0/, 'Download failure preserves the discovered version');
+    workerUnavailable = false;
+    const originalWorker = await readFile(join(root, 'sw.js'), 'utf8');
+    workerOverride = originalWorker.replace(/bar-lab-static-[a-f0-9]{16}/, 'bar-lab-static-0000000000000020')
+      .replace('await cache.addAll', "throw new Error('Simulated precache failure'); await cache.addAll");
+    await panel.locator('[data-version-action]').click();
+    await page.waitForFunction(() => document.querySelector('#version-panel [data-download]').textContent.includes('could not be downloaded'));
+    assert.equal(await panel.locator('[data-version-action]').textContent(), 'Retry download', 'Failed worker installation can be retried');
+    workerOverride = originalWorker.replace(/bar-lab-static-[a-f0-9]{16}/, 'bar-lab-static-0000000000000021');
+    await panel.locator('[data-version-action]').click();
+    await page.waitForFunction(() => document.querySelector('#version-panel [data-version-action]').textContent === 'Reload');
+    assert.equal(await page.evaluate(() => window.beforeVersionReload), true, 'Download does not reload automatically');
+    const beamCount = await page.locator('#beam-count').textContent();
+    await Promise.all([page.waitForEvent('load'), panel.locator('[data-version-action]').click()]);
+    assert.equal(await page.locator('#beam-count').textContent(), beamCount, 'Manual update preserves the project');
+    await page.waitForFunction(() => document.querySelector('#toast').textContent === 'Game files are ready offline.');
+
+    workerOverride = originalWorker.replace(/bar-lab-static-[a-f0-9]{16}/, 'bar-lab-static-0000000000000022');
+    await page.evaluate(() => { window.beforeInfoReload = true; });
+    await page.locator('#guide').click();
+    await page.waitForFunction(() => document.querySelector('#guide-dialog [data-version-action]').textContent === 'Reload');
+    assert.match(await guide.locator('[data-latest]').textContent(), /99\.0\.0/);
+    assert.equal(await page.evaluate(() => window.beforeInfoReload), true, 'Info automatically downloads but waits for Reload');
+    await mkdir(resolve('screenshots'), { recursive: true });
+    await page.screenshot({ path: resolve('screenshots/version-info.png') });
+    await Promise.all([page.waitForEvent('load'), guide.locator('[data-version-action]').click()]);
+    assert.equal(await page.locator('#beam-count').textContent(), beamCount);
+    assert.deepEqual(errors, []);
+    console.log('Version information: fresh metadata, shared checks, failures, timeout, offline editing, manual download, automatic Info download and explicit reload verified.');
+  } finally {
+    versionReply = undefined;
+    workerUnavailable = false;
+    workerOverride = undefined;
+    await context.close();
+  }
+  // The same relative metadata URL must work from a subdirectory deployment;
+  // use the narrowest portrait and short landscape viewports to bound the panel.
+  for (const viewport of [{ width: 320, height: 640 }, { width: 844, height: 390 }]) {
+    const mobile = await browser.newContext({ viewport });
+    try {
+      const tab = await mobile.newPage();
+      await tab.goto(`${base}/frameLab/`);
+      await tab.locator('.status-bar .version').focus();
+      await tab.keyboard.press('Enter');
+      await tab.waitForFunction(() => document.querySelector('#version-panel [data-latest]').textContent.includes('up to date'));
+      const bounds = await tab.locator('#version-panel').boundingBox();
+      assert.ok(bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= viewport.width && bounds.y + bounds.height <= viewport.height);
+      await tab.screenshot({ path: resolve(`screenshots/version-panel-${viewport.width}.png`) });
+      await tab.locator('#version-panel button[aria-label="Close version information"]').click();
+      assert.equal(await tab.locator('#version-panel').isVisible(), false);
+    } finally { await mobile.close(); }
+  }
 }
 
 // Intercept only the update polling timer and count worker update calls while advancing ten-minute

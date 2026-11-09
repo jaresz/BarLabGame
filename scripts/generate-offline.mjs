@@ -3,12 +3,15 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { resolve, relative, join, sep } from 'node:path';
 
 const root = resolve('public_html');
+const model = await readFile(resolve('src/model.ts'), 'utf8');
+const version = model.match(/export const GAME_VERSION = '([^']+)'/)[1];
+await writeFile(join(root, 'version.json'), JSON.stringify({ version }));
 const files = [];
 async function collect(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     const file = join(dir, entry.name);
     if (entry.isDirectory()) await collect(file);
-    else if (entry.isFile() && entry.name !== 'sw.js') files.push(relative(root, file).split(sep).join('/'));
+    else if (entry.isFile() && entry.name !== 'sw.js' && entry.name !== 'version.json') files.push(relative(root, file).split(sep).join('/'));
   }
 }
 await collect(root);

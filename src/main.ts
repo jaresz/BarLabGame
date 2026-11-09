@@ -1,3 +1,4 @@
+import { setupUpdates } from './updates';
 import { toCentered } from './coordinates';
 
 import './style.css';
@@ -247,7 +248,7 @@ $('app').innerHTML = `
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-</section><div class="status-bar"><strong id="total-cost" class="cost-total">Cost: 0 cr</strong><div class="status-message"><span class="status-dot"></span><span id="status">${COPYRIGHT}</span></div><div class="status-right"><span id="performance"></span><span id="board-size">32 × 18 GRID</span><button id="install-app" type="button" title="Install Bar Lab on this device">Install app</button><span class="version">v${GAME_VERSION}</span></div></div></main>
+</section><div class="status-bar"><strong id="total-cost" class="cost-total">Cost: 0 cr</strong><div class="status-message"><span class="status-dot"></span><span id="status">${COPYRIGHT}</span></div><div class="status-right"><span id="performance"></span><span id="board-size">32 × 18 GRID</span><button id="install-app" type="button" title="Install Bar Lab on this device">Install app</button><button type="button" class="version" aria-label="App version information">v${GAME_VERSION}</button></div></div></main>
 
 <dialog id="examples-dialog" class="examples-dialog" aria-labelledby="examples-title"><div class="dialog-heading"><h2 id="examples-title">Load an example</h2><button id="close-examples" class="icon-button" aria-label="Close examples">${icon('close')}</button></div><div class="examples-grid">${exampleChoices.map(name => `<button class="example-card" data-example="${name}">${exampleThumbnail(name)}<span>${exampleNames[name]}</span></button>`).join('')}</div></dialog>
 
@@ -290,9 +291,11 @@ try {
 const hideInstallReminder = () => { installReminder.hidden = true; };
 const positionInstallReminder = () => {
   if (installReminder.hidden) return;
+  // The reminder sits above the version panel, whose bottom edge follows the status bar.
+  const versionPanel = document.querySelector<HTMLElement>('#version-panel');
   const anchor = installButton.getBoundingClientRect();
   const updateButton = document.querySelector<HTMLButtonElement>('#update-app');
-  const top = updateButton && !updateButton.hidden ? Math.min(anchor.top, updateButton.getBoundingClientRect().top) : anchor.top;
+  const top = versionPanel && !versionPanel.hidden ? Math.min(anchor.top, versionPanel.getBoundingClientRect().top) : updateButton && !updateButton.hidden ? Math.min(anchor.top, updateButton.getBoundingClientRect().top) : anchor.top;
   const width = installReminder.offsetWidth;
   installReminder.style.left = `${Math.max(8, Math.min(innerWidth - width - 8, anchor.right - width))}px`;
   installReminder.style.bottom = `${Math.max(8, innerHeight - top + 9)}px`;
@@ -1508,69 +1511,4 @@ if (shareLinkError) {
   dialog.showModal();
 }
 
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  const updateButton = document.createElement('button');
-  updateButton.id = 'update-app';
-  updateButton.className = 'primary-button';
-  updateButton.textContent = 'Update ready · Reload';
-  updateButton.hidden = true;
-  document.body.append(updateButton);
-  new MutationObserver(positionInstallReminder).observe(updateButton, { attributes: true, attributeFilter: ['hidden'] });
-  let reloadForUpdate = false;
-  let updateTimeout: ReturnType<typeof setTimeout> | undefined;
-  const hadController = !!navigator.serviceWorker.controller;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloadForUpdate) {
-      clearTimeout(updateTimeout);
-      updateButton.hidden = true;
-      location.reload();
-    } else if (hadController) {
-      updateButton.textContent = 'Update active · Reload';
-      updateButton.hidden = false;
-    }
-  });
-  navigator.serviceWorker.register(new URL('sw.js', document.baseURI), { scope: new URL('./', document.baseURI).pathname, updateViaCache: 'none' })
-    .then(registration => {
-      const showUpdate = () => {
-        if (registration.waiting) {
-          updateButton.textContent = 'Update ready · Reload';
-          updateButton.hidden = false;
-        }
-      };
-      showUpdate();
-      registration.addEventListener('updatefound', () => {
-        const installing = registration.installing;
-        installing?.addEventListener('statechange', () => {
-          if (installing.state === 'installed') showUpdate();
-        });
-      });
-      let checkingForUpdate = false;
-      setInterval(async () => {
-        if (checkingForUpdate) return;
-        checkingForUpdate = true;
-        try {
-          await registration.update();
-        } catch { /* Updates are optional while offline; retry on the next interval. */ }
-        finally { checkingForUpdate = false; }
-      }, 10 * 60 * 1000);
-      updateButton.onclick = () => {
-        const waiting = registration.waiting;
-        updateButton.hidden = true;
-        if (!waiting) { location.reload(); return; }
-        reloadForUpdate = true;
-        waiting.postMessage({ type: 'SKIP_WAITING' });
-        updateTimeout = setTimeout(() => {
-          if (!reloadForUpdate) return;
-          reloadForUpdate = false;
-          if (waiting.state === 'activated' || !registration.waiting) location.reload();
-          else {
-            showUpdate();
-            notify('Update could not finish. Check your connection and try again.');
-          }
-        }, 8000);
-      };
-      navigator.serviceWorker.ready.then(() => notify('Game files are ready offline.'));
-    })
-    .catch(() => notify('Offline setup failed. Reload while connected to try again.'));
-}
-
+setupUpdates(notify, saveProject, positionInstallReminder);

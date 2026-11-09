@@ -30,6 +30,7 @@ npm run build
 [[ -d "$build_dir/sounds" ]] || { echo 'Build output does not contain public_html/sounds; deployment stopped.' >&2; exit 1; }
 [[ -f "$build_dir/manifest.json" ]] || { echo 'Build output does not contain public_html/manifest.json; deployment stopped.' >&2; exit 1; }
 [[ -f "$build_dir/sw.js" ]] || { echo 'Build output does not contain public_html/sw.js; deployment stopped.' >&2; exit 1; }
+[[ -f "$build_dir/version.json" ]] || { echo 'Build output does not contain public_html/version.json; deployment stopped.' >&2; exit 1; }
 
 shopt -s nullglob
 asset_files=("$build_dir/assets/"*)
@@ -49,6 +50,8 @@ printf 'Uploading application assets, icons, and sounds to %s\n' "$destination"
 scp -r -P "$ssh_port" "$build_dir/assets" "$build_dir/icons" "$build_dir/sounds" "$destination"
 scp -P "$ssh_port" "$build_dir/manifest.json" "$build_dir/index.html" "$destination"
 ssh -p "$ssh_port" "$remote_host" "chmod -R a+rX '$remote_assets' '$remote_icons' '$remote_sounds'"
-# Upload the worker last so clients only discover the new version after its assets are present.
+# Upload the worker after assets so background checks cannot install an incomplete release.
 scp -P "$ssh_port" "$build_dir/sw.js" "$destination"
+# Announce the release only after its files and service worker are uploaded.
+scp -P "$ssh_port" "$build_dir/version.json" "$destination"
 echo 'Deployment completed.'

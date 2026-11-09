@@ -57,7 +57,8 @@ try {
     $manifest = Join-Path $buildDir 'manifest.json'
     $index = Join-Path $buildDir 'index.html'
     $worker = Join-Path $buildDir 'sw.js'
-    foreach ($file in @($iconDir, $soundDir, $manifest, $worker)) {
+    $versionFile = Join-Path $buildDir 'version.json'
+    foreach ($file in @($iconDir, $soundDir, $manifest, $worker, $versionFile)) {
         if (-not (Test-Path -LiteralPath $file)) { throw "Build output is missing $file; deployment stopped." }
     }
     if (@(Get-ChildItem -LiteralPath $soundDir -File -Filter '*.wav').Count -eq 0) {
@@ -76,6 +77,10 @@ try {
 
     & scp -P $sshPort $worker $destination
     if ($LASTEXITCODE -ne 0) { throw 'Service worker upload failed.' }
+
+    # Announce the release only after its files and service worker are uploaded.
+    & scp -P $sshPort $versionFile $destination
+    if ($LASTEXITCODE -ne 0) { throw 'Version metadata upload failed.' }
 
     Write-Host 'Deployment completed.'
 }
