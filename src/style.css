@@ -213,3 +213,6 @@ body:has(#version-panel:not([hidden])) #update-app,body:has(#guide-dialog[open])
 .canvas-settings{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
 .canvas-settings h3{margin:0}
 @media(max-height:500px){#settings-dialog{padding:12px}.solver-options{margin-top:9px}.canvas-settings{margin-top:10px;padding-top:10px}}
+
+/* Match the header mark to the installed app icon without changing other orange accents. */
+.brand-symbol{background:#17454b;color:#fff5df}

@@ -139,7 +139,8 @@ function checksumSharePayload(payload: string): string {
 
 const paths: Record<string, string> = {
 
-  logo: '<path d="M3 17h18M5 17V7l7 10 7-10v10M5 7h14M5 7l7-3 7 3"/>',
+  // The compact tower keeps the icon's tapered legs, platforms, and open arch readable in the header.
+  logo: '<path d="M12 2v2M12 4 4.5 21M12 4 19.5 21M8.1 21c.6-2.6 1.9-4 3.9-4s3.3 1.4 3.9 4M9.4 9h5.2M7.6 13.5h8.8M5.8 17h12.4M9.4 9l7 4.5m-1.8-4.5-7 4.5"/>',
 
   beam: '<path d="m5 19 14-14M3 17l4 4M17 3l4 4"/><circle cx="5" cy="19" r="1"/><circle cx="19" cy="5" r="1"/>',
 
