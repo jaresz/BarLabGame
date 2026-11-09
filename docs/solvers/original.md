@@ -86,4 +86,6 @@ After 5 s, **C(t)** has ΔxC ≈ −0.519741; after 10 s, it has ΔxC ≈ −5.9
 
 Increasing the iteration count changes the effective response of the structure. Neither the direction nor the time of collapse should be treated as a precise stability-analysis result. See the [comparison and measurements](README.md#comparison-of-simulated-results).
 
+For a measured comparison of braced and unbraced columns, see [Stability, Symmetry, and Iteration Count](stability.md).
+
 Implementation: [World, solveDistance, solveAngle, step, and measureDamage](../../src/physics.ts). The Basic XPBD trajectory regression test retains a reference from version 0.4.53 in [physics.test.ts](../../tests/physics.test.ts).

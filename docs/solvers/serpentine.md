@@ -84,6 +84,8 @@ A right-start run is not necessarily the exact mirror image of a left-start run.
 
 ## Animation
 
+For a measured comparison of braced and unbraced columns, including the effect of 12 versus 120 iterations, see [Stability, Symmetry, and Iteration Count](stability.md).
+
 ![Serpentine simulations with left and right starting sides](../images/solvers/serpentine.gif)
 
 The left and right panels are separate runs of the same project, with their starting sides explicitly set for comparison. The app randomly chooses one of these variants for a run.

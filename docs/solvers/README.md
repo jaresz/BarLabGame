@@ -9,6 +9,10 @@ Bar Lab offers two simulation solvers. [Basic XPBD Solver](original.md) preserve
 
 Both use the same particle model, fixed time step, material profiles, and local XPBD corrections.
 
+## Stability and exact symmetry
+
+See [Stability, Symmetry, and Iteration Count](stability.md) for an illustrated comparison of a braced column that leans and an unbraced column that appears stable. The measured example separates incomplete solver convergence from exact vertical symmetry hiding sensitivity to a lateral disturbance.
+
 ## Shared example and labels
 
 ![Tower with nodes A–E and beams b1–b4](../images/solvers/tower.png)
