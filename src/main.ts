@@ -1403,7 +1403,35 @@ $('load').onclick = () => { try { const warning = projectChecksumWarning(textare
 
 const guideDialog = $<HTMLDialogElement>('guide-dialog'); $('guide').onclick = () => guideDialog.showModal(); $('close-guide').onclick = () => guideDialog.close();
 
-for (const dialog of [textDialog, guideDialog, settingsDialog, examplesDialog]) dialog.addEventListener('click', e => { if (e.target === dialog) { const r = dialog.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close(); } });
+// Apply the same backdrop gesture rules to every editor dialog. A click can target
+// the dialog even when it began in a child input and ended outside during selection.
+for (const dialog of [textDialog, guideDialog, settingsDialog, examplesDialog]) {
+  let backdropPointer: number | null = null;
+  let backdropClick = false;
+  const outside = (event: MouseEvent) => {
+    // Pointer coordinates and dialog box edges are both measured in viewport pixels.
+    const bounds = dialog.getBoundingClientRect();
+    return event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom);
+  };
+  const resetGesture = () => { backdropPointer = null; backdropClick = false; };
+  dialog.addEventListener('pointerdown', event => {
+    resetGesture();
+    if (event.isPrimary && event.button === 0 && outside(event)) backdropPointer = event.pointerId;
+  });
+  dialog.addEventListener('pointerup', event => {
+    // Require both ends of the same primary gesture to be on the backdrop;
+    // leave native text selection untouched and let the subsequent click dismiss.
+    backdropClick = event.pointerId === backdropPointer && event.button === 0 && outside(event);
+    backdropPointer = null;
+  });
+  dialog.addEventListener('click', event => {
+    const dismiss = backdropClick && event.button === 0 && outside(event);
+    resetGesture();
+    if (dismiss) dialog.close();
+  });
+  dialog.addEventListener('pointercancel', resetGesture);
+  dialog.addEventListener('close', resetGesture);
+}
 
 document.addEventListener('keydown', e => {
 

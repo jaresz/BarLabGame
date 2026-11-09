@@ -9,6 +9,59 @@ import { createServer as createViteServer } from 'vite';
 const GAME_VERSION = (await readFile(new URL('../src/model.ts', import.meta.url), 'utf8')).match(/export const GAME_VERSION = '([^']+)'/)[1];
 
 const root = resolve('public_html');
+async function testDialogBackdropGestures(browser, base) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  try {
+    const page = await context.newPage();
+    await page.goto(base, { waitUntil: 'load' });
+    // Exercise every dialog sharing the backdrop handler with real mouse events.
+    for (const [opener, id, closer, content] of [
+      ['settings', 'settings-dialog', 'close-settings', '#canvas-width'],
+      ['guide', 'guide-dialog', 'close-guide', ':scope > p'],
+      ['project-text', 'text-dialog', 'close-text', '#project-json'],
+      ['examples', 'examples-dialog', 'close-examples', 'h2'],
+    ]) {
+      const dialog = page.locator(`#${id}`);
+      const isOpen = () => dialog.evaluate(el => el.open);
+      const open = () => page.locator(`#${opener}`).click();
+      const drag = async (from, to) => {
+        await page.mouse.move(from.x, from.y);
+        await page.mouse.down();
+        await page.mouse.move(to.x, to.y, { steps: 8 });
+        await page.mouse.up();
+      };
+      await open();
+      const box = await dialog.boundingBox();
+      const text = await dialog.locator(content).first().boundingBox();
+      // Start over editable/selectable text and release left of the dialog box.
+      // All coordinates are viewport pixels; stay clear of number-input spinners.
+      const inside = { x: text.x + 26, y: text.y + Math.min(12, text.height / 2) };
+      const outside = { x: box.x - 12, y: inside.y };
+      await drag(inside, outside);
+      assert.equal(await isOpen(), true, `${id}: selection ending outside preserves the dialog`);
+      if (id === 'guide-dialog') assert.ok(await page.evaluate(() => window.getSelection().toString().length > 0), 'Info drag selects text');
+      if (id === 'settings-dialog') {
+        await page.keyboard.insertText('24');
+        assert.equal(await page.locator('#canvas-width').inputValue(), '24', 'Selected width can be replaced after releasing outside');
+      }
+      await page.mouse.click(box.x + 8, box.y + 8);
+      assert.equal(await isOpen(), true, `${id}: clicking dialog padding preserves the dialog`);
+      await drag(outside, { x: box.x + 8, y: inside.y });
+      assert.equal(await isOpen(), true, `${id}: backdrop-to-interior drag preserves the dialog`);
+      await page.mouse.click(outside.x, outside.y);
+      assert.equal(await isOpen(), false, `${id}: a fresh backdrop click closes the dialog`);
+      await open();
+      await page.locator(`#${closer}`).click();
+      assert.equal(await isOpen(), false, `${id}: close button works`);
+      await open();
+      await page.keyboard.press('Escape');
+      assert.equal(await isOpen(), false, `${id}: Escape works after reopening`);
+    }
+    console.log('Dialogs: text selection ending outside stays open; backdrop clicks, close buttons and Escape work.');
+  } finally {
+    await context.close();
+  }
+}
 async function checkGuideLink(browser, base) {
   const context = await browser.newContext();
   try {
@@ -91,6 +144,7 @@ try {
     await context.close();
   }
   console.log('Deployment: page, styles and simulation work under / and /frameLab/.');
+  await testDialogBackdropGestures(browser, base);
   await checkGuideLink(browser, base);
   // The dev server has its own history fallback, so verify its guide route separately.
   const vite = await createViteServer({ server: { host: '127.0.0.1', port: 0 } });

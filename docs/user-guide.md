@@ -4,7 +4,7 @@ Play the current version at [barlab.jakubreiter.pl](https://barlab.jakubreiter.p
 
 ![Bar Lab running in a desktop browser](images/frame-lab-desktop.png)
 
-![Bar Lab running in a mobile browser](images/frame-lab-mobile.png)
+![Bar Lab running in a mobile browser](images/frame-lab-mobile-landscape.png)
 
 ## The workspace
 
