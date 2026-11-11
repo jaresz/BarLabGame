@@ -42,13 +42,13 @@ This is an illustrative uniform setting, not a recommendation to tension every c
 
 ## Editor option (0.7.0)
 
-Settings contains **Rope prestrain (experimental)** between solver selection and canvas size. **Enable rope prestrain** starts unchecked. **Initial stretch** offers 0.1%, 0.25%, 0.5% and 1%, with 0.5% selected and the control disabled until enabled. Changes apply to the next Run immediately, independently of Apply size.
+Settings contains **Rope prestrain (experimental)** between solver selection and canvas size. Projects without a prestrain value start unchecked. **Initial stretch** offers 0.1%, 0.25%, 0.5%, 1%, 2%, 3%, 4% and 5%, with 0.5% selected and the control disabled until enabled. Changes apply to the next Run immediately, independently of Apply size.
 
 Each enabled start maps the current project's ropes to a fresh uniform `ropePrestrain` array. Both profiles receive the same strain; the existing Heavy rigidity produces four times the initial force. Turning the option off omits the array entirely. Beam-only projects pass an empty array when enabled, and empty projects still cannot start. There are no example-specific tension rules.
 
-The setting survives editing, example loading, import, clear, resize, Undo/Redo and Run/Back within the same page. Disabling it preserves the selected amount, while reloading resets it to off and 0.5%. It is neither persisted nor part of project history or format 4. Settings stays disabled during simulation and pause. The active percentage remains in the Run tooltip and in simulation status, including pause and fracture messages. A compact drawing-area status label remains visible on small/touch layouts where the long footer message is hidden.
+When enabled, the selected amount is stored as optional `metadata.ropePrestrain` in format 4 project JSON, as a fraction (0.005 represents 0.5%). Importing that value enables prestrain; unchecking the control removes it from project JSON. The setting participates in project history and autosave. Projects without the field load disabled with 0.5% selected. Settings stays disabled during simulation and pause. The active percentage remains in the Run tooltip and in simulation status, including pause and fracture messages. A compact drawing-area status label remains visible on small/touch layouts where the long footer message is hidden.
 
-The physics model below and the recorded 0.6.0 measurements have not changed. The browser tests use real worker replies to verify initial stress for all four settings in both solvers, mixed profiles, omission when off, empty and beam-only projects, session lifetime, unchanged exports/costs/history and responsive Settings on desktop and portrait/landscape touch screens.
+The physics model below and the recorded 0.6.0 measurements have not changed. The browser tests use real worker replies to verify initial stress for all eight settings in both solvers, mixed profiles, import/export persistence, omission when off, empty and beam-only projects, history and responsive Settings on desktop and portrait/landscape touch screens.
 
 ## Experiment and acceptance
 

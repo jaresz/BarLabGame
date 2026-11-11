@@ -18,9 +18,10 @@ export const ROPE_PROFILES = {
 } as const;
 export type JointType = 'x' | 'o';
 export type Material = 'beam' | 'rope';
-export interface Project { size: Point; beams: Beam[]; ropes: Rope[]; joints: Record<string, JointType>; anchors: Record<string, JointType> }
+export interface Project { size: Point; beams: Beam[]; ropes: Rope[]; joints: Record<string, JointType>; anchors: Record<string, JointType>; ropePrestrain?: number }
+export const ROPE_PRESTRAIN_LEVELS = [0.001, 0.0025, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05] as const;
 // Bump this after every application change; the status bar and exported project metadata use it.
-export const GAME_VERSION = '0.8.1';
+export const GAME_VERSION = '0.9.0';
 export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 10, rope: 20 };
 
 /** Resolve a snapped drawing target without changing import/member validation. */
@@ -264,7 +265,8 @@ export function exportProject(project: Project): string {
   }
   const lines = Object.entries(objects).map(([k, rows]) => `    "${k}": [${rows.map(r => JSON.stringify(r)).join(', ')}]`);
   const checksum = checksumObjects(objects);
-  return `{\n  "metadata": {\n    "size": ${JSON.stringify(p.size)},\n    "gameVersion": "${GAME_VERSION}",\n    "formatVersion": 4\n  },\n  "objects": {${lines.length ? '\n' + lines.join(',\n') + '\n  ' : ''}},\n  "checksum": "${checksum}"\n}`;
+  const prestrain = p.ropePrestrain === undefined ? '' : `,\n    "ropePrestrain": ${p.ropePrestrain}`;
+  return `{\n  "metadata": {\n    "size": ${JSON.stringify(p.size)},\n    "gameVersion": "${GAME_VERSION}",\n    "formatVersion": 4${prestrain}\n  },\n  "objects": {${lines.length ? '\n' + lines.join(',\n') + '\n  ' : ''}},\n  "checksum": "${checksum}"\n}`;
 }
 
 function canonicalJson(value: unknown): string {
@@ -308,14 +310,16 @@ export function importProjectWithWarnings(text: string): { project: Project; war
   const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
   if (!object(data) || !object(data.metadata) || !object(data.objects)) throw new Error('Use the new project format: metadata and objects sections are required. Older formats are not supported.');
   const meta = data.metadata, objects = data.objects;
-  for (const [obj, allowed] of [[data, ['metadata', 'objects', 'checksum']], [meta, ['size', 'gameVersion', 'formatVersion']], [objects, ['b', 'r', 'j', 'a']]] as [Record<string, unknown>, string[]][]) {
+  for (const [obj, allowed] of [[data, ['metadata', 'objects', 'checksum']], [meta, ['size', 'gameVersion', 'formatVersion', 'ropePrestrain']], [objects, ['b', 'r', 'j', 'a']]] as [Record<string, unknown>, string[]][]) {
     for (const k of Object.keys(obj)) if (!allowed.includes(k)) throw new Error(`Unknown project field: ${k}.`);
   }
   if (meta.formatVersion !== 3 && meta.formatVersion !== 4) throw new Error('Unsupported formatVersion. This game supports versions 3 and 4.');
   if (typeof meta.gameVersion !== 'string' || !meta.gameVersion.length) throw new Error('gameVersion must be a nonempty string.');
+  if (meta.ropePrestrain !== undefined && (typeof meta.ropePrestrain !== 'number' || !ROPE_PRESTRAIN_LEVELS.some(value => value === meta.ropePrestrain))) throw new Error(`metadata.ropePrestrain must be one of: ${ROPE_PRESTRAIN_LEVELS.join(', ')}.`);
   const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v);
   if (!Array.isArray(meta.size) || meta.size.length !== 2 || !meta.size.every(integer) || meta.size[0] < 12 || meta.size[0] > 64 || meta.size[1] < 8 || meta.size[1] > 40 || meta.size.some(v => v % 2)) throw new Error('Board size must be even: width 12–64, height 8–40.');
   const p = emptyProject(); p.size = meta.size as Point;
+  if (typeof meta.ropePrestrain === 'number') p.ropePrestrain = meta.ropePrestrain;
   const readPoint = (x: unknown, y: unknown): Point => {
     if (!integer(x) || !integer(y)) throw new Error('Coordinates must be integers on the centered grid.');
     return fromCentered([x, y], p.size);

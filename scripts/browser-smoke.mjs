@@ -9,11 +9,17 @@ import { createServer as createViteServer } from 'vite';
 import { tsImport } from 'tsx/esm/api';
 
 // Load the same TypeScript constants as the app without changing how this JS suite is launched.
-const { GAME_VERSION, MAX_LENGTH } = await tsImport('../src/model.ts', import.meta.url);
+const { GAME_VERSION, MAX_LENGTH, exportProject, importProject } = await tsImport('../src/model.ts', import.meta.url);
 const { World } = await tsImport('../src/physics.ts', import.meta.url);
 const prestrainValidationProject = { size: [12, 12], beams: [], ropes: [{ endpoints: [-2, 0, 2, 0], profile: 's' }], joints: {}, anchors: {} };
 assert.equal(new World(prestrainValidationProject, { ropePrestrain: [0.05] }).options.ropePrestrain[0], 0.05, '5% prestrain is accepted');
 assert.throws(() => new World(prestrainValidationProject, { ropePrestrain: [0.0501] }), /between 0 and 0\.05 \(0–5%\)/, 'prestrain above 5% is rejected');
+const prestrainExportProject = { ...prestrainValidationProject, ropes: [{ endpoints: [4, 6, 8, 6], profile: 's' }] };
+const prestrainJson = JSON.parse(exportProject({ ...prestrainExportProject, ropePrestrain: 0.03 }));
+assert.equal(prestrainJson.metadata.ropePrestrain, 0.03, 'enabled prestrain is exported in project metadata');
+assert.equal(importProject(JSON.stringify(prestrainJson)).ropePrestrain, 0.03, 'project import restores prestrain');
+assert.equal(Object.hasOwn(JSON.parse(exportProject(prestrainExportProject)).metadata, 'ropePrestrain'), false, 'disabled prestrain is omitted');
+for (const value of [0, 0.015, 0.051, '0.02']) assert.throws(() => importProject(JSON.stringify({ ...prestrainJson, metadata: { ...prestrainJson.metadata, ropePrestrain: value } })), /metadata\.ropePrestrain/, `unsupported prestrain ${value} is rejected`);
 
 const root = resolve('public_html');
 async function testDialogBackdropGestures(browser, base) {
@@ -875,7 +881,7 @@ async function testSolvers(browser, base) {
   console.log('Solvers: settings and keyboard access, Serpentine default, direct Run, real workers, independent direction draws and reload reset verified.');
 }
 
-// Exercise session-only prestrain through accessible controls and actual worker
+// Exercise project-persisted prestrain through accessible controls and actual worker
 // replies. Capturing ready frames verifies the option reaches the physics model,
 // rather than checking only an outgoing message or a cosmetic switch.
 async function testPrestrainSettings(browser, base) {
@@ -931,10 +937,13 @@ async function testPrestrainSettings(browser, base) {
       };
       const openSettings = async () => { await settings.click(); assert.equal(await dialog.evaluate(el=>el.open),true); };
       const closeSettings = async () => { await page.keyboard.press('Escape'); assert.equal(await dialog.evaluate(el=>el.open),false); };
-      const starter = JSON.parse(await readProject());
+      await load(mixed);
+      await load({ ...mixed, metadata: { ...mixed.metadata, ropePrestrain: 0.03 } });
+      await openSettings(); assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.03'); await closeSettings();
+      const importedRun = await start(); assert.deepEqual(importedRun.start.options.ropePrestrain,[0.03,0.03]); await page.locator('#back').click();
       await load(mixed);
       const text = await readProject(), cost = await page.locator('#total-cost').textContent();
-      const saved = await page.evaluate(()=>localStorage.getItem('bar-lab:last-project:v1'));
+      assert.equal(JSON.parse(text).metadata.ropePrestrain, undefined, 'projects without a prestrain field remain disabled');
       await openSettings();
       assert.equal(await enabled.isChecked(),false); assert.equal(await amount.isDisabled(),true);
       assert.equal(await amount.inputValue(),'0.005');
@@ -946,14 +955,16 @@ async function testPrestrainSettings(browser, base) {
       // Focusing controls below the new section must scroll them into the modal,
       // including on a short landscape screen, without creating horizontal overflow.
       assert.equal(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+      const startsBeforeSettings = await page.evaluate(()=>window.prestrainStarts.length);
       await enabled.focus(); await page.keyboard.press('Space');
       assert.equal(await enabled.isChecked(),true); assert.equal(await amount.isEnabled(),true);
-      assert.equal(await page.evaluate(()=>window.prestrainStarts.length),0,'Space in Settings must not run');
+      assert.equal(await page.evaluate(()=>window.prestrainStarts.length),startsBeforeSettings,'Space in Settings must not run');
       await amount.focus(); await page.keyboard.press('ArrowDown');
       assert.equal(await amount.inputValue(),'0.01','The native select supports keyboard changes');
       await closeSettings();
-      assert.equal(await readProject(),text); assert.equal(await page.locator('#total-cost').textContent(),cost);
-      assert.equal(await page.evaluate(()=>localStorage.getItem('bar-lab:last-project:v1')),saved,'Settings do not autosave the project');
+      assert.equal(JSON.parse(await readProject()).metadata.ropePrestrain,0.01,'enabled stretch is stored in project metadata');
+      assert.equal(await page.locator('#total-cost').textContent(),cost);
+      assert.equal(JSON.parse(await page.evaluate(()=>localStorage.getItem('bar-lab:last-project:v1'))).metadata.ropePrestrain,0.01,'enabled stretch is autosaved');
       for (const [index,value] of ['0.001','0.0025','0.005','0.01','0.02','0.03','0.04','0.05'].entries()) {
         await openSettings();
         const solver = index%2 ? 'original' : 'serpentine';
@@ -982,17 +993,23 @@ async function testPrestrainSettings(browser, base) {
         if (mobile) assert.equal(await page.locator('#prestrain-status').isVisible(),true,'Prestrain stays visible while paused');
         await page.locator('#pause').click(); await page.locator('#back').click();
       }
-      // Preference changes and Run/Back add no history entries. One Undo must
-      // undo the project import, and Redo must restore it with the setting intact.
-      await page.locator('#undo').click(); assert.deepEqual(JSON.parse(await readProject()).objects,starter.objects);
-      await page.locator('#redo').click(); assert.equal(await readProject(),text);
+      // The selected amount is project history: Undo and Redo restore the prior values.
+      await page.locator('#undo').click(); assert.equal(JSON.parse(await readProject()).metadata.ropePrestrain,0.04);
+      await page.locator('#redo').click(); assert.equal(JSON.parse(await readProject()).metadata.ropePrestrain,0.05);
       await openSettings(); assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.05');
       await page.locator('#canvas-width').fill('20'); await page.locator('#canvas-height').fill('12');
       await page.locator('#canvas-size-form button[type="submit"]').click();
       assert.match(await page.locator('#board-size').textContent(),/^20 . 12 GRID$/);
-      await page.locator('#undo').click(); assert.equal(await readProject(),text);
+      await page.locator('#undo').click();
+      const resizedUndo = JSON.parse(await readProject());
+      assert.deepEqual(resizedUndo.objects,JSON.parse(text).objects); assert.equal(resizedUndo.metadata.ropePrestrain,0.05);
       await openSettings(); assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.05');
       await enabled.uncheck(); assert.equal(await amount.isDisabled(),true); await closeSettings();
+      assert.equal(JSON.parse(await readProject()).metadata.ropePrestrain,undefined,'unchecking removes prestrain from exported JSON');
+      await page.locator('#undo').click(); await openSettings();
+      assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.05','Undo restores enabled prestrain');
+      await closeSettings(); await page.locator('#redo').click(); await openSettings();
+      assert.equal(await enabled.isChecked(),false,'Redo restores the disabled state'); await closeSettings();
       assert.doesNotMatch(await run.getAttribute('title'),/Rope prestrain/);
       const off = await start();
       assert.equal(Object.hasOwn(off.start.options,'ropePrestrain'),false);
@@ -1000,17 +1017,18 @@ async function testPrestrainSettings(browser, base) {
       await page.locator('#back').click();
       await openSettings(); await enabled.check(); assert.equal(await amount.inputValue(),'0.05'); await closeSettings();
       await page.locator('#examples').click(); await page.locator('[data-example="seriWawasan"]').click();
-      const gallery = await start(); assert.deepEqual(gallery.start.options.ropePrestrain,Array(5).fill(.05));
+      const gallery = await start(); assert.equal(Object.hasOwn(gallery.start.options,'ropePrestrain'),false,'examples without prestrain stay unstrained');
       await page.locator('#back').click();
-      await load({...mixed,objects:{r:[[-8,1,-4,1,'s']]}});
+      await load({...mixed,metadata:{...mixed.metadata,ropePrestrain:.05},objects:{r:[[-8,1,-4,1,'s']]}});
       const single = await start(); assert.deepEqual(single.start.options.ropePrestrain,[.05]); await page.locator('#back').click();
       await page.locator('#clear-canvas').click();
       const count = await page.evaluate(()=>window.prestrainStarts.length); await run.click();
       assert.equal(await page.evaluate(()=>window.prestrainStarts.length),count,'Empty projects do not run');
       await page.locator('#undo').click();
-      await load({...mixed,objects:{b:mixed.objects.b}});
+      await load({...mixed,metadata:{...mixed.metadata,ropePrestrain:.05},objects:{b:mixed.objects.b}});
       const beams = await start(); assert.deepEqual(beams.start.options.ropePrestrain,[]); await page.locator('#back').click();
-      await load(fragile); await start();
+      const fragileProject = JSON.parse(fragile);
+      await load({...fragileProject,metadata:{...fragileProject.metadata,ropePrestrain:.05}}); await start();
       await page.waitForFunction(()=>/elements? broken/.test(document.querySelector('#status').textContent),undefined,{timeout:20000});
       assert.ok((await page.locator('#status').textContent()).startsWith('Rope prestrain 5%'),'Fracture messages retain the setting');
       if (mobile) assert.equal(await page.locator('#prestrain-status').isVisible(),true,'Prestrain stays visible after a real fracture');
@@ -1020,10 +1038,12 @@ async function testPrestrainSettings(browser, base) {
       await page.screenshot({path:resolve('screenshots',`prestrain-settings-${name}.png`)});
       await closeSettings();
       await page.reload(); await openSettings();
+      assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.05'); assert.equal(await amount.isEnabled(),true);
+      assert.match(await run.getAttribute('title'),/Rope prestrain 5%/);
+      await enabled.uncheck(); await closeSettings(); await page.reload(); await openSettings();
       assert.equal(await enabled.isChecked(),false); assert.equal(await amount.inputValue(),'0.005'); assert.equal(await amount.isDisabled(),true);
-      assert.doesNotMatch(await run.getAttribute('title'),/Rope prestrain/);
       await closeSettings(); assert.deepEqual(errors,[],`${name}: prestrain causes no page/worker errors`);
-      console.log(`${name} prestrain: defaults, keyboard, eight levels, real worker stresses, history, project changes, failures and reload reset verified.`);
+      console.log(`${name} prestrain: defaults, keyboard, eight levels, JSON persistence, import validation, worker stresses, history, project changes and reload verified.`);
     } finally { await context.close(); }
   }
 }

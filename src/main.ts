@@ -4,7 +4,7 @@ import { toCentered } from './coordinates';
 import './style.css';
 import branding from './branding.json' with { type: 'json' };
 
-import { translateNodes, translateNodesPreview, key, drawingEndpoint, addMember, PROFILES, ROPE_PROFILES, projectCost, MAX_LENGTH, GAME_VERSION, emptyProject, resizeProject, toggleNode, boundary, cloneProject, exportProject, fromKey, History, importProjectWithWarnings, projectChecksumWarning, inside, nodes, type BeamProfile, type RopeProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
+import { translateNodes, translateNodesPreview, key, drawingEndpoint, addMember, PROFILES, ROPE_PROFILES, ROPE_PRESTRAIN_LEVELS, projectCost, MAX_LENGTH, GAME_VERSION, emptyProject, resizeProject, toggleNode, boundary, cloneProject, exportProject, fromKey, History, importProjectWithWarnings, projectChecksumWarning, inside, nodes, type BeamProfile, type RopeProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
 
 import { example, exampleNames, starterProject, type Example } from './examples';
 
@@ -223,7 +223,6 @@ function exampleThumbnail(name: Example): string {
   return `<svg viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect x="${left}" y="${top}" width="${width * scale}" height="${height * scale}" class="example-board"/><g class="example-grid">${grid}</g><g class="example-beams">${lines(project.beams.map(beam => beam.endpoints))}</g><g class="example-ropes">${project.ropes.map(r => lines([r.endpoints]).replace('<polyline ', `<polyline data-profile="${r.profile}" style="stroke-width:${r.profile === 'h' ? 2 : 1}" `)).join('')}</g></svg>`;
 }
 const exampleChoices: Example[] = ['bridge', 'eiffel', 'goldenGate', 'sydneyHarbour', 'ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'blank'];
-const ROPE_PRESTRAIN_LEVELS = [0.001, 0.0025, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05] as const;
 const DEFAULT_ROPE_PRESTRAIN = 0.005;
 const prestrainChoices = ROPE_PRESTRAIN_LEVELS.map(strain => `<option value="${strain}" ${strain === DEFAULT_ROPE_PRESTRAIN ? 'selected' : ''}>${strain * 100}%</option>`).join('');
 const solverChoices = Object.entries(SOLVERS).map(([id, name]) => `<label class="solver-option"><input type="radio" name="solver" value="${id}" ${id === 'serpentine' ? 'checked' : ''}><span>${name}</span></label>`).join('');
@@ -256,7 +255,7 @@ $('app').innerHTML = `
 
 <dialog id="examples-dialog" class="examples-dialog" aria-labelledby="examples-title"><div class="dialog-heading"><h2 id="examples-title">Load an example</h2><button id="close-examples" class="icon-button" aria-label="Close examples">${icon('close')}</button></div><div class="examples-grid">${exampleChoices.map(name => `<button class="example-card" data-example="${name}">${exampleThumbnail(name)}<span>${exampleNames[name]}</span></button>`).join('')}</div></dialog>
 
-<dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><div><span class="eyebrow">WORKSPACE SETTINGS</span><h2 id="settings-title">Settings</h2></div><button id="close-settings" type="button" class="icon-button" aria-label="Close settings">${icon('close')}</button></div><fieldset class="solver-options"><legend>Simulation solver</legend><p>Choose how the simulation visits and evaluates the structure.</p><div class="solver-options-list">${solverChoices}</div><p>Serpentine randomly chooses its starting side for each run.</p></fieldset><fieldset class="prestrain-settings" aria-describedby="rope-prestrain-help"><legend>Rope prestrain (experimental)</legend><label class="solver-option"><input id="rope-prestrain-enabled" type="checkbox"><span>Enable rope prestrain</span></label><div class="prestrain-amount"><label for="rope-prestrain-value">Initial stretch</label><select id="rope-prestrain-value" aria-describedby="rope-prestrain-help" disabled>${prestrainChoices}</select></div><p id="rope-prestrain-help">Starts all ropes slightly stretched. This can reduce sag but increases load on the structure. Applies to new simulations and resets when you reload this page.</p></fieldset><section class="canvas-settings" aria-labelledby="canvas-size-title"><h3 id="canvas-size-title">Canvas size</h3><p>Choose an even width from 12 to 64 and height from 8 to 40 grid squares. Existing elements keep their grid positions.</p><form id="canvas-size-form" novalidate><div class="size-fields"><label>Width <span>(12-64, even)</span><input id="canvas-width" type="number" inputmode="numeric" min="12" max="64" step="2" required></label><label>Height <span>(8-40, even)</span><input id="canvas-height" type="number" inputmode="numeric" min="8" max="40" step="2" required></label></div><p id="canvas-size-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>Squares - 1 unit each</span><button type="submit" class="primary-button">Apply size</button></div></form></section></dialog><dialog id="text-dialog"><div class="dialog-heading"><div><span class="eyebrow">TAKE YOUR IDEAS WITH YOU</span><h2>Project text</h2></div><button id="close-text" class="icon-button" aria-label="Close project text">${icon('close')}</button></div><p>Copy this project, or paste one to rebuild it. Coordinates start at the center; positive Y points up. Uses metadata and objects sections. Board width: 12–64; height: 8–40, even numbers only.</p><label class="sr-only" for="project-json">Project JSON</label><textarea id="project-json" spellcheck="false" autocomplete="off"></textarea><p id="import-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>JSON · format 3 · origin at center</span><div><button id="copy" class="outline-button">${icon('copy')}Copy</button><button id="share-link" class="outline-button">Share link</button><button id="load" class="primary-button">Load project${icon('check')}</button></div></div></dialog>
+<dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><div><span class="eyebrow">WORKSPACE SETTINGS</span><h2 id="settings-title">Settings</h2></div><button id="close-settings" type="button" class="icon-button" aria-label="Close settings">${icon('close')}</button></div><fieldset class="solver-options"><legend>Simulation solver</legend><p>Choose how the simulation visits and evaluates the structure.</p><div class="solver-options-list">${solverChoices}</div><p>Serpentine randomly chooses its starting side for each run.</p></fieldset><fieldset class="prestrain-settings" aria-describedby="rope-prestrain-help"><legend>Rope prestrain (experimental)</legend><label class="solver-option"><input id="rope-prestrain-enabled" type="checkbox"><span>Enable rope prestrain</span></label><div class="prestrain-amount"><label for="rope-prestrain-value">Initial stretch</label><select id="rope-prestrain-value" aria-describedby="rope-prestrain-help" disabled>${prestrainChoices}</select></div><p id="rope-prestrain-help">Starts all ropes slightly stretched. This can reduce sag but increases load on the structure. The selected value is saved with this project; imported projects can still have prestrain turned off here.</p></fieldset><section class="canvas-settings" aria-labelledby="canvas-size-title"><h3 id="canvas-size-title">Canvas size</h3><p>Choose an even width from 12 to 64 and height from 8 to 40 grid squares. Existing elements keep their grid positions.</p><form id="canvas-size-form" novalidate><div class="size-fields"><label>Width <span>(12-64, even)</span><input id="canvas-width" type="number" inputmode="numeric" min="12" max="64" step="2" required></label><label>Height <span>(8-40, even)</span><input id="canvas-height" type="number" inputmode="numeric" min="8" max="40" step="2" required></label></div><p id="canvas-size-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>Squares - 1 unit each</span><button type="submit" class="primary-button">Apply size</button></div></form></section></dialog><dialog id="text-dialog"><div class="dialog-heading"><div><span class="eyebrow">TAKE YOUR IDEAS WITH YOU</span><h2>Project text</h2></div><button id="close-text" class="icon-button" aria-label="Close project text">${icon('close')}</button></div><p>Copy this project, or paste one to rebuild it. Coordinates start at the center; positive Y points up. Uses metadata and objects sections. Board width: 12–64; height: 8–40, even numbers only.</p><label class="sr-only" for="project-json">Project JSON</label><textarea id="project-json" spellcheck="false" autocomplete="off"></textarea><p id="import-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>JSON · format 3 · origin at center</span><div><button id="copy" class="outline-button">${icon('copy')}Copy</button><button id="share-link" class="outline-button">Share link</button><button id="load" class="primary-button">Load project${icon('check')}</button></div></div></dialog>
 
 <dialog id="guide-dialog" class="info-dialog" aria-labelledby="info-title"><div class="dialog-heading"><div><span class="eyebrow">FRAME LAB</span><h2 id="info-title">Info</h2></div><button id="close-guide" class="icon-button" aria-label="Close info">${icon('close')}</button></div><p>Build structures with beams and ropes, then run a simulation to see how they respond to gravity. Use Select to move and edit elements, Undo to reverse changes, and Project text to save or share a design.</p><p><a href="./user-guide.html">Read the user guide</a></p><div class="info-copyright">${COPYRIGHT}</div></dialog>`;
 
@@ -457,9 +456,10 @@ let tool: Tool = 'beam', joint: JointType = 'x', cursor: Point | null = null, st
 let frame: Frame | null = null, members: PhysicsMember[] = [], worker: Worker | null = null, running = false, paused = false, busy = false, touch = false;
 // Serpentine has no direction history.
 let solver: Solver = 'serpentine';
-// Like the solver choice, prestrain belongs to this page session, not a project
-// or local storage. Disabling it keeps the selected amount for A/B comparisons.
-let ropePrestrainEnabled = false, ropePrestrainValue = DEFAULT_ROPE_PRESTRAIN;
+// An absent project value means prestrain is off; the last selected amount stays
+// available during this page session so the checkbox can be toggled back on.
+let ropePrestrainEnabled = history.project.ropePrestrain !== undefined;
+let ropePrestrainValue = history.project.ropePrestrain ?? DEFAULT_ROPE_PRESTRAIN;
 
 let stress = false, recycled: { positions: ArrayBuffer; stresses: ArrayBuffer; broken: ArrayBuffer } | undefined, elapsed = 0, needsDraw = true, previewAnimating = false;
 
@@ -478,6 +478,12 @@ function saveProject(): void {
 }
 
 function recordProject(project: Project): void { history.commit(project); saveProject(); }
+
+function restorePrestrainFromProject(project: Project, resetMissingValue = false): void {
+  ropePrestrainEnabled = project.ropePrestrain !== undefined;
+  if (project.ropePrestrain !== undefined) ropePrestrainValue = project.ropePrestrain;
+  else if (resetMissingValue) ropePrestrainValue = DEFAULT_ROPE_PRESTRAIN;
+}
 
 function invalidate(): void { needsDraw = true; }
 
@@ -1368,7 +1374,7 @@ $('clear-canvas').onclick = () => {
 
   const blank = emptyProject(); blank.size = [...history.project.size];
 
-  commit(blank); start = cursor = null; lastName = 'Untitled structure';
+  commit(blank); restorePrestrainFromProject(history.project, true); start = cursor = null; lastName = 'Untitled structure';
 
   $('status').textContent = 'Canvas cleared. Undo brings your design back.'; refreshUI();
   void recordClear();
@@ -1386,9 +1392,9 @@ $('paste-flip-y').onclick = () => { if (pasteState) { pasteState.placement.flipY
 
 $('cancel-draw').onclick = () => { resetInteraction(); refreshUI(); };
 
-$('undo').onclick = () => { if (running) return; resetInteraction(); if (history.undo()) { saveProject(); selected = []; start = null; lastName = 'Untitled structure'; } refreshUI(); };
+$('undo').onclick = () => { if (running) return; resetInteraction(); if (history.undo()) { restorePrestrainFromProject(history.project); saveProject(); selected = []; start = null; lastName = 'Untitled structure'; } refreshUI(); };
 
-$('redo').onclick = () => { if (running) return; resetInteraction(); if (history.redo()) { saveProject(); selected = []; start = null; lastName = 'Untitled structure'; } refreshUI(); };
+$('redo').onclick = () => { if (running) return; resetInteraction(); if (history.redo()) { restorePrestrainFromProject(history.project); saveProject(); selected = []; start = null; lastName = 'Untitled structure'; } refreshUI(); };
 
 const examplesDialog = $<HTMLDialogElement>('examples-dialog');
 $('examples').onclick = () => { if (pasteState) { resetInteraction(); refreshUI(); } if (!running) examplesDialog.showModal(); };
@@ -1396,7 +1402,7 @@ $('close-examples').onclick = () => examplesDialog.close();
 document.querySelectorAll<HTMLButtonElement>('[data-example]').forEach(button => button.onclick = () => {
   if (running) return;
   const value = button.dataset.example as Example;
-  commit(example(value)); lastName = exampleNames[value]; renderer.fit(); start = cursor = null;
+  commit(example(value)); restorePrestrainFromProject(history.project, true); lastName = exampleNames[value]; renderer.fit(); start = cursor = null;
   examplesDialog.close(); refreshUI();
 });
 
@@ -1431,14 +1437,20 @@ settingsDialog.addEventListener('close', () => settingsButton.focus());
 settingsDialog.querySelectorAll<HTMLInputElement>('input[name="solver"]').forEach(input => input.onchange = () => {
   solver = input.value as Solver; refreshUI();
 });
-// These controls take effect immediately for the next run. They deliberately
-// bypass project commits, autosave and Undo/Redo, just like solver selection.
+// Prestrain is project state, so each change is exported, autosaved and undoable.
 $<HTMLInputElement>('rope-prestrain-enabled').onchange = event => {
-  ropePrestrainEnabled = (event.target as HTMLInputElement).checked; refreshUI();
+  ropePrestrainEnabled = (event.target as HTMLInputElement).checked;
+  const next = cloneProject(history.project);
+  if (ropePrestrainEnabled) next.ropePrestrain = ropePrestrainValue;
+  else delete next.ropePrestrain;
+  recordProject(next); refreshUI();
 };
 $<HTMLSelectElement>('rope-prestrain-value').onchange = event => {
   const value = Number((event.target as HTMLSelectElement).value);
-  if (ROPE_PRESTRAIN_LEVELS.some(strain => strain === value)) ropePrestrainValue = value;
+  if (ROPE_PRESTRAIN_LEVELS.some(strain => strain === value)) {
+    ropePrestrainValue = value;
+    if (ropePrestrainEnabled) { const next = cloneProject(history.project); next.ropePrestrain = value; recordProject(next); }
+  }
   refreshUI();
 };
 canvasSizeForm.onsubmit = e => {
@@ -1471,7 +1483,7 @@ $('share-link').onclick = async () => {
   } catch (error) { $('import-error').textContent = (error as Error).message; }
 };
 
-$('load').onclick = () => { try { const warning = projectChecksumWarning(textarea.value); if (warning && !confirmChecksumWarning(warning)) return; const {project:p,warnings} = importProjectWithWarnings(textarea.value); if (running) stopSimulation(); commit(p); start = cursor = null; renderer.fit(); lastName = 'Imported structure'; refreshUI(); textDialog.close(); notify([warning ? 'Project opened after accepting the checksum warning.' : 'Project loaded. Your previous design is available with Undo.', ...warnings].join(' ')); } catch (e) { $('import-error').textContent = (e as Error).message; } };
+$('load').onclick = () => { try { const warning = projectChecksumWarning(textarea.value); if (warning && !confirmChecksumWarning(warning)) return; const {project:p,warnings} = importProjectWithWarnings(textarea.value); if (running) stopSimulation(); commit(p); restorePrestrainFromProject(history.project, true); start = cursor = null; renderer.fit(); lastName = 'Imported structure'; refreshUI(); textDialog.close(); notify([warning ? 'Project opened after accepting the checksum warning.' : 'Project loaded. Your previous design is available with Undo.', ...warnings].join(' ')); } catch (e) { $('import-error').textContent = (e as Error).message; } };
 
 const guideDialog = $<HTMLDialogElement>('guide-dialog'); $('guide').onclick = () => guideDialog.showModal(); $('close-guide').onclick = () => guideDialog.close();
 
