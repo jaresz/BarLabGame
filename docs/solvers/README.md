@@ -9,6 +9,10 @@ Bar Lab offers two simulation solvers. [Basic XPBD Solver](original.md) preserve
 
 Both use the same particle model, fixed time step, material profiles, and local XPBD corrections.
 
+Since 0.4.76, both solvers start each run with a small, deterministic horizontal imperfection of at most 0.001 board units. It is applied once, preserves coincident joint particles and boundary supports, and leaves the saved design unchanged. The iteration count remains 12. Identical geometry receives the same disturbance regardless of the solver or Serpentine starting side.
+
+For diagnostics, `PhysicsOptions.initialPerturbation` controls the signed amplitude: the default is `0.001`, a negative value tests the opposite direction, and `0` disables it. At initial internal coordinates `(x, y)` on a board of width `W` and height `H`, the horizontal offset is `amplitude × sin(πx/W) × sin(πy/H)`; boundary points remain exactly fixed. The historical trajectories below explicitly disable this imperfection to retain their original comparison of correction orders.
+
 ## Stability and exact symmetry
 
 See [Stability, Symmetry, and Iteration Count](stability.md) for an illustrated comparison of a braced column that leans and an unbraced column that appears stable. The measured example separates incomplete solver convergence from exact vertical symmetry hiding sensitivity to a lateral disturbance.

@@ -66,6 +66,8 @@ This animation copies an asymmetric frame and positions its preview beside the o
 
 Press **Run** or Space to let gravity act on the design. Beams bend elastically and can break; ropes carry tension but do not push. Use the stress control to color members by relative stress. Press Back to stop and restore the original design. Simulation damage is not saved.
 
+Each run starts with a tiny, repeatable sideways displacement to test how the structure responds to an imperfection. Perfectly straight columns can therefore begin to lean. Supports stay fixed, and your saved design is unchanged.
+
 Open **Settings** (the gear icon) to choose a simulation solver and change the canvas dimensions. Solver choice takes effect immediately and lasts until the page reloads. Canvas dimensions change only when you select **Apply size**; closing Settings discards unsubmitted dimensions. Click **Run simulation** or press Space to start the selected solver directly.
 
 - **1 · Basic XPBD Solver** retains the original XPBD behavior.

@@ -96,7 +96,9 @@ function runSymmetricTower(options: PhysicsOptions = {}, reverseInternalBeams = 
   const project = importProject(text);
   // Reverse after import: normalization otherwise sorts the beams back into the same order.
   if (reverseInternalBeams) project.beams.reverse();
-  const world = new World(project, options);
+  // Keep the historical solver-bias fixtures exactly aligned; startup
+  // imperfections are exercised independently below rather than changing them.
+  const world = new World(project, { initialPerturbation: 0, ...options });
   const top: number[] = [], support: number[] = [];
   // The solver uses top-left coordinates (Y down). Exported (0,5) is (6,1),
   // and the bottom clamp at exported (0,-6) is (6,12). A welded node currently
@@ -177,6 +179,60 @@ test('Explicit Basic XPBD Solver matches the implicit original trajectory', () =
   assert.deepEqual(implicit.world.x, explicit.world.x);
   assert.deepEqual(implicit.world.y, explicit.world.y);
   assert.deepEqual(implicit.world.frame().stresses, explicit.world.frame().stresses);
+});
+
+test('Startup imperfection preserves supports, coincident particles, design and repeatability', () => {
+  const project = importProject(JSON.stringify({
+    metadata: { size: [16,20], gameVersion: '0.4.75', formatVersion: 3 },
+    objects: { b: [[-4,-10,0,-6,'l'],[0,6,0,0,'l'],[0,0,0,-6,'l'],[0,-6,0,-10,'l'],[0,-6,4,-10,'l']] },
+  }));
+  const before = exportProject(project), aligned = new World(project, { initialPerturbation: 0 });
+  const first = new World(project), repeat = new World(project);
+  const opposite = new World(project, { initialPerturbation: -0.001 });
+  const copies = new Map<string, number>();
+  // Compare copies by their unperturbed coordinates, including multi-beam joints
+  // and the two particles of each midpoint weld. Offsets must never open a gap.
+  for (let i = 0; i < first.x.length; i++) {
+    const id = `${aligned.x[i]},${aligned.y[i]}`, offset = first.x[i] - aligned.x[i];
+    assert.ok(Math.abs(offset) <= 0.001 + 1e-14);
+    assert.ok(Math.abs(opposite.x[i] - aligned.x[i] + offset) < 1e-14);
+    if (copies.has(id)) assert.equal(first.x[i], copies.get(id));
+    copies.set(id, first.x[i]);
+    if (aligned.invMass[i] === 0) assert.equal(first.x[i], aligned.x[i]);
+    assert.equal(first.y[i], aligned.y[i]);
+    assert.equal(first.vx[i], 0);
+    assert.equal(first.vy[i], 0);
+  }
+  assert.notDeepEqual(first.x, aligned.x);
+  assert.deepEqual(first.x, repeat.x);
+  assert.equal(exportProject(project), before, 'Simulation offsets must not modify exported geometry');
+  assert.equal(first.options.iterations, 12);
+  for (let step = 0; step < 120; step++) { first.step(); repeat.step(); }
+  assert.deepEqual(first.x, repeat.x);
+  assert.deepEqual(first.y, repeat.y);
+  for (let i = 0; i < first.x.length; i++) if (aligned.invMass[i] === 0) {
+    assert.equal(first.x[i], aligned.x[i]);
+    assert.equal(first.y[i], aligned.y[i]);
+  }
+});
+
+test('A perfectly vertical slender column responds to either sign of startup imperfection', () => {
+  const project = importProject(JSON.stringify({
+    metadata: { size: [16,20], gameVersion: '0.4.75', formatVersion: 3 },
+    objects: { b: [[0,6,0,0,'l'],[0,0,0,-6,'l'],[0,-6,0,-10,'l']] },
+  }));
+  // Include both scan directions and Basic XPBD so the imperfection is independent
+  // of Serpentine's randomly selected correction order.
+  for (const solver of ['original', 'serpentine'] as const) for (const right of [false,true]) {
+    const worlds = [0,0.001,-0.001].map(initialPerturbation => new World(project, { solver, serpentineFromRight:right, initialPerturbation }));
+    for (let step = 0; step < 3600; step++) for (const world of worlds) world.step();
+    const displacement = (world: World) => Math.max(...world.x.map(x => Math.abs(x - 8)));
+    assert.equal(displacement(worlds[0]), 0, 'The control reproduces exact vertical symmetry');
+    for (const world of worlds.slice(1)) {
+      assert.ok(displacement(world) > 1, 'A tiny imperfection must expose growing lateral motion');
+      assert.ok([...world.x,...world.y].every(Number.isFinite));
+    }
+  }
 });
 
 test('Serpentine visits the highest occupied row first and reverses each subsequent row', () => {

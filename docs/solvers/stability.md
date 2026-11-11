@@ -4,6 +4,8 @@
 
 A column with diagonal braces can lean over in the simulation while the same column without braces stays perfectly upright. This example exposes two separate effects: insufficient convergence of local corrections in the braced structure, and exact symmetry hiding lateral instability in the unbraced column. It does not show that removing braces improves structural stability.
 
+**Current behavior (since 0.4.76):** every simulation starts with a small, repeatable horizontal imperfection, as described in the [solver overview](README.md). This exposes the perfectly vertical column's sensitivity without changing the 12-iteration solver. The illustration and measurements below retain the historical 0.4.75 behavior with the automatic imperfection disabled.
+
 ## Geometry and observed motion
 
 ![Braced and unbraced columns, showing their initial geometry and measured deformation after 30 seconds](../images/solvers/column-stability.png)
@@ -43,7 +45,7 @@ No beam broke in these runs or in the perturbed-column runs. A large global lean
 
 ## Reproducing the comparison
 
-Import either of the following fixtures through `importProject`, then construct `World` with `{ solver: 'serpentine', serpentineFromRight: false, iterations: 12 }`. Advance `world.step()` 3,600 times. Repeat with `iterations: 120`, or set `serpentineFromRight: true` to compare starting sides. For Basic XPBD, use `solver: 'original'`. The 120-iteration setting is a diagnostic option in the physics API; the app's Settings dialog only selects the solver.
+Import either of the following fixtures through `importProject`, then construct `World` with `{ solver: 'serpentine', serpentineFromRight: false, iterations: 12, initialPerturbation: 0 }`. Advance `world.step()` 3,600 times. Repeat with `iterations: 120`, or set `serpentineFromRight: true` to compare starting sides. For Basic XPBD, use `solver: 'original'`. The 120-iteration setting is a diagnostic option in the physics API; the app's Settings dialog only selects the solver.
 
 Braced project:
 

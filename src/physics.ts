@@ -6,7 +6,7 @@ const wrap = (v: number) => ((v + Math.PI) % TAU + TAU) % TAU - Math.PI;
 interface Distance { a: number; b: number; rest: number; compliance: number; lambda: number; tension: boolean; owner: number; cut: boolean }
 interface Angle { a: number; b: number; c: number; d: number; rest: number; compliance: number; lambda: number; owner: number; cut: boolean; internal: boolean; scale: number }
 export interface PhysicsMember { start: number; count: number; half: number; material: Material; profile: BeamProfile; broken: boolean; stress: number; overload: number }
-export interface PhysicsOptions { gravity?: number; damage?: boolean; bending?: number; axial?: number; iterations?: number; damping?: number; solver?: Solver; serpentineFromRight?: boolean }
+export interface PhysicsOptions { gravity?: number; damage?: boolean; bending?: number; axial?: number; iterations?: number; damping?: number; solver?: Solver; serpentineFromRight?: boolean; initialPerturbation?: number }
 export interface Frame { positions: Float32Array; stresses: Float32Array; broken: Uint8Array; time: number; stepMs: number; points: number; constraints: number }
 export type SoundKind = 'beamStress' | 'ropeStress' | 'ropeBreak' | 'beamWall' | 'beamGround' | 'ropeGround';
 export interface SoundEvent { kind: SoundKind; x: number; intensity: number; length: number }
@@ -33,7 +33,7 @@ export class World {
   constructor(readonly project: Project, options: PhysicsOptions = {}) {
     // Short steel beams should appear straight under their own weight. A modest
     // increase in solver sweeps prevents numerical compliance dominating bending.
-    this.options = { gravity: 9.81, damage: true, bending: 10000, axial: 2e6, iterations: 12, damping: 0.65, solver: 'original', serpentineFromRight: false, ...options };
+    this.options = { gravity: 9.81, damage: true, bending: 10000, axial: 2e6, iterations: 12, damping: 0.65, solver: 'original', serpentineFromRight: false, initialPerturbation: 0.001, ...options };
     const scanRank = new Int32Array(project.beams.length+project.ropes.length);
     if (this.options.solver === 'serpentine') serpentineMemberOrder(project,this.options.serpentineFromRight).forEach((owner,index) => { scanRank[owner] = index; });
     const positions: Point[] = [], masses: number[] = [], endpoints = new Map<string, Endpoint[]>();
@@ -95,6 +95,26 @@ export class World {
       const priority = (c: Distance | Angle) => c.owner >= 0 ? rank[c.owner] : Math.min(particleRank[c.a],particleRank[c.b],...('c' in c && c.c >= 0 ? [particleRank[c.c],particleRank[c.d]] : []));
       this.sweepDistances = [...this.distances].sort((a,b) => priority(a)-priority(b));
       this.sweepAngles = [...this.angles].sort((a,b) => priority(a)-priority(b));
+    }
+    this.applyInitialPerturbation();
+  }
+  private applyInitialPerturbation(): void {
+    const [width, height] = this.project.size, amplitude = this.options.initialPerturbation;
+    if (amplitude === 0) return;
+    // Apply a one-time horizontal imperfection after computing all rest lengths
+    // and angles from the design. The signed amplitude is in board units; zero
+    // reproduces historical runs, and either sign supports controlled comparisons.
+    // Visit every particle using its original position: coincident joint and
+    // midpoint copies receive identical offsets regardless of member/scan order.
+    for (let i = 0; i < this.x.length; i++) {
+      const x = this.x[i], y = this.y[i];
+      // The smooth field vanishes on every board edge. Skip those points exactly
+      // to keep supports and boundary contacts unchanged despite sine roundoff.
+      if (this.invMass[i] === 0 || x <= 0 || x >= width || y <= 0 || y >= height) continue;
+      const offset = amplitude * Math.sin(Math.PI * x / width) * Math.sin(Math.PI * y / height);
+      // Bound extreme diagnostic amplitudes too, so the ready frame stays inside
+      // the board. No velocity or repeated forcing is introduced by this offset.
+      this.x[i] = Math.max(0, Math.min(width, x + offset));
     }
   }
   private queueSound(kind: SoundKind, x: number, intensity: number, length = 1): void {

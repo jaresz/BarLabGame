@@ -17,7 +17,8 @@ const variants: {id:string; options:PhysicsOptions}[] = [
   {id:'serpentine-right',options:{solver:'serpentine',serpentineFromRight:true}},
 ];
 const runs = variants.map(({id,options}) => {
-  const w = new World(project,options);
+  // These historical diagrams isolate correction order without a startup offset.
+  const w = new World(project,{initialPerturbation:0,...options});
   const tracked = Object.fromEntries(Object.entries(nodes).map(([name,[x,y]]) => [name,[...w.x.keys()].filter(i => w.x[i]===x && w.y[i]===y)]));
   const frames = [], measurements = [];
   // 12 seconds at 120 physics steps/s, sampled every 12 steps for 10 fps GIFs.
