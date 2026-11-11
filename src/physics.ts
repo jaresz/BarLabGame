@@ -43,7 +43,7 @@ export class World {
     // iterating values also rejects holes in an otherwise correctly sized array.
     const ropePrestrain = options.ropePrestrain === undefined ? project.ropes.map(() => 0) : options.ropePrestrain;
     if (!Array.isArray(ropePrestrain) || ropePrestrain.length !== project.ropes.length) throw new Error('ropePrestrain must contain one strain per project rope.');
-    for (const strain of ropePrestrain) if (typeof strain !== 'number' || !Number.isFinite(strain) || strain < 0 || strain > 0.01) throw new Error('Rope prestrain must be finite and between 0 and 0.01 (0–1%).');
+    for (const strain of ropePrestrain) if (typeof strain !== 'number' || !Number.isFinite(strain) || strain < 0 || strain > 0.05) throw new Error('Rope prestrain must be finite and between 0 and 0.05 (0–5%).');
     // Short steel beams should appear straight under their own weight. A modest
     // increase in solver sweeps prevents numerical compliance dominating bending.
     this.options = { gravity: 9.81, damage: true, bending: 10000, axial: 2e6, iterations: 12, damping: 0.65, solver: 'original', serpentineFromRight: false, initialPerturbation: 0.001, ...options, ropePrestrain: [...ropePrestrain] };
