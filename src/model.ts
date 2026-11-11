@@ -20,8 +20,8 @@ export type JointType = 'x' | 'o';
 export type Material = 'beam' | 'rope';
 export interface Project { size: Point; beams: Beam[]; ropes: Rope[]; joints: Record<string, JointType>; anchors: Record<string, JointType> }
 // Bump this after every application change; the status bar and exported project metadata use it.
-export const GAME_VERSION = '0.5.0';
-export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 6, rope: 20 };
+export const GAME_VERSION = '0.7.1';
+export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 10, rope: 20 };
 
 /** Resolve a snapped drawing target without changing import/member validation. */
 export function drawingEndpoint(start: Point, target: Point, material: Material, size: Point): Point {

@@ -13,7 +13,9 @@ export function measureLandmark(name: Example, options: PhysicsOptions) {
 }
 
 /** Apply the gallery acceptance criteria to an experimental, unshipped design. */
-export function measureProject(name: string, project: Project, options: PhysicsOptions) {
+export function measureProject(name: string, project: Project, options: PhysicsOptions, seconds = 20) {
+  const steps = Math.round(seconds / DT);
+  if (!Number.isFinite(seconds) || steps < 1 || Math.abs(steps * DT - seconds) > 1e-9) throw new Error('Measurement duration must be a positive whole number of physics steps.');
   const restored = importProject(exportProject(project));
   if (JSON.stringify(project) !== JSON.stringify(restored)) throw new Error(`${name}: round trip changed geometry`);
   // Validate each member against the rest of the project to catch overlapping
@@ -32,9 +34,10 @@ export function measureProject(name: string, project: Project, options: PhysicsO
   const world = new World(project,options);
   let maximumDisplacement = 0, newBoundaryContacts = 0, maximumSupportMotion = 0, firstBreak: number | null = null;
   const initialEdge = (i: number) => aligned.x[i] === 0 || aligned.x[i] === project.size[0] || aligned.y[i] === 0 || aligned.y[i] === project.size[1];
-  // Sample every particle on every 1/120-second step. Initial boundary contacts
-  // (foundations and abutments) are allowed; new interior-to-edge contacts are not.
-  for (let step = 0; step <= 2400; step++) {
+  // Sample every particle on every 1/120-second step, including short screens.
+  // Initial foundation/abutment contacts are allowed; new interior-to-edge
+  // contacts are not.
+  for (let step = 0; step <= steps; step++) {
     for (let i = 0; i < world.x.length; i++) {
       const x=world.x[i],y=world.y[i];
       if (!Number.isFinite(x+y+world.vx[i]+world.vy[i])) throw new Error(`${name}: nonfinite state`);
@@ -44,7 +47,7 @@ export function measureProject(name: string, project: Project, options: PhysicsO
       if (!initialEdge(i) && (x <= 0 || x >= project.size[0] || y <= 0 || y >= project.size[1])) newBoundaryContacts++;
     }
     if (firstBreak === null && world.members.some(m=>m.broken)) firstBreak=step*DT;
-    if (step < 2400) world.step();
+    if (step < steps) world.step();
   }
   return {name,options,size:project.size,beams:project.beams.length,ropes:project.ropes.length,maximumDisplacement,newBoundaryContacts,maximumSupportMotion,firstBreak,
     brokenMembers:world.members.filter(m=>m.broken).length,

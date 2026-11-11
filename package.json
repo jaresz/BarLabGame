@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node scripts/build-user-guide.mjs && vite --host 0.0.0.0",
     "build": "tsc --noEmit && node scripts/build-user-guide.mjs && vite build && node scripts/generate-offline.mjs",
-    "test": "node --import tsx tests/model.test.ts && node --import tsx tests/coordinates.test.ts && node --import tsx tests/physics.test.ts && node --import tsx tests/landmarks.test.ts && node tests/sounds.test.mjs",
+    "test": "node --import tsx tests/model.test.ts && node --import tsx tests/coordinates.test.ts && node --import tsx tests/physics.test.ts && node --import tsx tests/prestrain.test.ts && node --import tsx tests/landmarks.test.ts && node tests/sounds.test.mjs",
     "benchmark": "node --import tsx scripts/benchmark.ts",
     "test:browser": "npm run build && node scripts/browser-smoke.mjs",
     "generate:sounds": "node scripts/generate-sounds.mjs",

@@ -69,6 +69,15 @@ try {
     await page.waitForTimeout(500);
     await page.screenshot({ path: join(output, `frame-lab-${name}.png`) });
     console.log(`Captured ${join(output, `frame-lab-${name}.png`)}.`);
+    // Show the opt-in control in use, then restore zero prestrain before the
+    // normal gallery and build animations. Screenshots never change a project.
+    await page.locator('#settings').click();
+    await page.locator('#rope-prestrain-enabled').check();
+    await page.locator('#rope-prestrain-value').selectOption('0.005');
+    await page.screenshot({ path: join(output, `frame-lab-settings-${name}.png`) });
+    console.log(`Captured ${join(output, `frame-lab-settings-${name}.png`)}.`);
+    await page.locator('#rope-prestrain-enabled').uncheck();
+    await page.locator('#close-settings').click();
     if (name === 'desktop') {
       // Run the bridge example and record its collapse so the guide can show what simulation does.
       const framesDir = await mkdtemp(join(tmpdir(), 'frame-lab-simulation-'));

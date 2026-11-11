@@ -223,6 +223,9 @@ function exampleThumbnail(name: Example): string {
   return `<svg viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect x="${left}" y="${top}" width="${width * scale}" height="${height * scale}" class="example-board"/><g class="example-grid">${grid}</g><g class="example-beams">${lines(project.beams.map(beam => beam.endpoints))}</g><g class="example-ropes">${project.ropes.map(r => lines([r.endpoints]).replace('<polyline ', `<polyline data-profile="${r.profile}" style="stroke-width:${r.profile === 'h' ? 2 : 1}" `)).join('')}</g></svg>`;
 }
 const exampleChoices: Example[] = ['bridge', 'eiffel', 'goldenGate', 'sydneyHarbour', 'ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'blank'];
+const ROPE_PRESTRAIN_LEVELS = [0.001, 0.0025, 0.005, 0.01] as const;
+const DEFAULT_ROPE_PRESTRAIN = 0.005;
+const prestrainChoices = ROPE_PRESTRAIN_LEVELS.map(strain => `<option value="${strain}" ${strain === DEFAULT_ROPE_PRESTRAIN ? 'selected' : ''}>${strain * 100}%</option>`).join('');
 const solverChoices = Object.entries(SOLVERS).map(([id, name]) => `<label class="solver-option"><input type="radio" name="solver" value="${id}" ${id === 'serpentine' ? 'checked' : ''}><span>${name}</span></label>`).join('');
 
 $('app').innerHTML = `
@@ -253,7 +256,7 @@ $('app').innerHTML = `
 
 <dialog id="examples-dialog" class="examples-dialog" aria-labelledby="examples-title"><div class="dialog-heading"><h2 id="examples-title">Load an example</h2><button id="close-examples" class="icon-button" aria-label="Close examples">${icon('close')}</button></div><div class="examples-grid">${exampleChoices.map(name => `<button class="example-card" data-example="${name}">${exampleThumbnail(name)}<span>${exampleNames[name]}</span></button>`).join('')}</div></dialog>
 
-<dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><div><span class="eyebrow">WORKSPACE SETTINGS</span><h2 id="settings-title">Settings</h2></div><button id="close-settings" type="button" class="icon-button" aria-label="Close settings">${icon('close')}</button></div><fieldset class="solver-options"><legend>Simulation solver</legend><p>Choose how the simulation visits and evaluates the structure.</p><div class="solver-options-list">${solverChoices}</div><p>Serpentine randomly chooses its starting side for each run.</p></fieldset><section class="canvas-settings" aria-labelledby="canvas-size-title"><h3 id="canvas-size-title">Canvas size</h3><p>Choose an even width from 12 to 64 and height from 8 to 40 grid squares. Existing elements keep their grid positions.</p><form id="canvas-size-form" novalidate><div class="size-fields"><label>Width <span>(12-64, even)</span><input id="canvas-width" type="number" inputmode="numeric" min="12" max="64" step="2" required></label><label>Height <span>(8-40, even)</span><input id="canvas-height" type="number" inputmode="numeric" min="8" max="40" step="2" required></label></div><p id="canvas-size-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>Squares - 1 unit each</span><button type="submit" class="primary-button">Apply size</button></div></form></section></dialog><dialog id="text-dialog"><div class="dialog-heading"><div><span class="eyebrow">TAKE YOUR IDEAS WITH YOU</span><h2>Project text</h2></div><button id="close-text" class="icon-button" aria-label="Close project text">${icon('close')}</button></div><p>Copy this project, or paste one to rebuild it. Coordinates start at the center; positive Y points up. Uses metadata and objects sections. Board width: 12–64; height: 8–40, even numbers only.</p><label class="sr-only" for="project-json">Project JSON</label><textarea id="project-json" spellcheck="false" autocomplete="off"></textarea><p id="import-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>JSON · format 3 · origin at center</span><div><button id="copy" class="outline-button">${icon('copy')}Copy</button><button id="share-link" class="outline-button">Share link</button><button id="load" class="primary-button">Load project${icon('check')}</button></div></div></dialog>
+<dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><div><span class="eyebrow">WORKSPACE SETTINGS</span><h2 id="settings-title">Settings</h2></div><button id="close-settings" type="button" class="icon-button" aria-label="Close settings">${icon('close')}</button></div><fieldset class="solver-options"><legend>Simulation solver</legend><p>Choose how the simulation visits and evaluates the structure.</p><div class="solver-options-list">${solverChoices}</div><p>Serpentine randomly chooses its starting side for each run.</p></fieldset><fieldset class="prestrain-settings" aria-describedby="rope-prestrain-help"><legend>Rope prestrain (experimental)</legend><label class="solver-option"><input id="rope-prestrain-enabled" type="checkbox"><span>Enable rope prestrain</span></label><div class="prestrain-amount"><label for="rope-prestrain-value">Initial stretch</label><select id="rope-prestrain-value" aria-describedby="rope-prestrain-help" disabled>${prestrainChoices}</select></div><p id="rope-prestrain-help">Starts all ropes slightly stretched. This can reduce sag but increases load on the structure. Applies to new simulations and resets when you reload this page.</p></fieldset><section class="canvas-settings" aria-labelledby="canvas-size-title"><h3 id="canvas-size-title">Canvas size</h3><p>Choose an even width from 12 to 64 and height from 8 to 40 grid squares. Existing elements keep their grid positions.</p><form id="canvas-size-form" novalidate><div class="size-fields"><label>Width <span>(12-64, even)</span><input id="canvas-width" type="number" inputmode="numeric" min="12" max="64" step="2" required></label><label>Height <span>(8-40, even)</span><input id="canvas-height" type="number" inputmode="numeric" min="8" max="40" step="2" required></label></div><p id="canvas-size-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>Squares - 1 unit each</span><button type="submit" class="primary-button">Apply size</button></div></form></section></dialog><dialog id="text-dialog"><div class="dialog-heading"><div><span class="eyebrow">TAKE YOUR IDEAS WITH YOU</span><h2>Project text</h2></div><button id="close-text" class="icon-button" aria-label="Close project text">${icon('close')}</button></div><p>Copy this project, or paste one to rebuild it. Coordinates start at the center; positive Y points up. Uses metadata and objects sections. Board width: 12–64; height: 8–40, even numbers only.</p><label class="sr-only" for="project-json">Project JSON</label><textarea id="project-json" spellcheck="false" autocomplete="off"></textarea><p id="import-error" class="error-message" role="alert"></p><div class="dialog-footer"><span>JSON · format 3 · origin at center</span><div><button id="copy" class="outline-button">${icon('copy')}Copy</button><button id="share-link" class="outline-button">Share link</button><button id="load" class="primary-button">Load project${icon('check')}</button></div></div></dialog>
 
 <dialog id="guide-dialog" class="info-dialog" aria-labelledby="info-title"><div class="dialog-heading"><div><span class="eyebrow">FRAME LAB</span><h2 id="info-title">Info</h2></div><button id="close-guide" class="icon-button" aria-label="Close info">${icon('close')}</button></div><p>Build structures with beams and ropes, then run a simulation to see how they respond to gravity. Use Select to move and edit elements, Undo to reverse changes, and Project text to save or share a design.</p><p><a href="./user-guide.html">Read the user guide</a></p><div class="info-copyright">${COPYRIGHT}</div></dialog>`;
 
@@ -428,6 +431,12 @@ statusBar.querySelector('.status-right')!.prepend(document.querySelector('.canva
 const mobileZoom = document.createElement('span'); mobileZoom.id = 'mobile-zoom'; mobileZoom.textContent = '100%'; mobileZoom.setAttribute('aria-label', 'Zoom level');
 statusBar.insertBefore(mobileZoom, statusBar.querySelector('.status-right'));
 drawingArea.append($('canvas'), $('inspector'), $('paste-actions'));
+// Touch layouts hide the long footer message. Keep the active experiment
+// visible over the drawing surface without taking space from its controls.
+const prestrainStatus = document.createElement('div');
+prestrainStatus.id = 'prestrain-status'; prestrainStatus.hidden = true;
+prestrainStatus.setAttribute('role', 'status');
+drawingArea.append(prestrainStatus);
 controls.append(toolbar, $('simulation-controls'), document.querySelector('.zoom-controls')!);
 statusBar.append($('stress-legend'));
 stage.prepend(controls, drawingArea, rightControls);
@@ -448,6 +457,9 @@ let tool: Tool = 'beam', joint: JointType = 'x', cursor: Point | null = null, st
 let frame: Frame | null = null, members: PhysicsMember[] = [], worker: Worker | null = null, running = false, paused = false, busy = false, touch = false;
 // Serpentine has no direction history.
 let solver: Solver = 'serpentine';
+// Like the solver choice, prestrain belongs to this page session, not a project
+// or local storage. Disabling it keeps the selected amount for A/B comparisons.
+let ropePrestrainEnabled = false, ropePrestrainValue = DEFAULT_ROPE_PRESTRAIN;
 
 let stress = false, recycled: { positions: ArrayBuffer; stresses: ArrayBuffer; broken: ArrayBuffer } | undefined, elapsed = 0, needsDraw = true, previewAnimating = false;
 
@@ -469,6 +481,13 @@ function recordProject(project: Project): void { history.commit(project); savePr
 
 function invalidate(): void { needsDraw = true; }
 
+function prestrainDescription(): string { return `Rope prestrain ${ropePrestrainValue * 100}%`; }
+function simulationStatus(message: string): string {
+  // The periodic status refresh uses the same prefix as startup, including
+  // pause and fracture messages, so the active experiment stays identifiable.
+  return ropePrestrainEnabled ? `${prestrainDescription()} · ${message}` : message;
+}
+
 function refreshUI(): void {
 
   const p = history.project;
@@ -481,7 +500,14 @@ function refreshUI(): void {
 
   if (running) closeProfilePicker();
   runButton.dataset.solver = solver;
-  runButton.title = `Run simulation (Space) — ${SOLVERS[solver]}`;
+  runButton.title = `Run simulation (Space) — ${SOLVERS[solver]}${ropePrestrainEnabled ? ` · ${prestrainDescription()}` : ''}`;
+  $<HTMLInputElement>('rope-prestrain-enabled').checked = ropePrestrainEnabled;
+  $<HTMLInputElement>('rope-prestrain-enabled').disabled = running;
+  const prestrainSelect = $<HTMLSelectElement>('rope-prestrain-value');
+  prestrainSelect.value = String(ropePrestrainValue);
+  prestrainSelect.disabled = !ropePrestrainEnabled || running;
+  prestrainStatus.hidden = !running || !ropePrestrainEnabled;
+  prestrainStatus.textContent = prestrainDescription();
   document.querySelectorAll<HTMLInputElement>('#settings-dialog input[name="solver"]').forEach(input => { input.checked = input.value === solver; });
 
   $('beam-profile-indicator').textContent = profile.toUpperCase();
@@ -651,7 +677,7 @@ function commit(p: Project): void { recordProject(p); resetInteraction(); select
 
 function chooseTool(next: Tool): void { if (running) return; resetInteraction(); tool = next; start = null; selected = []; refreshUI(); }
 
-function stopSimulation(): void { sound.setSimulationActive(false); worker?.terminate(); worker = null; running = paused = busy = false; frame = null; recycled = undefined; elapsed = 0; members = []; $('status').textContent = 'Original design restored. Try another idea.'; refreshUI(); }
+function stopSimulation(): void { resetInteraction(); sound.setSimulationActive(false); worker?.terminate(); worker = null; running = paused = busy = false; frame = null; recycled = undefined; elapsed = 0; members = []; $('status').textContent = 'Original design restored. Try another idea.'; refreshUI(); }
 
 function runSimulation(): void {
 
@@ -682,8 +708,11 @@ function runSimulation(): void {
 
     worker.onerror = () => { stopSimulation(); notify('Simulation could not start. Please reload and try again.'); };
 
-    worker.postMessage({ type: 'start', project: history.project, options: { solver, serpentineFromRight } });
-    $('status').textContent = `Serpentine${serpentineFromRight ? ' · ↙' : ' · ↘'} · Gravity is doing its thing.`;
+    // Build the array from the current project's rope order on every run. An
+    // absent option preserves the original worker message when the switch is off.
+    const prestrainOptions = ropePrestrainEnabled ? { ropePrestrain: history.project.ropes.map(() => ropePrestrainValue) } : {};
+    worker.postMessage({ type: 'start', project: history.project, options: { solver, serpentineFromRight, ...prestrainOptions } });
+    $('status').textContent = simulationStatus(`${SOLVERS[solver]}${solver === 'serpentine' ? serpentineFromRight ? ' · ↙' : ' · ↘' : ''} · Gravity is doing its thing.`);
 
   } catch { stopSimulation(); notify('Web Workers are unavailable in this browser.'); }
 
@@ -1048,8 +1077,6 @@ canvas.addEventListener('contextmenu', e => { e.preventDefault(); if (!running &
 
 canvas.addEventListener('pointerdown', e => {
 
-  if (running) return;
-
   canvas.focus(); touch = e.pointerType !== 'mouse'; const p = eventPoint(e);
 
   pointers.set(e.pointerId, p); canvas.setPointerCapture(e.pointerId); pointerDown = p;
@@ -1070,6 +1097,9 @@ canvas.addEventListener('pointerdown', e => {
   panning = e.button === 1 || (e.button === 0 && (e.altKey || (e.pointerType === 'touch' && !onBoard)));
 
   if (panning || e.button !== 0) { lastClick = null; return; }
+
+  // Navigation is shared by build and simulation modes; only editing is blocked.
+  if (running) return;
 
   updateCursor(p);
   if (pasteState) { updatePaste(p); return; }
@@ -1112,7 +1142,7 @@ canvas.addEventListener('pointerdown', e => {
 
 canvas.addEventListener('pointermove', e => {
 
-  if (running) return; const p = eventPoint(e), previous = pointers.get(e.pointerId); if (previous) pointers.set(e.pointerId, p);
+  const p = eventPoint(e), previous = pointers.get(e.pointerId); if (previous) pointers.set(e.pointerId, p);
 
   if (previous) trackPointerMovement(p);
 
@@ -1127,6 +1157,9 @@ canvas.addEventListener('pointermove', e => {
   if (gestureUsed) return;
 
   if (panning && previous) { renderer.pan[0] += p[0] - previous[0]; renderer.pan[1] += p[1] - previous[1]; invalidate(); return; }
+
+  // Keep simulation navigation from entering any cursor, drawing or selection logic.
+  if (running) return;
 
   if (pasteState) { if (e.pointerType === 'mouse' || previous) updatePaste(p); return; }
 
@@ -1398,6 +1431,16 @@ settingsDialog.addEventListener('close', () => settingsButton.focus());
 settingsDialog.querySelectorAll<HTMLInputElement>('input[name="solver"]').forEach(input => input.onchange = () => {
   solver = input.value as Solver; refreshUI();
 });
+// These controls take effect immediately for the next run. They deliberately
+// bypass project commits, autosave and Undo/Redo, just like solver selection.
+$<HTMLInputElement>('rope-prestrain-enabled').onchange = event => {
+  ropePrestrainEnabled = (event.target as HTMLInputElement).checked; refreshUI();
+};
+$<HTMLSelectElement>('rope-prestrain-value').onchange = event => {
+  const value = Number((event.target as HTMLSelectElement).value);
+  if (ROPE_PRESTRAIN_LEVELS.some(strain => strain === value)) ropePrestrainValue = value;
+  refreshUI();
+};
 canvasSizeForm.onsubmit = e => {
   e.preventDefault();
   try {
@@ -1534,7 +1577,7 @@ function animate(now: number): void {
 
     $('performance').textContent = frame ? `${fps} FPS · ${frame.stepMs.toFixed(1)} MS/STEP · ${frame.time.toFixed(1)} S` : '';
 
-    if (frame) { const broken = frame.broken.reduce((a, b) => a + b, 0); $('status').textContent = paused ? 'Paused. Take a closer look.' : broken ? `${broken} ${broken === 1 ? 'element' : 'elements'} broken. Back to build restores your design.` : 'Gravity is doing its thing.'; }
+    if (frame) { const broken = frame.broken.reduce((a, b) => a + b, 0); $('status').textContent = simulationStatus(paused ? 'Paused. Take a closer look.' : broken ? `${broken} ${broken === 1 ? 'element' : 'elements'} broken. Back to build restores your design.` : 'Gravity is doing its thing.'); }
 
     lastStats = now;
 

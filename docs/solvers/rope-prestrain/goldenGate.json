@@ -1,0 +1,5825 @@
+{
+  "gameVersion": "0.6.0",
+  "formatVersion": 4,
+  "name": "goldenGate",
+  "project": {
+    "metadata": {
+      "size": [
+        32,
+        18
+      ],
+      "gameVersion": "0.6.0",
+      "formatVersion": 4
+    },
+    "objects": {
+      "b": [
+        [
+          -16,
+          -3,
+          -12,
+          -3,
+          "h"
+        ],
+        [
+          -12,
+          -3,
+          -9,
+          -3,
+          "h"
+        ],
+        [
+          -9,
+          6,
+          -9,
+          3,
+          "h"
+        ],
+        [
+          -9,
+          6,
+          -8,
+          6,
+          "h"
+        ],
+        [
+          -9,
+          3,
+          -9,
+          0,
+          "h"
+        ],
+        [
+          -9,
+          3,
+          -7,
+          3,
+          "h"
+        ],
+        [
+          -9,
+          0,
+          -9,
+          -3,
+          "h"
+        ],
+        [
+          -9,
+          0,
+          -7,
+          0,
+          "h"
+        ],
+        [
+          -9,
+          -3,
+          -9,
+          -9,
+          "h"
+        ],
+        [
+          -9,
+          -3,
+          -8,
+          -3,
+          "h"
+        ],
+        [
+          -8,
+          6,
+          -7,
+          6,
+          "h"
+        ],
+        [
+          -8,
+          -3,
+          -7,
+          -3,
+          "h"
+        ],
+        [
+          -7,
+          6,
+          -7,
+          3,
+          "h"
+        ],
+        [
+          -7,
+          3,
+          -7,
+          0,
+          "h"
+        ],
+        [
+          -7,
+          0,
+          -7,
+          -3,
+          "h"
+        ],
+        [
+          -7,
+          -3,
+          -7,
+          -9,
+          "h"
+        ],
+        [
+          -7,
+          -3,
+          -4,
+          -3,
+          "h"
+        ],
+        [
+          -4,
+          -3,
+          0,
+          -3,
+          "h"
+        ],
+        [
+          0,
+          -3,
+          4,
+          -3,
+          "h"
+        ],
+        [
+          4,
+          -3,
+          7,
+          -3,
+          "h"
+        ],
+        [
+          7,
+          6,
+          7,
+          3,
+          "h"
+        ],
+        [
+          7,
+          6,
+          8,
+          6,
+          "h"
+        ],
+        [
+          7,
+          3,
+          7,
+          0,
+          "h"
+        ],
+        [
+          7,
+          3,
+          9,
+          3,
+          "h"
+        ],
+        [
+          7,
+          0,
+          7,
+          -3,
+          "h"
+        ],
+        [
+          7,
+          0,
+          9,
+          0,
+          "h"
+        ],
+        [
+          7,
+          -3,
+          7,
+          -9,
+          "h"
+        ],
+        [
+          7,
+          -3,
+          8,
+          -3,
+          "h"
+        ],
+        [
+          8,
+          6,
+          9,
+          6,
+          "h"
+        ],
+        [
+          8,
+          -3,
+          9,
+          -3,
+          "h"
+        ],
+        [
+          9,
+          6,
+          9,
+          3,
+          "h"
+        ],
+        [
+          9,
+          3,
+          9,
+          0,
+          "h"
+        ],
+        [
+          9,
+          0,
+          9,
+          -3,
+          "h"
+        ],
+        [
+          9,
+          -3,
+          9,
+          -9,
+          "h"
+        ],
+        [
+          9,
+          -3,
+          12,
+          -3,
+          "h"
+        ],
+        [
+          12,
+          -3,
+          16,
+          -3,
+          "h"
+        ]
+      ],
+      "r": [
+        [
+          -16,
+          2,
+          -16,
+          -3,
+          "s"
+        ],
+        [
+          -16,
+          2,
+          -12,
+          4,
+          "h"
+        ],
+        [
+          -12,
+          4,
+          -12,
+          -3,
+          "s"
+        ],
+        [
+          -12,
+          4,
+          -8,
+          6,
+          "h"
+        ],
+        [
+          -8,
+          6,
+          -4,
+          4,
+          "h"
+        ],
+        [
+          -4,
+          4,
+          -4,
+          -3,
+          "s"
+        ],
+        [
+          -4,
+          4,
+          0,
+          2,
+          "h"
+        ],
+        [
+          0,
+          2,
+          0,
+          -3,
+          "s"
+        ],
+        [
+          0,
+          2,
+          4,
+          4,
+          "h"
+        ],
+        [
+          4,
+          4,
+          4,
+          -3,
+          "s"
+        ],
+        [
+          4,
+          4,
+          8,
+          6,
+          "h"
+        ],
+        [
+          8,
+          6,
+          12,
+          4,
+          "h"
+        ],
+        [
+          12,
+          4,
+          12,
+          -3,
+          "s"
+        ],
+        [
+          12,
+          4,
+          16,
+          2,
+          "h"
+        ],
+        [
+          16,
+          2,
+          16,
+          -3,
+          "s"
+        ]
+      ]
+    },
+    "checksum": "fnv1a32:adade5ce"
+  },
+  "gravity": 9.81,
+  "iterations": 12,
+  "damping": 0.65,
+  "dt": 0.008333333333333333,
+  "startup": "prestrained at t=0; no settling",
+  "screeningSeconds": 4,
+  "acceptanceSeconds": 20,
+  "acceptanceDisplacement": 2.5,
+  "prestrainLevels": [
+    0,
+    0.001,
+    0.0025,
+    0.005,
+    0.01
+  ],
+  "groups": {
+    "labels": [
+      "main cable",
+      "hangers"
+    ],
+    "indices": [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1
+    ]
+  },
+  "screeningRank": [
+    "total broken members",
+    "total new boundary samples",
+    "worst displacement",
+    "sum of group strains",
+    "first group strain",
+    "second group strain"
+  ],
+  "screens": [
+    {
+      "groupPrestrain": [
+        0,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 1.0038159061144034,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9884015560717503,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 1.0047852052206867,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialElasticEnergy": 0,
+      "initialRopeMass": 40.94383712319704
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0,
+        0.001,
+        0,
+        0,
+        0.001,
+        0,
+        0.001,
+        0,
+        0.001,
+        0,
+        0,
+        0.001,
+        0,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0,
+              0.001,
+              0,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0,
+              0.001,
+              0,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9931317717904251,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0,
+              0.001,
+              0,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0,
+              0.001,
+              0,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9800195050231204,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0,
+              0.001,
+              0,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0,
+              0.001,
+              0,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9901662189075701,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        80,
+        0,
+        80,
+        0,
+        0,
+        80,
+        0,
+        80,
+        0,
+        80,
+        0,
+        0,
+        80,
+        0,
+        80
+      ],
+      "initialElasticEnergy": 1.7182817182817185,
+      "initialRopeMass": 40.934386573746494
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0,
+        0.0025,
+        0,
+        0,
+        0.0025,
+        0,
+        0.0025,
+        0,
+        0.0025,
+        0,
+        0,
+        0.0025,
+        0,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0,
+              0.0025,
+              0,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9747352547629647,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0,
+              0.0025,
+              0,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9644522605057088,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0,
+              0.0025,
+              0,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9660524344934679,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        200,
+        0,
+        200,
+        0,
+        0,
+        200,
+        0,
+        200,
+        0,
+        200,
+        0,
+        0,
+        200,
+        0,
+        200
+      ],
+      "initialElasticEnergy": 10.723192019950126,
+      "initialRopeMass": 40.920246100753154
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0,
+        0.005,
+        0,
+        0,
+        0.005,
+        0,
+        0.005,
+        0,
+        0.005,
+        0,
+        0,
+        0.005,
+        0,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0,
+              0.005,
+              0,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0,
+              0.005,
+              0,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9339886602031693,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0,
+              0.005,
+              0,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0,
+              0.005,
+              0,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9299320903546949,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0,
+              0.005,
+              0,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0,
+              0.005,
+              0,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9236823766833089,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        400,
+        0,
+        400,
+        0,
+        0,
+        400,
+        0,
+        400,
+        0,
+        400,
+        0,
+        0,
+        400,
+        0,
+        400
+      ],
+      "initialElasticEnergy": 42.7860696517413,
+      "initialRopeMass": 40.89677244658012
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0,
+        0.01,
+        0,
+        0,
+        0.01,
+        0,
+        0.01,
+        0,
+        0.01,
+        0,
+        0,
+        0.01,
+        0,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0,
+              0.01,
+              0,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0,
+              0.01,
+              0,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8335963513943592,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0,
+              0.01,
+              0,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0,
+              0.01,
+              0,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8382924031084141,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0,
+              0.01,
+              0,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0,
+              0.01,
+              0,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8430391947839389,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        0,
+        800,
+        0,
+        0,
+        800,
+        0,
+        800,
+        0,
+        800,
+        0,
+        0,
+        800,
+        0,
+        800
+      ],
+      "initialElasticEnergy": 170.2970297029703,
+      "initialRopeMass": 40.85017375686041
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.001,
+        0,
+        0.001,
+        0.001,
+        0,
+        0.001,
+        0,
+        0.001,
+        0,
+        0.001,
+        0.001,
+        0,
+        0.001,
+        0
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.001,
+              0,
+              0.001,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0.001,
+              0,
+              0.001,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9926545822495632,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.001,
+              0,
+              0.001,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0.001,
+              0,
+              0.001,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9746031458641579,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.001,
+              0,
+              0.001,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0,
+              0.001,
+              0.001,
+              0,
+              0.001,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9999347619389415,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        320,
+        0,
+        320,
+        320,
+        0,
+        320,
+        0,
+        320,
+        0,
+        320,
+        320,
+        0,
+        320,
+        0
+      ],
+      "initialElasticEnergy": 5.718615406992471,
+      "initialRopeMass": 40.91238473845859
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9835013696508469,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9678899608539844,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9879618700697057,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        80,
+        320,
+        80,
+        320,
+        320,
+        80,
+        320,
+        80,
+        320,
+        80,
+        320,
+        320,
+        80,
+        320,
+        80
+      ],
+      "initialElasticEnergy": 7.436897125274189,
+      "initialRopeMass": 40.90293418900804
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.001,
+        0.0025,
+        0.001,
+        0.001,
+        0.0025,
+        0.001,
+        0.0025,
+        0.001,
+        0.0025,
+        0.001,
+        0.001,
+        0.0025,
+        0.001,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9677240796400964,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9549097736526951,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.96669129625526,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        200,
+        320,
+        200,
+        320,
+        320,
+        200,
+        320,
+        200,
+        320,
+        200,
+        320,
+        320,
+        200,
+        320,
+        200
+      ],
+      "initialElasticEnergy": 16.441807426942596,
+      "initialRopeMass": 40.8887937160147
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.001,
+        0.005,
+        0.001,
+        0.001,
+        0.005,
+        0.001,
+        0.005,
+        0.001,
+        0.005,
+        0.001,
+        0.001,
+        0.005,
+        0.001,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.001,
+              0.005,
+              0.001,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9313498999557118,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.001,
+              0.005,
+              0.001,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9243036406442973,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.001,
+              0.005,
+              0.001,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9233956675534731,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        400,
+        320,
+        400,
+        320,
+        320,
+        400,
+        320,
+        400,
+        320,
+        400,
+        320,
+        320,
+        400,
+        320,
+        400
+      ],
+      "initialElasticEnergy": 48.50468505873377,
+      "initialRopeMass": 40.86532006184167
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.001,
+        0.01,
+        0.001,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.001,
+              0.01,
+              0.001,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8309478236322901,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.001,
+              0.01,
+              0.001,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8358524682625509,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.001,
+              0.01,
+              0.001,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8363273097311308,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        320,
+        800,
+        320,
+        320,
+        800,
+        320,
+        800,
+        320,
+        800,
+        320,
+        320,
+        800,
+        320,
+        800
+      ],
+      "initialElasticEnergy": 176.0156451099628,
+      "initialRopeMass": 40.818721372121956
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.0025,
+        0,
+        0.0025,
+        0.0025,
+        0,
+        0.0025,
+        0,
+        0.0025,
+        0,
+        0.0025,
+        0.0025,
+        0,
+        0.0025,
+        0
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0.0025,
+              0,
+              0.0025,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.962731591932763,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0.0025,
+              0,
+              0.0025,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9595972255159942,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0,
+              0.0025,
+              0.0025,
+              0,
+              0.0025,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9839583395766339,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        800,
+        0,
+        800,
+        800,
+        0,
+        800,
+        0,
+        800,
+        0,
+        800,
+        800,
+        0,
+        800,
+        0
+      ],
+      "initialElasticEnergy": 35.68786797007146,
+      "initialRopeMass": 40.86532381366288
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.0025,
+        0.001,
+        0.0025,
+        0.0025,
+        0.001,
+        0.0025,
+        0.001,
+        0.0025,
+        0.001,
+        0.0025,
+        0.0025,
+        0.001,
+        0.0025,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9591232111326456,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9502158935928986,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001,
+              0.0025,
+              0.0025,
+              0.001,
+              0.0025,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9754900772286464,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        80,
+        800,
+        80,
+        800,
+        800,
+        80,
+        800,
+        80,
+        800,
+        80,
+        800,
+        800,
+        80,
+        800,
+        80
+      ],
+      "initialElasticEnergy": 37.40614968835318,
+      "initialRopeMass": 40.85587326421234
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.949869924351231,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9345210576670616,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9599009073177165,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        200,
+        800,
+        200,
+        800,
+        800,
+        200,
+        800,
+        200,
+        800,
+        200,
+        800,
+        800,
+        200,
+        800,
+        200
+      ],
+      "initialElasticEnergy": 46.411059990021585,
+      "initialRopeMass": 40.841732791219
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.0025,
+        0.005,
+        0.0025,
+        0.0025,
+        0.005,
+        0.0025,
+        0.005,
+        0.0025,
+        0.005,
+        0.0025,
+        0.0025,
+        0.005,
+        0.0025,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.921461581570187,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9111727098758575,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.92251663453151,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        400,
+        800,
+        400,
+        800,
+        800,
+        400,
+        800,
+        400,
+        800,
+        400,
+        800,
+        800,
+        400,
+        800,
+        400
+      ],
+      "initialElasticEnergy": 78.47393762181277,
+      "initialRopeMass": 40.81825913704597
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.0025,
+        0.01,
+        0.0025,
+        0.0025,
+        0.01,
+        0.0025,
+        0.01,
+        0.0025,
+        0.01,
+        0.0025,
+        0.0025,
+        0.01,
+        0.0025,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8260802672452071,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8307462286333626,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8288241832999205,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800,
+        800
+      ],
+      "initialElasticEnergy": 205.9848976730418,
+      "initialRopeMass": 40.77166044732625
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.005,
+        0,
+        0.005,
+        0.005,
+        0,
+        0.005,
+        0,
+        0.005,
+        0,
+        0.005,
+        0.005,
+        0,
+        0.005,
+        0
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.005,
+              0,
+              0.005,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0.005,
+              0,
+              0.005,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.933839771817594,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.005,
+              0,
+              0.005,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0.005,
+              0,
+              0.005,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8987453457500966,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.005,
+              0,
+              0.005,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0,
+              0.005,
+              0.005,
+              0,
+              0.005,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.92639004113583,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        1600,
+        0,
+        1600,
+        1600,
+        0,
+        1600,
+        0,
+        1600,
+        0,
+        1600,
+        1600,
+        0,
+        1600,
+        0
+      ],
+      "initialElasticEnergy": 142.39636871640457,
+      "initialRopeMass": 40.787201117609
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.005,
+        0.001,
+        0.005,
+        0.005,
+        0.001,
+        0.005,
+        0.001,
+        0.005,
+        0.001,
+        0.005,
+        0.005,
+        0.001,
+        0.005,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.005,
+              0.001,
+              0.005,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.921567852998193,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.005,
+              0.001,
+              0.005,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8987922326202653,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.001,
+              0.005,
+              0.005,
+              0.001,
+              0.005,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9262791989236193,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        80,
+        1600,
+        80,
+        1600,
+        1600,
+        80,
+        1600,
+        80,
+        1600,
+        80,
+        1600,
+        1600,
+        80,
+        1600,
+        80
+      ],
+      "initialElasticEnergy": 144.11465043468624,
+      "initialRopeMass": 40.77775056815845
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.005,
+        0.0025,
+        0.005,
+        0.005,
+        0.0025,
+        0.005,
+        0.0025,
+        0.005,
+        0.0025,
+        0.005,
+        0.005,
+        0.0025,
+        0.005,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8989304055572485,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8955595767098875,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025,
+              0.005,
+              0.005,
+              0.0025,
+              0.005,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9243279850119763,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        200,
+        1600,
+        200,
+        1600,
+        1600,
+        200,
+        1600,
+        200,
+        1600,
+        200,
+        1600,
+        1600,
+        200,
+        1600,
+        200
+      ],
+      "initialElasticEnergy": 153.11956073635469,
+      "initialRopeMass": 40.763610095165106
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8794748743138582,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8731174353552221,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9040043782235341,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        400,
+        1600,
+        400,
+        1600,
+        1600,
+        400,
+        1600,
+        400,
+        1600,
+        400,
+        1600,
+        1600,
+        400,
+        1600,
+        400
+      ],
+      "initialElasticEnergy": 185.18243836814585,
+      "initialRopeMass": 40.74013644099208
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.005,
+        0.01,
+        0.005,
+        0.005,
+        0.01,
+        0.005,
+        0.01,
+        0.005,
+        0.01,
+        0.005,
+        0.005,
+        0.01,
+        0.005,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.005,
+              0.01,
+              0.005,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8107687969272797,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.005,
+              0.01,
+              0.005,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8146654372063656,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.005,
+              0.01,
+              0.005,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.8212007755371544,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        1600,
+        800,
+        1600,
+        1600,
+        800,
+        1600,
+        800,
+        1600,
+        800,
+        1600,
+        1600,
+        800,
+        1600,
+        800
+      ],
+      "initialElasticEnergy": 312.6933984193749,
+      "initialRopeMass": 40.693537751272366
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.01,
+        0,
+        0.01,
+        0.01,
+        0,
+        0.01,
+        0,
+        0.01,
+        0,
+        0.01,
+        0.01,
+        0,
+        0.01,
+        0
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.01,
+              0,
+              0.01,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0.01,
+              0,
+              0.01,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7705456636693725,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.01,
+              0,
+              0.01,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0.01,
+              0,
+              0.01,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7403105040192036,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.01,
+              0,
+              0.01,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0,
+              0.01,
+              0.01,
+              0,
+              0.01,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7659140030201704,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        3200,
+        0,
+        3200,
+        3200,
+        0,
+        3200,
+        0,
+        3200,
+        0,
+        3200,
+        3200,
+        0,
+        3200,
+        0
+      ],
+      "initialElasticEnergy": 566.7657447920259,
+      "initialRopeMass": 40.632115963561425
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.01,
+        0.001,
+        0.01,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7692483233584392,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.739332605473615,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7673990300063709,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        80,
+        3200,
+        80,
+        3200,
+        3200,
+        80,
+        3200,
+        80,
+        3200,
+        80,
+        3200,
+        3200,
+        80,
+        3200,
+        80
+      ],
+      "initialElasticEnergy": 568.4840265103076,
+      "initialRopeMass": 40.62266541411088
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.01,
+        0.0025,
+        0.01,
+        0.01,
+        0.0025,
+        0.01,
+        0.0025,
+        0.01,
+        0.0025,
+        0.01,
+        0.01,
+        0.0025,
+        0.01,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.766710757378284,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7397620457230611,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025,
+              0.01,
+              0.01,
+              0.0025,
+              0.01,
+              0.0025
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7704630648621789,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        200,
+        3200,
+        200,
+        3200,
+        3200,
+        200,
+        3200,
+        200,
+        3200,
+        200,
+        3200,
+        3200,
+        200,
+        3200,
+        200
+      ],
+      "initialElasticEnergy": 577.488936811976,
+      "initialRopeMass": 40.60852494111753
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.01,
+        0.005,
+        0.01,
+        0.01,
+        0.005,
+        0.01,
+        0.005,
+        0.01,
+        0.005,
+        0.01,
+        0.01,
+        0.005,
+        0.01,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.01,
+              0.005,
+              0.01,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7580342469530721,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.01,
+              0.005,
+              0.01,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7394044620231899,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.005,
+              0.01,
+              0.01,
+              0.005,
+              0.01,
+              0.005
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7743445756765257,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        400,
+        3200,
+        400,
+        3200,
+        3200,
+        400,
+        3200,
+        400,
+        3200,
+        400,
+        3200,
+        3200,
+        400,
+        3200,
+        400
+      ],
+      "initialElasticEnergy": 609.5518144437672,
+      "initialRopeMass": 40.58505128694451
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7299083040688176,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7295841028229889,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7628575976216162,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        3200,
+        800,
+        3200,
+        3200,
+        800,
+        3200,
+        800,
+        3200,
+        800,
+        3200,
+        3200,
+        800,
+        3200,
+        800
+      ],
+      "initialElasticEnergy": 737.0627744949961,
+      "initialRopeMass": 40.5384525972248
+    }
+  ],
+  "fullRuns": [
+    {
+      "phase": "baseline",
+      "groupPrestrain": [
+        0,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialRopes": [
+        {
+          "index": 0,
+          "endpoints": [
+            0,
+            7,
+            0,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 5,
+          "naturalLength": 5,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.1
+        },
+        {
+          "index": 1,
+          "endpoints": [
+            0,
+            7,
+            4,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 2,
+          "endpoints": [
+            4,
+            5,
+            4,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 7,
+          "naturalLength": 7,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.54
+        },
+        {
+          "index": 3,
+          "endpoints": [
+            4,
+            5,
+            8,
+            3
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 4,
+          "endpoints": [
+            8,
+            3,
+            12,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 5,
+          "endpoints": [
+            12,
+            5,
+            12,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 7,
+          "naturalLength": 7,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.54
+        },
+        {
+          "index": 6,
+          "endpoints": [
+            12,
+            5,
+            16,
+            7
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 7,
+          "endpoints": [
+            16,
+            7,
+            16,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 5,
+          "naturalLength": 5,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.1
+        },
+        {
+          "index": 8,
+          "endpoints": [
+            16,
+            7,
+            20,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 9,
+          "endpoints": [
+            20,
+            5,
+            20,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 7,
+          "naturalLength": 7,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.54
+        },
+        {
+          "index": 10,
+          "endpoints": [
+            20,
+            5,
+            24,
+            3
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 11,
+          "endpoints": [
+            24,
+            3,
+            28,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 12,
+          "endpoints": [
+            28,
+            5,
+            28,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 7,
+          "naturalLength": 7,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.54
+        },
+        {
+          "index": 13,
+          "endpoints": [
+            28,
+            5,
+            32,
+            7
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.47213595499958,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.93547964039963
+        },
+        {
+          "index": 14,
+          "endpoints": [
+            32,
+            7,
+            32,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 5,
+          "naturalLength": 5,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.1
+        }
+      ],
+      "initialElasticEnergy": 0,
+      "initialRopeMass": 40.94383712319704,
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 1.0038159061144034,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 1.004447756982335,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9884015560717503,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.9866679361427036,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 1.0047852052206867,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 1.002993177212859,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ]
+    },
+    {
+      "phase": "selected",
+      "groupPrestrain": [
+        0.01,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "initialRopes": [
+        {
+          "index": 0,
+          "endpoints": [
+            0,
+            7,
+            0,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 5,
+          "naturalLength": 4.9504950495049505,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 19.801980198019802,
+          "mass": 1.0891089108910892
+        },
+        {
+          "index": 1,
+          "endpoints": [
+            0,
+            7,
+            4,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 2,
+          "endpoints": [
+            4,
+            5,
+            4,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 7,
+          "naturalLength": 6.930693069306931,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 27.722772277227723,
+          "mass": 1.5247524752475248
+        },
+        {
+          "index": 3,
+          "endpoints": [
+            4,
+            5,
+            8,
+            3
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 4,
+          "endpoints": [
+            8,
+            3,
+            12,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 5,
+          "endpoints": [
+            12,
+            5,
+            12,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 7,
+          "naturalLength": 6.930693069306931,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 27.722772277227723,
+          "mass": 1.5247524752475248
+        },
+        {
+          "index": 6,
+          "endpoints": [
+            12,
+            5,
+            16,
+            7
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 7,
+          "endpoints": [
+            16,
+            7,
+            16,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 5,
+          "naturalLength": 4.9504950495049505,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 19.801980198019802,
+          "mass": 1.0891089108910892
+        },
+        {
+          "index": 8,
+          "endpoints": [
+            16,
+            7,
+            20,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 9,
+          "endpoints": [
+            20,
+            5,
+            20,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 7,
+          "naturalLength": 6.930693069306931,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 27.722772277227723,
+          "mass": 1.5247524752475248
+        },
+        {
+          "index": 10,
+          "endpoints": [
+            20,
+            5,
+            24,
+            3
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 11,
+          "endpoints": [
+            24,
+            3,
+            28,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 12,
+          "endpoints": [
+            28,
+            5,
+            28,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 7,
+          "naturalLength": 6.930693069306931,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 27.722772277227723,
+          "mass": 1.5247524752475248
+        },
+        {
+          "index": 13,
+          "endpoints": [
+            28,
+            5,
+            32,
+            7
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 14,
+          "endpoints": [
+            32,
+            7,
+            32,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 5,
+          "naturalLength": 4.9504950495049505,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 19.801980198019802,
+          "mass": 1.0891089108910892
+        }
+      ],
+      "initialElasticEnergy": 737.0627744949961,
+      "initialRopeMass": 40.5384525972248,
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7299083040688176,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7319958231835662,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7295841028229889,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.727316768558542,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7628575976216162,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7634948166850508,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ]
+    },
+    {
+      "phase": "selected",
+      "groupPrestrain": [
+        0.01,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.001,
+        0.01,
+        0.01,
+        0.001,
+        0.01,
+        0.001
+      ],
+      "initialRopes": [
+        {
+          "index": 0,
+          "endpoints": [
+            0,
+            7,
+            0,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 5,
+          "naturalLength": 4.9950049950049955,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.19980019980019983,
+          "mass": 1.098901098901099
+        },
+        {
+          "index": 1,
+          "endpoints": [
+            0,
+            7,
+            4,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 2,
+          "endpoints": [
+            4,
+            5,
+            4,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 7,
+          "naturalLength": 6.993006993006993,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.27972027972027974,
+          "mass": 1.5384615384615385
+        },
+        {
+          "index": 3,
+          "endpoints": [
+            4,
+            5,
+            8,
+            3
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 4,
+          "endpoints": [
+            8,
+            3,
+            12,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 5,
+          "endpoints": [
+            12,
+            5,
+            12,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 7,
+          "naturalLength": 6.993006993006993,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.27972027972027974,
+          "mass": 1.5384615384615385
+        },
+        {
+          "index": 6,
+          "endpoints": [
+            12,
+            5,
+            16,
+            7
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 7,
+          "endpoints": [
+            16,
+            7,
+            16,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 5,
+          "naturalLength": 4.9950049950049955,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.19980019980019983,
+          "mass": 1.098901098901099
+        },
+        {
+          "index": 8,
+          "endpoints": [
+            16,
+            7,
+            20,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 9,
+          "endpoints": [
+            20,
+            5,
+            20,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 7,
+          "naturalLength": 6.993006993006993,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.27972027972027974,
+          "mass": 1.5384615384615385
+        },
+        {
+          "index": 10,
+          "endpoints": [
+            20,
+            5,
+            24,
+            3
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 11,
+          "endpoints": [
+            24,
+            3,
+            28,
+            5
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 12,
+          "endpoints": [
+            28,
+            5,
+            28,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 7,
+          "naturalLength": 6.993006993006993,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.27972027972027974,
+          "mass": 1.5384615384615385
+        },
+        {
+          "index": 13,
+          "endpoints": [
+            28,
+            5,
+            32,
+            7
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 4.47213595499958,
+          "naturalLength": 4.427857381187702,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 70.84571809900324,
+          "mass": 3.896514495445178
+        },
+        {
+          "index": 14,
+          "endpoints": [
+            32,
+            7,
+            32,
+            12
+          ],
+          "profile": "s",
+          "prestrain": 0.001,
+          "mountedLength": 5,
+          "naturalLength": 4.9950049950049955,
+          "axialRigidity": 80000,
+          "force": 80,
+          "elasticEnergy": 0.19980019980019983,
+          "mass": 1.098901098901099
+        }
+      ],
+      "initialElasticEnergy": 568.4840265103076,
+      "initialRopeMass": 40.62266541411088,
+      "runs": [
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7692483233584392,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7661342446235839,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.739332605473615,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7426222270412953,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7673990300063709,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "goldenGate",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.001,
+              0.01,
+              0.01,
+              0.001,
+              0.01,
+              0.001
+            ]
+          },
+          "size": [
+            32,
+            18
+          ],
+          "beams": 36,
+          "ropes": 15,
+          "maximumDisplacement": 0.7716623108310467,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ]
+    }
+  ]
+}

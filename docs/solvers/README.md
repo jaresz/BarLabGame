@@ -9,6 +9,8 @@ Bar Lab offers two simulation solvers. [Basic XPBD Solver](original.md) preserve
 
 Both use the same particle model, fixed time step, material profiles, and local XPBD corrections. Since 0.5.0, intact joints and member midpoints share an exact translational particle. See [Shared Positional Points](shared-point.md) for implementation, fracture handling, measured improvements and remaining limitations.
 
+Version 0.6.0 introduced a diagnostic [physical rope-prestrain prototype](rope-prestrain.md). Since 0.7.0, Settings can also enable a uniform initial stretch for all ropes. This experimental option starts off on every page load, does not enter saved projects, and leaves normal zero-prestrain behavior unchanged until enabled.
+
 Since 0.4.76, both solvers start each run with a small, deterministic horizontal imperfection of at most 0.001 board units. It is applied once, preserves coincident joint particles and boundary supports, and leaves the saved design unchanged. The iteration count remains 12. Identical geometry receives the same disturbance regardless of the solver or Serpentine starting side.
 
 For diagnostics, `PhysicsOptions.initialPerturbation` controls the signed amplitude: the default is `0.001`, a negative value tests the opposite direction, and `0` disables it. At initial internal coordinates `(x, y)` on a board of width `W` and height `H`, the horizontal offset is `amplitude × sin(πx/W) × sin(πy/H)`; boundary points remain exactly fixed. The historical trajectories below predate shared translational particles and explicitly disable this imperfection. Re-running their scripts with the current engine produces new trajectories, even with zero imperfection.

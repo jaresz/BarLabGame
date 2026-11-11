@@ -93,9 +93,9 @@ test('Invalid pastes reject atomically while raw previews retain the offending g
  assert.throws(()=>pasteFragment(source,fragment,{origin:[2.5,3],flipX:false,flipY:false}),/whole grid/);
  assert.throws(()=>pasteFragment(source,fragment,{origin:[4,2],flipX:false,flipY:false}),/overlaps/);
  assert.equal(fragmentPreview(source,fragment,{origin:[14,3],flipX:false,flipY:false}).beams.length,2);
- const invalid={...fragment,beams:[{endpoints:[0,0,7,0] as Member,profile:'s' as const}]};
+ const invalid={...fragment,beams:[{endpoints:[0,0,MAX_LENGTH.beam+1,0] as Member,profile:'s' as const}]};
  assert.throws(()=>pasteFragment(source,invalid,{origin:[1,6],flipX:false,flipY:false}),/Maximum beam/);
- assert.throws(()=>pasteFragment({...source,size:[32,18]},{...fragment,beams:[],ropes:[{endpoints:[0,0,21,0],profile:'s'}]},{origin:[1,6],flipX:false,flipY:false}),/Maximum rope/);
+ assert.throws(()=>pasteFragment({...source,size:[32,18]},{...fragment,beams:[],ropes:[{endpoints:[0,0,MAX_LENGTH.rope+1,0],profile:'s'}]},{origin:[1,6],flipX:false,flipY:false}),/Maximum rope/);
  assert.deepEqual(transformFragment(fragment,{origin:[8,6],flipX:true,flipY:true}).nodes.map(n=>n.point),[[12,6],[8,6]]);
  assert.equal(exportProject(source),before);
 });
@@ -143,9 +143,9 @@ test('Group nodes can occupy each other\'s old coordinates without accidental me
 // Move a group attached to limit-length external members into invalid positions; assert material,
 // grid, bounds and overlap errors without mutation, and inspect an out-of-bounds raw preview.
 test('Group movement validates every external element and all bounds atomically', () => {
- let p=addMember(addMember({...emptyProject(),size:[32,18]},'beam',[2,4,4,4]),'rope',[4,4,24,4]);
+ let p=addMember(addMember({...emptyProject(),size:[32,18]},'beam',[2,4,4,4]),'rope',[4,4,4+MAX_LENGTH.rope,4]);
  const ropeLimited=p;
- p=addMember(p,'beam',[2,4,2,10]);
+ p=addMember(p,'beam',[2,4,2,4+MAX_LENGTH.beam]);
  const sources: [number,number][]=[[2,4],[4,4]], before=exportProject(p);
  assert.throws(()=>translateNodes(p,sources,[0,-1]),/Maximum beam/);
  assert.throws(()=>translateNodes(ropeLimited,sources,[-1,0]),/Maximum rope/);
@@ -232,14 +232,14 @@ test('A translated beam can occupy its other endpoint without merging or losing 
 // from a nonexistent span and onto a partial overlap; assert errors and preserve the original export.
 test('Beam movement rejects invalid endpoints, limits of adjacent members and partial overlaps atomically', () => {
  const beam: Member=[2,4,6,4];
- const p=addMember(addMember(emptyProject(),'beam',beam),'beam',[6,4,12,4]);
+ const p=addMember(addMember({...emptyProject(),size:[32,18]},'beam',beam),'beam',[6,4,6+MAX_LENGTH.beam,4]);
  const before=exportProject(p);
  assert.throws(()=>moveBeam(p,beam,[0,1]),/Maximum beam/);
  assert.throws(()=>moveBeam(p,beam,[-3,0]),/inside/);
  assert.throws(()=>moveBeam(p,beam,[0.5,0]),/inside/);
  assert.throws(()=>moveBeam(p,[2,4,5,4],[0,1]),/not exist/);
  assert.equal(exportProject(p),before);
- const ropes=addMember(addMember({...emptyProject(),size:[32,18]},'beam',beam),'rope',[6,4,26,4]);
+ const ropes=addMember(addMember({...emptyProject(),size:[32,18]},'beam',beam),'rope',[6,4,6+MAX_LENGTH.rope,4]);
  assert.throws(()=>moveBeam(ropes,beam,[0,1]),/Maximum rope/);
  const overlapping=addMember(addMember(emptyProject(),'beam',beam),'beam',[4,6,8,6]);
  assert.throws(()=>moveBeam(overlapping,beam,[0,2]),/overlaps/);
@@ -299,18 +299,21 @@ test('Node moves carry every incident member, settings, costs and history atomic
 // Move shared nodes against beam/rope length, grid, bounds and overlap constraints, including a
 // beam that normalization could split; check exact-limit success and rejection before splitting.
 test('Moves enforce all material limits before splitting, bounds and beam overlap', () => {
- const p=addMember(addMember({...emptyProject(),size:[32,24]},'beam',[0,5,6,5]),'rope',[6,5,26,5]);
- assert.doesNotThrow(()=>moveNode(p,[6,5],[6,5]));
- assert.throws(()=>moveNode(p,[6,5],[6,6]),/Maximum beam/);
- assert.throws(()=>moveNode(p,[6,5],[5,5]),/Maximum rope/);
- assert.throws(()=>moveNode(p,[6,5],[-1,5]),/inside/);
- assert.throws(()=>moveNode(p,[6,5],[5.5,5]),/inside/);
+ const limit=MAX_LENGTH.beam;
+ const p=addMember(addMember({...emptyProject(),size:[64,40]},'beam',[0,5,limit,5]),'rope',[limit,5,limit+MAX_LENGTH.rope,5]);
+ assert.doesNotThrow(()=>moveNode(p,[limit,5],[limit,5]));
+ assert.throws(()=>moveNode(p,[limit,5],[limit,6]),/Maximum beam/);
+ assert.throws(()=>moveNode(p,[limit,5],[limit-1,5]),/Maximum rope/);
+ assert.throws(()=>moveNode(p,[limit,5],[-1,5]),/inside/);
+ assert.throws(()=>moveNode(p,[limit,5],[limit-0.5,5]),/inside/);
  assert.throws(()=>moveNode(p,[3,3],[4,4]),/not exist/);
- const diagonal=addMember({...emptyProject(),size:[32,24]},'rope',[0,0,12,15]);
- assert.doesNotThrow(()=>moveNode(diagonal,[12,15],[12,16]));
- assert.throws(()=>moveNode(diagonal,[12,15],[13,16]),/Maximum rope/);
+ // At the exact axial limit, even a one-unit transverse offset must be rejected.
+ const ropeLimit=MAX_LENGTH.rope;
+ const ropeNearLimit=addMember({...emptyProject(),size:[64,40]},'rope',[0,0,0,ropeLimit-1]);
+ assert.doesNotThrow(()=>moveNode(ropeNearLimit,[0,ropeLimit-1],[0,ropeLimit]));
+ assert.throws(()=>moveNode(ropeNearLimit,[0,ropeLimit-1],[1,ropeLimit]),/Maximum rope/);
  const split=addMember(addMember(emptyProject(),'beam',[0,5,4,5]),'rope',[6,5,6,8]);
- assert.throws(()=>moveNode(split,[4,5],[7,5]),/Maximum beam/);
+ assert.throws(()=>moveNode(split,[4,5],[limit+1,5]),/Maximum beam/);
  const overlap=addMember(addMember(emptyProject(),'beam',[2,3,4,3]),'beam',[3,2,5,3]);
  assert.throws(()=>moveNode(overlap,[3,2],[3,3]),/overlaps/);
 });
@@ -371,21 +374,25 @@ test('Splitting a diagonal preserves its profile, mass length and rounded catego
  assert.throws(()=>addMember(p,'beam',[10,5,14,9],'x','l'),/exists/);
 });
 // For each material, validate a span exactly at its length limit and a slightly longer diagonal;
-// also check a 12-16-20 rope to confirm Euclidean rather than axis-wise validation.
-test('Material length limits are 6 and 20 including diagonals and imported projects', () => {
+// also check a diagonal rope to confirm Euclidean rather than axis-wise validation.
+test('Material length limits follow MAX_LENGTH including diagonals and imported projects', () => {
  const p=emptyProject(); p.size=[32,24];
- for(const [material,limit] of [['beam',6],['rope',20]] as const){
+ for(const material of ['beam','rope'] as const){
+  const limit=MAX_LENGTH[material];
   assert.equal(validateMember(p,material,[0,5,limit,5]),null);
   assert.match(validateMember(p,material,[0,5,limit,6])!,new RegExp(String(limit)));
  }
- const long=addMember(p,'rope',[0,0,12,16]);
+ // Use a scaled 3-4-5 direction that stays inside the current material radius.
+ const x=Math.floor(MAX_LENGTH.rope*0.6),y=Math.floor(MAX_LENGTH.rope*0.8);
+ const long=addMember(p,'rope',[0,0,x,y]);
  assert.deepEqual(importProject(exportProject(long)),long);
- assert.equal(projectCost(long).breakdown.r,40);
- assert.deepEqual(drawingEndpoint([1,5],[31,5],'rope',p.size),[21,5]);
+ assert.equal(projectCost(long).breakdown.r,Math.ceil(Math.hypot(x,y)*2-1e-9));
+ assert.deepEqual(drawingEndpoint([1,5],[31,5],'rope',p.size),[1+MAX_LENGTH.rope,5]);
  const overlength=JSON.parse(exportProject(long));
  delete overlength.checksum;
- overlength.objects.r=[[-10,0,10,1,'s']];
- assert.throws(()=>importProject(JSON.stringify(overlength)),/at most 20/);
+ const half=Math.floor(MAX_LENGTH.rope/2);
+ overlength.objects.r=[[-half,0,MAX_LENGTH.rope-half,1,'s']];
+ assert.throws(()=>importProject(JSON.stringify(overlength)),new RegExp(`at most ${MAX_LENGTH.rope}`));
  const legacy=importProject(JSON.stringify({metadata:{size:[32,24],gameVersion:'0.4.77',formatVersion:3},objects:{r:[[0,0,6,8]]}}));
  assert.deepEqual(importProject(exportProject(legacy)),legacy,'Older ten-unit ropes still round trip');
 });
@@ -572,8 +579,8 @@ test('Drawing endpoints shorten to the closest eligible grid point in every dire
   assert.deepEqual(drawingEndpoint([0,9],[32,9],material,[32,18]),[limit,9]);
   assert.deepEqual(drawingEndpoint([16,9],[16,9],material,[32,18]),[16,9]);
  }
- assert.deepEqual(drawingEndpoint([0,0],[20,7],'beam',[32,18]),[5,2]);
- assert.deepEqual(drawingEndpoint([0,0],[6,8],'rope',[32,18]),[6,8]);
+ // Exact axis-aligned limits supplement the exhaustive diagonal checks above.
+ assert.deepEqual(drawingEndpoint([0,0],[0,MAX_LENGTH.beam+1],'beam',[32,18]),[0,MAX_LENGTH.beam]);
 });
 
 // Typed ropes must survive every editing path, including duplicate precedence.

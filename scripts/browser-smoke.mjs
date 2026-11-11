@@ -5,8 +5,10 @@ import { resolve, extname, sep, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright';
 import { createServer as createViteServer } from 'vite';
+import { tsImport } from 'tsx/esm/api';
 
-const GAME_VERSION = (await readFile(new URL('../src/model.ts', import.meta.url), 'utf8')).match(/export const GAME_VERSION = '([^']+)'/)[1];
+// Load the same TypeScript constants as the app without changing how this JS suite is launched.
+const { GAME_VERSION, MAX_LENGTH } = await tsImport('../src/model.ts', import.meta.url);
 
 const root = resolve('public_html');
 async function testDialogBackdropGestures(browser, base) {
@@ -120,6 +122,9 @@ try {
     await testTensionPlayback(browser, base);
   } else if (process.argv.includes('--solvers-only')) {
     await testSolvers(browser, base);
+    await testPrestrainSettings(browser, base);
+  } else if (process.argv.includes('--navigation-only')) {
+    await testSimulationNavigation(browser, base);
   } else {
   // Verify root and subdirectory deployments by opening each URL, collecting failed asset/page
   // requests and starting the worker simulation; assert stylesheet loading and correct asset paths.
@@ -185,6 +190,8 @@ try {
   await testVersionInformation(browser, base);
   await testPeriodicUpdates(browser, base);
   await testSolvers(browser, base);
+  await testPrestrainSettings(browser, base);
+  await testSimulationNavigation(browser, base);
   await testSoundControls(browser, base);
   await testTensionPlayback(browser, base);
   // Run the editor integration suite in desktop, portrait touch and wide touch contexts. Inspect
@@ -567,6 +574,121 @@ try {
   await new Promise(resolve => server.close(resolve));
 }
 
+async function testSimulationNavigation(browser, base) {
+  // Each viewport exercises native input. Observe the canvas transform at the board
+  // clip rectangle so assertions measure the rendered camera, not just input delivery.
+  for (const mobile of [false, true]) {
+    const context = await browser.newContext({ viewport: mobile ? {width:390,height:844} : {width:1440,height:1000}, hasTouch:mobile, isMobile:mobile });
+    try {
+      await context.addInitScript(() => {
+        document.addEventListener('pointerdown', e => { if (e.target.id === 'canvas') window.navigationPointerId=e.pointerId; },true);
+        const rect = CanvasRenderingContext2D.prototype.rect;
+        CanvasRenderingContext2D.prototype.rect = function(x,y,w,h) {
+          if (this.canvas.id === 'canvas' && x === 0 && y === 0 && w === 32 && h === 18) {
+            const t = this.getTransform(), dpr = Math.min(devicePixelRatio || 1,2), bounds = this.canvas.getBoundingClientRect();
+            // Express the board center relative to the canvas center in CSS pixels.
+            window.navigationCamera = {scale:t.a/dpr, x:(t.e+t.a*16)/dpr-bounds.width/2, y:(t.f+t.d*9)/dpr-bounds.height/2};
+          }
+          return rect.call(this,x,y,w,h);
+        };
+      });
+      const page = await context.newPage(), errors = [];
+      page.on('pageerror', e => errors.push(e.message));
+      await page.goto(base,{waitUntil:'load'});
+      const canvas = page.locator('#canvas');
+      const read = async () => {
+        await page.locator('#project-text').click();
+        const result = await page.locator('#project-json').inputValue();
+        await page.locator('#close-text').click(); return result;
+      };
+      await page.locator('#project-text').click();
+      await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:4},objects:{b:[[-16,0,-12,0,'s']]}}));
+      await page.locator('#load').click();
+      const original = await read();
+      const camera = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(window.navigationCamera)))));
+      const near = (actual,expected,message) => assert.ok(Math.abs(actual-expected)<0.6,`${message}: ${actual} vs ${expected}`);
+      const fit = async () => { await page.locator('#fit').click(); const c=await camera(); near(c.x,0,'Fit centers X'); near(c.y,0,'Fit centers Y'); return c; };
+      const session = mobile ? await context.newCDPSession(page) : null;
+      const touch = (type,...touchPoints) => session.send('Input.dispatchTouchEvent',{type,touchPoints});
+      const center = async () => { const r=await canvas.boundingBox(); return {x:r.x+r.width/2,y:r.y+r.height/2}; };
+      const drag = async (p,dx,dy,button='left',alt=false) => {
+        if (mobile) {
+          await touch('touchStart',{...p,id:0}); await touch('touchMove',{x:p.x+dx,y:p.y+dy,id:0}); await touch('touchEnd');
+        } else {
+          if (alt) await page.keyboard.down('Alt');
+          await page.mouse.move(p.x,p.y); await page.mouse.down({button});
+          await page.mouse.move(p.x+dx,p.y+dy,{steps:4}); await page.mouse.up({button});
+          if (alt) await page.keyboard.up('Alt');
+        }
+      };
+      await page.locator('#run').click();
+      await page.waitForFunction(() => document.querySelector('#performance').textContent.includes('MS/STEP'));
+      // Repeat navigation while gravity advances and after pausing it. Fit restores
+      // a known camera before each gesture, keeping all touch origins on-screen.
+      for (const paused of [false,true]) {
+        if (paused) await page.locator('#pause').click();
+        const fitted = await fit(), p = await center();
+        await drag(p,30,20);
+        assert.deepEqual(await camera(),fitted,'Ordinary drag on the board cannot navigate or edit');
+        if (mobile) {
+          const r=await canvas.boundingBox();
+          await drag({x:r.x+3,y:r.y+3},24,18);
+        } else await drag(p,24,18,'middle');
+        let c=await camera(); near(c.x,24,'Navigation moves X'); near(c.y,18,'Navigation moves Y');
+        await page.mouse.move(p.x+50,p.y+40);
+        assert.deepEqual(await camera(),c,'Released gesture stops moving the camera');
+        await fit();
+        if (mobile) {
+          const a={x:p.x-30,y:p.y,id:0}, b={x:p.x+30,y:p.y,id:1};
+          await touch('touchStart',a,b);
+          await touch('touchMove',{...a,x:a.x+5,y:a.y+15},{...b,x:b.x+35,y:b.y+15});
+          await touch('touchEnd');
+          // Chrome delivers the two pointer moves separately. The existing editor
+          // zoom anchor therefore affects the final pan during a combined pinch.
+          c=await camera(); assert.ok(c.x>5 && c.y>5,'Two fingers visibly move both camera axes');
+          assert.ok(Math.abs(c.scale/fitted.scale-1.5)<0.03,'Pinch zooms the board by the finger-distance ratio');
+        } else {
+          await drag(p,24,18,'left',true);
+          c=await camera(); near(c.x,24,'Alt-drag moves X'); near(c.y,18,'Alt-drag moves Y');
+          await page.mouse.move(p.x,p.y); await page.mouse.wheel(0,-200);
+          await page.waitForFunction(scale => window.navigationCamera.scale>scale,fitted.scale);
+        }
+        await fit();
+        // Cancel a captured navigation pointer, then verify a fresh normal drag
+        // cannot inherit panning. Cover both browser interruption paths.
+        for (const event of ['pointercancel','lostpointercapture']) {
+          const q=await center();
+          if (mobile) await touch('touchStart',{x:q.x,y:q.y,id:0},{x:q.x+40,y:q.y,id:1});
+          else { await page.mouse.move(q.x,q.y); await page.mouse.down({button:'middle'}); }
+          await canvas.evaluate((el,event) => el.dispatchEvent(new PointerEvent(event,{pointerId:window.navigationPointerId})),event);
+          const cancelled=await camera();
+          if (mobile) await touch('touchMove',{x:q.x+10,y:q.y+10,id:0},{x:q.x+50,y:q.y+10,id:1});
+          else await page.mouse.move(q.x+10,q.y+10);
+          assert.deepEqual(await camera(),cancelled,`${event} stops the captured gesture immediately`);
+          if (mobile) await touch('touchEnd'); else await page.mouse.up({button:'middle'});
+          const before=await camera(); await drag(q,20,10);
+          assert.deepEqual(await camera(),before,`${event} clears navigation`);
+        }
+      }
+      // Stop with an unfinished captured gesture; returning to build must preserve
+      // the camera and discard the old pointer before any new editor interaction.
+      await fit(); const p=await center();
+      await drag(mobile ? {x:(await canvas.boundingBox()).x+3,y:(await canvas.boundingBox()).y+3} : p,24,18,'middle');
+      const beforeStop=await camera();
+      if (mobile) await touch('touchStart',{...p,id:0},{x:p.x+40,y:p.y,id:1});
+      else { await page.mouse.move(p.x,p.y); await page.mouse.down({button:'middle'}); }
+      await page.locator('#back').evaluate(el => el.click());
+      if (mobile) await touch('touchEnd'); else await page.mouse.up({button:'middle'});
+      const afterStop=await camera(); near(afterStop.x,beforeStop.x,'Back preserves X'); near(afterStop.y,beforeStop.y,'Back preserves Y');
+      assert.equal(await read(),original,'Simulation gestures preserve the exported design');
+      await fit(); await drag(await center(),25,0);
+      assert.notEqual(await read(),original,'Drawing works again after returning to build');
+      assert.deepEqual(errors,[]);
+      console.log(`${mobile?'Touch':'Mouse'} simulation navigation: running, paused, zoom, Fit, cancellation and editor return verified.`);
+    } finally { await context.close(); }
+  }
+}
+
 async function testSoundControls(browser, base) {
   for (const { name, viewport, mobile } of [
     { name: 'desktop', viewport: { width: 1440, height: 900 }, mobile: false },
@@ -744,6 +866,159 @@ async function testSolvers(browser, base) {
     await context.close();
   }
   console.log('Solvers: settings and keyboard access, Serpentine default, direct Run, real workers, independent direction draws and reload reset verified.');
+}
+
+// Exercise session-only prestrain through accessible controls and actual worker
+// replies. Capturing ready frames verifies the option reaches the physics model,
+// rather than checking only an outgoing message or a cosmetic switch.
+async function testPrestrainSettings(browser, base) {
+  const fragile = await readFile(new URL('../docs/examples/seri-wawasan-large/fork-standard-front.json', import.meta.url), 'utf8');
+  const mixed = { metadata:{size:[16,10],gameVersion:GAME_VERSION,formatVersion:4}, objects:{
+    b:[[0,-5,0,-1,'s']], r:[[-8,1,-4,1,'s'],[-8,-1,-4,-1,'h']],
+  }};
+  for (const {name,viewport,mobile} of [
+    {name:'desktop',viewport:{width:1440,height:1000},mobile:false},
+    {name:'portrait',viewport:{width:390,height:844},mobile:true},
+    {name:'landscape',viewport:{width:780,height:360},mobile:true},
+  ]) {
+    const context = await browser.newContext({viewport,hasTouch:mobile,isMobile:mobile});
+    try {
+      await context.addInitScript(() => {
+        window.prestrainStarts = []; window.prestrainReady = [];
+        const NativeWorker = window.Worker;
+        window.Worker = class extends NativeWorker {
+          constructor(...args) {
+            super(...args);
+            this.addEventListener('message', ({data}) => {
+              if (data.type === 'ready') window.prestrainReady.push({time:data.frame.time,stresses:Array.from(data.frame.stresses)});
+            });
+          }
+          postMessage(message,...args) {
+            if (message.type === 'start') window.prestrainStarts.push(structuredClone({options:message.options,project:message.project}));
+            return super.postMessage(message,...args);
+          }
+        };
+      });
+      const page = await context.newPage(), errors = [];
+      page.on('pageerror',e => errors.push(e.message));
+      await page.goto(base,{waitUntil:'load'});
+      const settings = page.locator('#settings'), dialog = page.locator('#settings-dialog');
+      const enabled = page.getByRole('checkbox',{name:'Enable rope prestrain'}), amount = page.getByLabel('Initial stretch',{exact:true});
+      const run = page.locator('#run');
+      const readProject = async () => {
+        await page.locator('#project-text').click(); const text = await page.locator('#project-json').inputValue();
+        await page.locator('#close-text').click(); return text;
+      };
+      const load = async value => {
+        await page.locator('#project-text').click();
+        await page.locator('#project-json').fill(typeof value === 'string' ? value : JSON.stringify(value));
+        await page.locator('#load').click();
+        assert.equal(await page.locator('#text-dialog').evaluate(el=>el.open),false);
+      };
+      const start = async () => {
+        const count = await page.evaluate(()=>window.prestrainStarts.length);
+        await run.click();
+        await page.waitForFunction(n=>window.prestrainReady.length===n+1,count);
+        await page.waitForFunction(()=>/[1-9]\d*\.\d S/.test(document.querySelector('#performance').textContent));
+        return page.evaluate(()=>({start:window.prestrainStarts.at(-1),ready:window.prestrainReady.at(-1)}));
+      };
+      const openSettings = async () => { await settings.click(); assert.equal(await dialog.evaluate(el=>el.open),true); };
+      const closeSettings = async () => { await page.keyboard.press('Escape'); assert.equal(await dialog.evaluate(el=>el.open),false); };
+      const starter = JSON.parse(await readProject());
+      await load(mixed);
+      const text = await readProject(), cost = await page.locator('#total-cost').textContent();
+      const saved = await page.evaluate(()=>localStorage.getItem('bar-lab:last-project:v1'));
+      await openSettings();
+      assert.equal(await enabled.isChecked(),false); assert.equal(await amount.isDisabled(),true);
+      assert.equal(await amount.inputValue(),'0.005');
+      assert.deepEqual(await amount.locator('option').evaluateAll(options=>options.map(o=>o.value)),['0.001','0.0025','0.005','0.01']);
+      const box = await dialog.boundingBox();
+      assert.ok(box.x>=0 && box.y>=0 && box.x+box.width<=viewport.width && box.y+box.height<=viewport.height,`${name}: prestrain Settings fits`);
+      await page.locator('#canvas-size-form button[type="submit"]').scrollIntoViewIfNeeded();
+      await page.locator('#canvas-size-form button[type="submit"]').focus();
+      // Focusing controls below the new section must scroll them into the modal,
+      // including on a short landscape screen, without creating horizontal overflow.
+      assert.equal(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth),true);
+      await enabled.focus(); await page.keyboard.press('Space');
+      assert.equal(await enabled.isChecked(),true); assert.equal(await amount.isEnabled(),true);
+      assert.equal(await page.evaluate(()=>window.prestrainStarts.length),0,'Space in Settings must not run');
+      await amount.focus(); await page.keyboard.press('ArrowDown');
+      assert.equal(await amount.inputValue(),'0.01','The native select supports keyboard changes');
+      await closeSettings();
+      assert.equal(await readProject(),text); assert.equal(await page.locator('#total-cost').textContent(),cost);
+      assert.equal(await page.evaluate(()=>localStorage.getItem('bar-lab:last-project:v1')),saved,'Settings do not autosave the project');
+      for (const [index,value] of ['0.001','0.0025','0.005','0.01'].entries()) {
+        await openSettings();
+        const solver = index%2 ? 'original' : 'serpentine';
+        await page.locator(`input[name="solver"][value="${solver}"]`).check();
+        await amount.selectOption(value); await closeSettings();
+        assert.match(await run.getAttribute('title'),new RegExp(`Rope prestrain ${Number(value)*100}%`));
+        const result = await start();
+        assert.equal(result.start.options.solver,solver);
+        assert.deepEqual(result.start.options.ropePrestrain,[Number(value),Number(value)]);
+        assert.equal(result.ready.time,0);
+        // The two ropes have different profiles but the same imposed strain.
+        // The small startup imperfection adds at most 0.005 normalized stress here.
+        for (const stress of result.ready.stresses.slice(1)) assert.ok(Math.abs(stress-Number(value)/.1)<.005,`${name}: actual mounted stress ${stress}`);
+        assert.equal(await settings.isDisabled(),true);
+        await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Rope prestrain'));
+        if (mobile) {
+          assert.equal(await page.locator('#prestrain-status').isVisible(),true,'Touch layouts show the active experiment');
+          assert.equal(await page.locator('#prestrain-status').textContent(),`Rope prestrain ${Number(value)*100}%`);
+          const badge = await page.locator('#prestrain-status').boundingBox(), drawing = await page.locator('.drawing-area').boundingBox();
+          assert.ok(badge.x>=drawing.x && badge.y>=drawing.y && badge.x+badge.width<=drawing.x+drawing.width && badge.y+badge.height<=drawing.y+drawing.height);
+        }
+        await page.locator('#pause').click();
+        await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Paused.'));
+        assert.ok((await page.locator('#status').textContent()).startsWith(`Rope prestrain ${Number(value)*100}%`));
+        assert.equal(await settings.isDisabled(),true,'Settings stays disabled while paused');
+        if (mobile) assert.equal(await page.locator('#prestrain-status').isVisible(),true,'Prestrain stays visible while paused');
+        await page.locator('#pause').click(); await page.locator('#back').click();
+      }
+      // Preference changes and Run/Back add no history entries. One Undo must
+      // undo the project import, and Redo must restore it with the setting intact.
+      await page.locator('#undo').click(); assert.deepEqual(JSON.parse(await readProject()).objects,starter.objects);
+      await page.locator('#redo').click(); assert.equal(await readProject(),text);
+      await openSettings(); assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.01');
+      await page.locator('#canvas-width').fill('20'); await page.locator('#canvas-height').fill('12');
+      await page.locator('#canvas-size-form button[type="submit"]').click();
+      assert.match(await page.locator('#board-size').textContent(),/^20 . 12 GRID$/);
+      await page.locator('#undo').click(); assert.equal(await readProject(),text);
+      await openSettings(); assert.equal(await enabled.isChecked(),true); assert.equal(await amount.inputValue(),'0.01');
+      await enabled.uncheck(); assert.equal(await amount.isDisabled(),true); await closeSettings();
+      assert.doesNotMatch(await run.getAttribute('title'),/Rope prestrain/);
+      const off = await start();
+      assert.equal(Object.hasOwn(off.start.options,'ropePrestrain'),false);
+      assert.ok(off.ready.stresses.every(s=>s===0),'Disabled uses the original zero-stress ready frame');
+      await page.locator('#back').click();
+      await openSettings(); await enabled.check(); assert.equal(await amount.inputValue(),'0.01'); await closeSettings();
+      await page.locator('#examples').click(); await page.locator('[data-example="seriWawasan"]').click();
+      const gallery = await start(); assert.deepEqual(gallery.start.options.ropePrestrain,Array(5).fill(.01));
+      await page.locator('#back').click();
+      await load({...mixed,objects:{r:[[-8,1,-4,1,'s']]}});
+      const single = await start(); assert.deepEqual(single.start.options.ropePrestrain,[.01]); await page.locator('#back').click();
+      await page.locator('#clear-canvas').click();
+      const count = await page.evaluate(()=>window.prestrainStarts.length); await run.click();
+      assert.equal(await page.evaluate(()=>window.prestrainStarts.length),count,'Empty projects do not run');
+      await page.locator('#undo').click();
+      await load({...mixed,objects:{b:mixed.objects.b}});
+      const beams = await start(); assert.deepEqual(beams.start.options.ropePrestrain,[]); await page.locator('#back').click();
+      await load(fragile); await start();
+      await page.waitForFunction(()=>/elements? broken/.test(document.querySelector('#status').textContent),undefined,{timeout:20000});
+      assert.ok((await page.locator('#status').textContent()).startsWith('Rope prestrain 1%'),'Fracture messages retain the setting');
+      if (mobile) assert.equal(await page.locator('#prestrain-status').isVisible(),true,'Prestrain stays visible after a real fracture');
+      await page.locator('#back').click();
+      await openSettings();
+      await enabled.scrollIntoViewIfNeeded();
+      await page.screenshot({path:resolve('screenshots',`prestrain-settings-${name}.png`)});
+      await closeSettings();
+      await page.reload(); await openSettings();
+      assert.equal(await enabled.isChecked(),false); assert.equal(await amount.inputValue(),'0.005'); assert.equal(await amount.isDisabled(),true);
+      assert.doesNotMatch(await run.getAttribute('title'),/Rope prestrain/);
+      await closeSettings(); assert.deepEqual(errors,[],`${name}: prestrain causes no page/worker errors`);
+      console.log(`${name} prestrain: defaults, keyboard, four levels, real worker stresses, history, project changes, failures and reload reset verified.`);
+    } finally { await context.close(); }
+  }
 }
 
 // Verify installation reminders by clearing and undoing repeatedly to cross each threshold,
@@ -1438,6 +1713,9 @@ async function testMouseControls(page, point, readProject) {
   await page.keyboard.press('Escape');
   // Draw replacing, additive and reversed rectangles; compare selected counts, then delete
   // a selected node and inspect the remaining members through Undo/Redo.
+  // Restore mixed profiles: the preceding profile edits made this eight-unit
+  // chain potentially mergeable under the current beam limit when deleting its node.
+  await load(fixture);
   await box([9,8],[15,10]);
   assert.match(await page.locator('#inspector-title').textContent(),/3 selected/,'Box includes one whole beam and its two nodes');
   await box([15,8],[19,10],true);
@@ -1653,7 +1931,8 @@ async function testBeamMoves(page, mobile, point, readProject) {
   // Try an overlength neighbor, cancellation, zero displacement and an off-board drop;
   // compare exports to verify that failure commits neither beam endpoint.
   await load(fixture);
-  await drag([14,9],[14,4]);
+  // Scale both displacement axes with the limit so the attached neighbor is overlength.
+  await drag([14,9],[14+Math.ceil(MAX_LENGTH.beam*0.4),9-Math.ceil(MAX_LENGTH.beam*0.8)]);
   assert.deepEqual((await readProject()).objects,before,'An adjacent beam length limit rejects the entire move');
   assert.match(await page.locator('#toast').textContent(),/Maximum beam/);
   await down(await point(14,9)); await move(await point(15,7));
@@ -1788,7 +2067,8 @@ async function testGroupSelection(page, mobile) {
   // selection, exports and storage-write counts to verify rollback without saving.
   await load();await box();
   await down(await point(10,9));await move(await point(11,7));await cancel();await count(7);
-  await down(await point(10,9));await move(await point(10,2));await up();await count(7);
+  // Moving left as well as up stretches the attached beam beyond the current limit.
+  await down(await point(10,9));await move(await point(10-Math.ceil(MAX_LENGTH.beam*0.4),9-Math.ceil(MAX_LENGTH.beam*0.7)));await up();await count(7);
   assert.match(await page.locator('#toast').textContent(),/Maximum beam/);
   await down(await point(10,9));await move(await point(11,7));await move(await point(10,9));await up();await count(7);
   assert.equal(await writes(),0,'Cancelled, invalid and zero-displacement groups do not save');
@@ -1800,7 +2080,9 @@ async function testGroupSelection(page, mobile) {
   assert.equal(await page.locator('#inspector-title').textContent(),'No selection');
   assert.deepEqual(await page.locator('#canvas').boundingBox(),bounds,'Clearing a group must not move the canvas under the pointer');
   await move(await point(27,6));await cancel();await count(0);
-  await box();await down(await point(24,5));await count(0);await move(await point(31,12));await up();await count(0);
+  // The stationary endpoint is three columns left of the target. Choose the first
+  // whole-row offset outside the material's radius, rather than an old fixed limit.
+  await box();await down(await point(24,5));await count(0);await move(await point(31,6+Math.floor(Math.sqrt(MAX_LENGTH.beam**2-3**2))));await up();await count(0);
   assert.deepEqual(await read(),fixture,'Invalid outside-object movement cannot restore the former group');
   assert.equal(await writes(),0);
 
@@ -2148,9 +2430,9 @@ async function testDrawingPreview(page, mobile, name) {
   // and advance time to distinguish a stable shortened preview from a blinking validation failure.
   for(const profile of ['l','s','h']) {
     await chooseProfile(page, profile);
-    await down(2,11); await move(8,11);
+    await down(2,11); await move(2+MAX_LENGTH.beam,11);
     let f=await snapshot(); assert.ok(solid(f));
-    assert.ok(f.texts.some(t=>t.text.includes('6.00 / 6 units') && t.text.includes('+')));
+    assert.ok(f.texts.some(t=>t.text.includes(`${MAX_LENGTH.beam.toFixed(2)} / ${MAX_LENGTH.beam} units`) && t.text.includes('+')));
     await move(30,11); f=await snapshot();
     assert.ok(solid(f)); assert.equal(errorLine(f),undefined);
     assert.ok(f.strokes.some(s=>s.color==='#879ba8' && s.dash.join(',')==='4,6'),JSON.stringify(f));
@@ -2160,13 +2442,13 @@ async function testDrawingPreview(page, mobile, name) {
     if(profile==='s') await page.screenshot({path:join(tmpdir(),'frame-lab-'+name+'-shortened-preview.png')});
     await cancel();
   }
-  // Aim a rope beyond its limit; inspect solid stroke width and the twenty-unit label to verify
+  // Aim a rope beyond its limit; inspect solid stroke width and the current limit label to verify
   // material-specific preview styling and limits.
   await page.locator('[data-tool="rope"]').click();
   await down(2,11); await move(30,11);
   let f=await snapshot(); assert.equal(solid(f).width,2);
-  assert.ok(f.texts.some(t=>t.text.includes('20.00 / 20 units')));
-  assert.ok(f.texts.some(t=>t.text.includes('40 cr')), 'Preview charges two credits per unit of added rope');
+  assert.ok(f.texts.some(t=>t.text.includes(`${MAX_LENGTH.rope.toFixed(2)} / ${MAX_LENGTH.rope} units`)));
+  assert.ok(f.texts.some(t=>t.text.includes(`${MAX_LENGTH.rope*2} cr`)), 'Preview charges two credits per unit of added rope');
   await cancel();
   // Real validation failures still blink and never change the project.
   await page.locator('#project-text').click();
@@ -2190,7 +2472,7 @@ async function testDrawingPreview(page, mobile, name) {
 async function testContinuousDrawing(page, mobile, point, readProject) {
  let boardWidth=32;
  const click = async(x,y) => {
-  // The rope chain needs sixty units of span. Compute fitted coordinates for
+  // A chain needs three maximum-length spans. Compute fitted coordinates for
   // its wider board instead of using the caller's 32-unit projection.
   const p=boardWidth===32 ? await point(x,y) : await page.locator('#canvas').evaluate((canvas,{x,y,boardWidth})=>{
    const r=canvas.getBoundingClientRect(),margin=r.height<400?20:r.width<600?30:58;
@@ -2207,8 +2489,9 @@ async function testContinuousDrawing(page, mobile, point, readProject) {
  };
  // Repeat a distant target with each material to build three limit-length segments from
  // four inputs; reject a reverse duplicate, undo each segment, then test short spans and no-op clicks.
- for(const [tool,limit] of [['beam',6],['rope',20]]) {
-  await load({},tool==='rope'?64:32); await page.locator('[data-tool="'+tool+'"]').click();
+ for(const [tool,limit] of Object.entries(MAX_LENGTH)) {
+  // Leave one grid unit at either end and round up to a supported even board width.
+  await load({},Math.max(32,2*Math.ceil((3*limit+2)/2))); await page.locator('[data-tool="'+tool+'"]').click();
   await click(1,9); await click(boardWidth-1,9); await click(boardWidth-1,9); await click(boardWidth-1,9);
   let project=(await readProject()).objects;
   const origin=1-boardWidth/2;
@@ -2430,7 +2713,7 @@ async function testRopeProfiles(page, mobile, point, readProject) {
  let previewTouch;
  if(mobile){previewTouch=await page.context().newCDPSession(page);await previewTouch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[end]});}
  else await page.mouse.move(end.x,end.y);
- await page.waitForFunction(()=>window.ropeLabels.some(s=>s.includes('4.00 / 20 units')&&s.includes('+32 cr')));
+ await page.waitForFunction(limit=>window.ropeLabels.some(s=>s.includes(`4.00 / ${limit} units`)&&s.includes('+32 cr')),MAX_LENGTH.rope);
  if(mobile){await previewTouch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await previewTouch.detach();}
  else await page.mouse.click(end.x,end.y);
  await page.evaluate(()=>{CanvasRenderingContext2D.prototype.fillText=window.ropeOriginalText;});

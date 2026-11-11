@@ -68,13 +68,27 @@ This animation copies an asymmetric frame and positions its preview beside the o
 
 Press **Run** or Space to let gravity act on the design. Beams bend elastically and can break; ropes carry tension but do not push. Use the stress control to color members by relative stress. Press Back to stop and restore the original design. Simulation damage is not saved.
 
+Navigate during a running or paused simulation with the same gestures as in the editor: middle-drag or Alt+drag with a mouse, two fingers to pan and pinch to zoom, or one finger starting outside the board to pan. Scroll to zoom and use Fit to reset the view. Returning to build keeps your current view.
+
 Each run starts with a tiny, repeatable sideways displacement to test how the structure responds to an imperfection. Perfectly straight columns can therefore begin to lean. Supports stay fixed, and your saved design is unchanged.
 
-Open **Settings** (the gear icon) to choose a simulation solver and change the canvas dimensions. Solver choice takes effect immediately and lasts until the page reloads. Canvas dimensions change only when you select **Apply size**; closing Settings discards unsubmitted dimensions. Click **Run simulation** or press Space to start the selected solver directly.
+Open **Settings** (the gear icon) to choose a simulation solver, try rope prestrain and change the canvas dimensions. Solver choice takes effect immediately and lasts until the page reloads. Canvas dimensions change only when you select **Apply size**; closing Settings discards unsubmitted dimensions. Click **Run simulation** or press Space to start the selected solver directly.
 
 - **1 · Basic XPBD Solver** uses the original XPBD constraint order.
 - **2 · Serpentine** is selected on every page load. It visits members from the highest occupied row downward, reversing horizontal direction on each grid row. Each start independently draws top left or top right with equal probability; repeating the same side is possible. Pause/resume keeps the direction of the current run.
 
+
+## Try rope prestrain
+
+In **Settings → Rope prestrain (experimental)**, turn on **Enable rope prestrain** and choose **Initial stretch**: **0.1%**, **0.25%**, **0.5%**, or **1%**. The option starts off on every page load, with 0.5% selected. The percentage control remains visible but disabled while prestrain is off.
+
+The next simulation starts all current ropes slightly stretched, including both Standard and Heavy. This can reduce sag but increases loads on the deck, pylons and anchors; more tension can cause additional failures. It also consumes part of the rope's existing strain limit. Gravity, materials and solver iterations stay the same. Prestrain is experimental and does not guarantee stability.
+
+Changes take effect for the next Run without selecting Apply size. The choice lasts while you edit, clear, import or load another example in this tab. Turning it off keeps your last percentage for comparison; reloading resets it to off and 0.5%. Settings cannot be changed during a running or paused simulation: choose **Back to build** first.
+
+The Run tooltip and simulation status show the active percentage, including during pauses and after fractures. On small or touch screens, a compact label over the canvas keeps it visible. Prestrain is a session setting: it does not change project text, costs, autosaved geometry or Undo/Redo. Sharing a project therefore does not share the prestrain setting.
+
+![Settings with experimental rope prestrain enabled at 0.5%; new page sessions start with it off](images/frame-lab-settings-desktop.png)
 
 ## Beam and rope profiles and costs
 

@@ -1,0 +1,4006 @@
+{
+  "gameVersion": "0.6.0",
+  "formatVersion": 4,
+  "name": "seriWawasan",
+  "project": {
+    "metadata": {
+      "size": [
+        24,
+        14
+      ],
+      "gameVersion": "0.6.0",
+      "formatVersion": 4
+    },
+    "objects": {
+      "b": [
+        [
+          -12,
+          -3,
+          -12,
+          -5,
+          "s"
+        ],
+        [
+          -12,
+          -3,
+          -10,
+          -3,
+          "h"
+        ],
+        [
+          -12,
+          -3,
+          -10,
+          -5,
+          "s"
+        ],
+        [
+          -12,
+          -5,
+          -10,
+          -5,
+          "h"
+        ],
+        [
+          -10,
+          -3,
+          -10,
+          -5,
+          "s"
+        ],
+        [
+          -10,
+          -3,
+          -9,
+          -3,
+          "h"
+        ],
+        [
+          -10,
+          -3,
+          -8,
+          -5,
+          "s"
+        ],
+        [
+          -10,
+          -5,
+          -8,
+          -5,
+          "h"
+        ],
+        [
+          -9,
+          -3,
+          -8,
+          -3,
+          "h"
+        ],
+        [
+          -8,
+          -3,
+          -8,
+          -5,
+          "s"
+        ],
+        [
+          -8,
+          -3,
+          -6,
+          -3,
+          "h"
+        ],
+        [
+          -8,
+          -3,
+          -6,
+          -5,
+          "s"
+        ],
+        [
+          -8,
+          -3,
+          -6,
+          -7,
+          "h"
+        ],
+        [
+          -8,
+          -3,
+          -5,
+          1,
+          "h"
+        ],
+        [
+          -8,
+          -5,
+          -6,
+          -5,
+          "h"
+        ],
+        [
+          -6,
+          -3,
+          -6,
+          -5,
+          "h"
+        ],
+        [
+          -6,
+          -3,
+          -5,
+          1,
+          "h"
+        ],
+        [
+          -6,
+          -3,
+          -4,
+          -3,
+          "h"
+        ],
+        [
+          -6,
+          -3,
+          -4,
+          -5,
+          "s"
+        ],
+        [
+          -6,
+          -3,
+          -4,
+          -7,
+          "h"
+        ],
+        [
+          -6,
+          -3,
+          -3,
+          1,
+          "h"
+        ],
+        [
+          -6,
+          -5,
+          -6,
+          -7,
+          "h"
+        ],
+        [
+          -6,
+          -5,
+          -4,
+          -5,
+          "h"
+        ],
+        [
+          -6,
+          -7,
+          -4,
+          -3,
+          "h"
+        ],
+        [
+          -6,
+          -7,
+          -4,
+          -7,
+          "h"
+        ],
+        [
+          -5,
+          1,
+          -4,
+          -3,
+          "h"
+        ],
+        [
+          -5,
+          1,
+          -3,
+          5,
+          "h"
+        ],
+        [
+          -5,
+          1,
+          -3,
+          1,
+          "h"
+        ],
+        [
+          -5,
+          1,
+          -2,
+          5,
+          "h"
+        ],
+        [
+          -4,
+          -3,
+          -4,
+          -5,
+          "h"
+        ],
+        [
+          -4,
+          -3,
+          -3,
+          1,
+          "h"
+        ],
+        [
+          -4,
+          -3,
+          -2,
+          -3,
+          "h"
+        ],
+        [
+          -4,
+          -3,
+          -2,
+          -5,
+          "s"
+        ],
+        [
+          -4,
+          -5,
+          -4,
+          -7,
+          "h"
+        ],
+        [
+          -4,
+          -5,
+          -2,
+          -5,
+          "h"
+        ],
+        [
+          -4,
+          -7,
+          -2,
+          -3,
+          "h"
+        ],
+        [
+          -3,
+          5,
+          -3,
+          1,
+          "h"
+        ],
+        [
+          -3,
+          5,
+          -2,
+          5,
+          "h"
+        ],
+        [
+          -3,
+          1,
+          -2,
+          5,
+          "h"
+        ],
+        [
+          -3,
+          1,
+          -2,
+          -3,
+          "h"
+        ],
+        [
+          -2,
+          -3,
+          -2,
+          -5,
+          "s"
+        ],
+        [
+          -2,
+          -3,
+          0,
+          -3,
+          "h"
+        ],
+        [
+          -2,
+          -3,
+          0,
+          -5,
+          "s"
+        ],
+        [
+          -2,
+          -5,
+          0,
+          -5,
+          "h"
+        ],
+        [
+          0,
+          -3,
+          0,
+          -5,
+          "s"
+        ],
+        [
+          0,
+          -3,
+          2,
+          -3,
+          "h"
+        ],
+        [
+          0,
+          -3,
+          2,
+          -5,
+          "s"
+        ],
+        [
+          0,
+          -5,
+          2,
+          -5,
+          "h"
+        ],
+        [
+          2,
+          -3,
+          2,
+          -5,
+          "s"
+        ],
+        [
+          2,
+          -3,
+          4,
+          -3,
+          "h"
+        ],
+        [
+          2,
+          -3,
+          4,
+          -5,
+          "s"
+        ],
+        [
+          2,
+          -5,
+          4,
+          -5,
+          "h"
+        ],
+        [
+          4,
+          -3,
+          4,
+          -5,
+          "s"
+        ],
+        [
+          4,
+          -3,
+          6,
+          -3,
+          "h"
+        ],
+        [
+          4,
+          -3,
+          6,
+          -5,
+          "s"
+        ],
+        [
+          4,
+          -5,
+          6,
+          -5,
+          "h"
+        ],
+        [
+          6,
+          -3,
+          6,
+          -5,
+          "s"
+        ],
+        [
+          6,
+          -3,
+          8,
+          -3,
+          "h"
+        ],
+        [
+          6,
+          -3,
+          8,
+          -5,
+          "s"
+        ],
+        [
+          6,
+          -5,
+          8,
+          -5,
+          "h"
+        ],
+        [
+          8,
+          -3,
+          8,
+          -5,
+          "s"
+        ],
+        [
+          8,
+          -3,
+          10,
+          -3,
+          "h"
+        ],
+        [
+          8,
+          -3,
+          10,
+          -5,
+          "s"
+        ],
+        [
+          8,
+          -5,
+          10,
+          -5,
+          "h"
+        ],
+        [
+          10,
+          -3,
+          10,
+          -5,
+          "s"
+        ],
+        [
+          10,
+          -3,
+          12,
+          -3,
+          "h"
+        ],
+        [
+          10,
+          -3,
+          12,
+          -5,
+          "s"
+        ],
+        [
+          10,
+          -5,
+          12,
+          -5,
+          "h"
+        ],
+        [
+          12,
+          -3,
+          12,
+          -5,
+          "s"
+        ]
+      ],
+      "r": [
+        [
+          -9,
+          -3,
+          -3,
+          5,
+          "h"
+        ],
+        [
+          -2,
+          5,
+          0,
+          -3,
+          "s"
+        ],
+        [
+          -2,
+          5,
+          4,
+          -3,
+          "s"
+        ],
+        [
+          -2,
+          5,
+          8,
+          -3,
+          "s"
+        ],
+        [
+          -2,
+          5,
+          12,
+          -3,
+          "s"
+        ]
+      ]
+    },
+    "checksum": "fnv1a32:f724bb54"
+  },
+  "gravity": 9.81,
+  "iterations": 12,
+  "damping": 0.65,
+  "dt": 0.008333333333333333,
+  "startup": "prestrained at t=0; no settling",
+  "screeningSeconds": 4,
+  "acceptanceSeconds": 20,
+  "acceptanceDisplacement": 2.5,
+  "prestrainLevels": [
+    0,
+    0.001,
+    0.0025,
+    0.005,
+    0.01
+  ],
+  "groups": {
+    "labels": [
+      "front stays",
+      "rear guys"
+    ],
+    "indices": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "screeningRank": [
+    "total broken members",
+    "total new boundary samples",
+    "worst displacement",
+    "sum of group strains",
+    "first group strain",
+    "second group strain"
+  ],
+  "screens": [
+    {
+      "groupPrestrain": [
+        0,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.090756973723471,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0930331213683577,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.136743787920415,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialElasticEnergy": 0,
+      "initialRopeMass": 19.17893454899359
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0,
+        0,
+        0,
+        0
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0873624512073374,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0894316759181004,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.1333515142482335,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        320,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialElasticEnergy": 1.5984015984015987,
+      "initialRopeMass": 19.17014334020238
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0,
+        0,
+        0,
+        0
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.082065636700201,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0838668166883947,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.127964887228504,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialElasticEnergy": 9.975062344139651,
+      "initialRopeMass": 19.15698941183648
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0,
+        0,
+        0,
+        0
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.072694283616124,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0738857698221964,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.1173319674741413,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        1600,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialElasticEnergy": 39.800995024875625,
+      "initialRopeMass": 19.135153454466224
+    },
+    {
+      "groupPrestrain": [
+        0,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0,
+        0,
+        0,
+        0
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.047323019087681,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.047788653715692,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0904198657203965,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        3200,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialElasticEnergy": 158.41584158415841,
+      "initialRopeMass": 19.0918058361223
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.06856161461512,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.070704567863021,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.114333399806106,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        80,
+        80,
+        80,
+        80
+      ],
+      "initialElasticEnergy": 1.885193815092832,
+      "initialRopeMass": 19.168565983010573
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0652745180454817,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.067221412131181,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.1110499096287003,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        320,
+        80,
+        80,
+        80,
+        80
+      ],
+      "initialElasticEnergy": 3.483595413494431,
+      "initialRopeMass": 19.159774774219365
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.060087940365315,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.061791863244477,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.105769312714095,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        80,
+        80,
+        80,
+        80
+      ],
+      "initialElasticEnergy": 11.860256159232483,
+      "initialRopeMass": 19.14662084585347
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.049651481613526,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.051019652353208,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0947525291846394,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        1600,
+        80,
+        80,
+        80,
+        80
+      ],
+      "initialElasticEnergy": 41.68618883996846,
+      "initialRopeMass": 19.124784888483212
+    },
+    {
+      "groupPrestrain": [
+        0.001,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.001,
+        0.001,
+        0.001,
+        0.001
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.023161156061681,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.023664323069691,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.001,
+              0.001,
+              0.001,
+              0.001
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0662708597648103,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        3200,
+        80,
+        80,
+        80,
+        80
+      ],
+      "initialElasticEnergy": 160.30103539925125,
+      "initialRopeMass": 19.08143727013929
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0336728139770845,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0357520973343766,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.079765596582298,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        200,
+        200,
+        200,
+        200
+      ],
+      "initialElasticEnergy": 11.764831726358633,
+      "initialRopeMass": 19.153051919195597
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.030516665972481,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.032425993384171,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.076382736665151,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        320,
+        200,
+        200,
+        200,
+        200
+      ],
+      "initialElasticEnergy": 13.36323332476023,
+      "initialRopeMass": 19.14426071040439
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.025394827488424,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0271103373225623,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.071178771273028,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        200,
+        200,
+        200,
+        200
+      ],
+      "initialElasticEnergy": 21.739894070498284,
+      "initialRopeMass": 19.13110678203849
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.014589700213743,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0160517808669502,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.059854960116706,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        1600,
+        200,
+        200,
+        200,
+        200
+      ],
+      "initialElasticEnergy": 51.565826751234255,
+      "initialRopeMass": 19.109270824668236
+    },
+    {
+      "groupPrestrain": [
+        0.0025,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.0025,
+        0.0025,
+        0.0025,
+        0.0025
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9860073835790024,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9866306161458342,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.0025,
+              0.0025,
+              0.0025,
+              0.0025
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.029382011578426,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        3200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "initialElasticEnergy": 170.18067331051705,
+      "initialRopeMass": 19.06592320632431
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.005,
+        0.005,
+        0.005,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9752505706720325,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9776098616988504,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.021977489651704,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        400,
+        400,
+        400,
+        400
+      ],
+      "initialElasticEnergy": 46.94226390318221,
+      "initialRopeMass": 19.127298058700088
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.005,
+        0.005,
+        0.005,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9717475428200704,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9739366889286332,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0185151199997176,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        320,
+        400,
+        400,
+        400,
+        400
+      ],
+      "initialElasticEnergy": 48.54066550158381,
+      "initialRopeMass": 19.11850684990888
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.005,
+        0.005,
+        0.005,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.965829665535112,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9678578377813072,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0125016253665424,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        400,
+        400,
+        400,
+        400
+      ],
+      "initialElasticEnergy": 56.91732624732186,
+      "initialRopeMass": 19.10535292154298
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.005,
+        0.005,
+        0.005,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9535731824933833,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9552520650745668,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9996812208166126,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        1600,
+        400,
+        400,
+        400,
+        400
+      ],
+      "initialElasticEnergy": 86.74325892805783,
+      "initialRopeMass": 19.083516964172723
+    },
+    {
+      "groupPrestrain": [
+        0.005,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.005,
+        0.005,
+        0.005,
+        0.005
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.926117841250191,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.927217011408173,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.005,
+              0.005,
+              0.005,
+              0.005
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9705601621106352,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        3200,
+        400,
+        400,
+        400,
+        400
+      ],
+      "initialElasticEnergy": 205.35810548734062,
+      "initialRopeMass": 19.0401693458288
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.857058246188387,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.86078097448213,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9064484361838772,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        0,
+        800,
+        800,
+        800,
+        800
+      ],
+      "initialElasticEnergy": 186.8395058324678,
+      "initialRopeMass": 19.07617282078573
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.001
+      ],
+      "ropePrestrain": [
+        0.001,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8529225625034667,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8565724240439714,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.001,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.9023231794085282,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        320,
+        800,
+        800,
+        800,
+        800
+      ],
+      "initialElasticEnergy": 188.4379074308694,
+      "initialRopeMass": 19.06738161199452
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.0025
+      ],
+      "ropePrestrain": [
+        0.0025,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.845680342703616,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8492088043045718,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.0025,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8949381028207883,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        800,
+        800,
+        800,
+        800,
+        800
+      ],
+      "initialElasticEnergy": 196.81456817660745,
+      "initialRopeMass": 19.05422768362862
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8314157073475652,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8345856611656048,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8803810088451716,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        1600,
+        800,
+        800,
+        800,
+        800
+      ],
+      "initialElasticEnergy": 226.6405008573434,
+      "initialRopeMass": 19.032391726258368
+    },
+    {
+      "groupPrestrain": [
+        0.01,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.7992099536279202,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.801476885418615,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8463735534623573,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ],
+      "initialForces": [
+        3200,
+        800,
+        800,
+        800,
+        800
+      ],
+      "initialElasticEnergy": 345.2553474166262,
+      "initialRopeMass": 18.98904410791444
+    }
+  ],
+  "fullRuns": [
+    {
+      "phase": "baseline",
+      "groupPrestrain": [
+        0,
+        0
+      ],
+      "ropePrestrain": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initialRopes": [
+        {
+          "index": 0,
+          "endpoints": [
+            3,
+            10,
+            9,
+            2
+          ],
+          "profile": "h",
+          "prestrain": 0,
+          "mountedLength": 10,
+          "naturalLength": 10,
+          "axialRigidity": 320000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 8.8
+        },
+        {
+          "index": 1,
+          "endpoints": [
+            10,
+            2,
+            12,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 8.246211251235321,
+          "naturalLength": 8.246211251235321,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 1.8141664752717708
+        },
+        {
+          "index": 2,
+          "endpoints": [
+            10,
+            2,
+            16,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 10,
+          "naturalLength": 10,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 2.2
+        },
+        {
+          "index": 3,
+          "endpoints": [
+            10,
+            2,
+            20,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 12.806248474865697,
+          "naturalLength": 12.806248474865697,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 2.8173746644704534
+        },
+        {
+          "index": 4,
+          "endpoints": [
+            10,
+            2,
+            24,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0,
+          "mountedLength": 16.1245154965971,
+          "naturalLength": 16.1245154965971,
+          "axialRigidity": 80000,
+          "force": 0,
+          "elasticEnergy": 0,
+          "mass": 3.5473934092513617
+        }
+      ],
+      "initialElasticEnergy": 0,
+      "initialRopeMass": 19.17893454899359,
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.090756973723471,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0916292459820713,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0930331213683577,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.0939429743527045,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.136743787920415,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 2.1378870025519867,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ]
+    },
+    {
+      "phase": "selected",
+      "groupPrestrain": [
+        0.01,
+        0.01
+      ],
+      "ropePrestrain": [
+        0.01,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "initialRopes": [
+        {
+          "index": 0,
+          "endpoints": [
+            3,
+            10,
+            9,
+            2
+          ],
+          "profile": "h",
+          "prestrain": 0.01,
+          "mountedLength": 10,
+          "naturalLength": 9.900990099009901,
+          "axialRigidity": 320000,
+          "force": 3200,
+          "elasticEnergy": 158.41584158415841,
+          "mass": 8.712871287128714
+        },
+        {
+          "index": 1,
+          "endpoints": [
+            10,
+            2,
+            12,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 8.246211251235321,
+          "naturalLength": 8.164565595282497,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 32.65826238112999,
+          "mass": 1.7962044309621492
+        },
+        {
+          "index": 2,
+          "endpoints": [
+            10,
+            2,
+            16,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 10,
+          "naturalLength": 9.900990099009901,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 39.603960396039604,
+          "mass": 2.1782178217821784
+        },
+        {
+          "index": 3,
+          "endpoints": [
+            10,
+            2,
+            20,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 12.806248474865697,
+          "naturalLength": 12.67945393551059,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 50.71781574204236,
+          "mass": 2.78947986581233
+        },
+        {
+          "index": 4,
+          "endpoints": [
+            10,
+            2,
+            24,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 16.1245154965971,
+          "naturalLength": 15.964866828313959,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 63.859467313255834,
+          "mass": 3.512270702229071
+        }
+      ],
+      "initialElasticEnergy": 345.2553474166262,
+      "initialRopeMass": 18.98904410791444,
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.7992099536279202,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.7998252385146625,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.801476885418615,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.802063653307635,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8463735534623573,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.01,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8471163789228053,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ]
+    },
+    {
+      "phase": "selected",
+      "groupPrestrain": [
+        0.01,
+        0.005
+      ],
+      "ropePrestrain": [
+        0.005,
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ],
+      "initialRopes": [
+        {
+          "index": 0,
+          "endpoints": [
+            3,
+            10,
+            9,
+            2
+          ],
+          "profile": "h",
+          "prestrain": 0.005,
+          "mountedLength": 10,
+          "naturalLength": 9.950248756218906,
+          "axialRigidity": 320000,
+          "force": 1600,
+          "elasticEnergy": 39.800995024875625,
+          "mass": 8.756218905472638
+        },
+        {
+          "index": 1,
+          "endpoints": [
+            10,
+            2,
+            12,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 8.246211251235321,
+          "naturalLength": 8.164565595282497,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 32.65826238112999,
+          "mass": 1.7962044309621492
+        },
+        {
+          "index": 2,
+          "endpoints": [
+            10,
+            2,
+            16,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 10,
+          "naturalLength": 9.900990099009901,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 39.603960396039604,
+          "mass": 2.1782178217821784
+        },
+        {
+          "index": 3,
+          "endpoints": [
+            10,
+            2,
+            20,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 12.806248474865697,
+          "naturalLength": 12.67945393551059,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 50.71781574204236,
+          "mass": 2.78947986581233
+        },
+        {
+          "index": 4,
+          "endpoints": [
+            10,
+            2,
+            24,
+            10
+          ],
+          "profile": "s",
+          "prestrain": 0.01,
+          "mountedLength": 16.1245154965971,
+          "naturalLength": 15.964866828313959,
+          "axialRigidity": 80000,
+          "force": 800,
+          "elasticEnergy": 63.859467313255834,
+          "mass": 3.512270702229071
+        }
+      ],
+      "initialElasticEnergy": 226.6405008573434,
+      "initialRopeMass": 19.032391726258368,
+      "runs": [
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8314157073475652,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "original",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.831918301391532,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8345856611656048,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": false,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8350778550440294,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": 0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8803810088451716,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        },
+        {
+          "name": "seriWawasan",
+          "options": {
+            "solver": "serpentine",
+            "serpentineFromRight": true,
+            "initialPerturbation": -0.001,
+            "ropePrestrain": [
+              0.005,
+              0.01,
+              0.01,
+              0.01,
+              0.01
+            ]
+          },
+          "size": [
+            24,
+            14
+          ],
+          "beams": 69,
+          "ropes": 5,
+          "maximumDisplacement": 1.8810583169603603,
+          "newBoundaryContacts": 0,
+          "maximumSupportMotion": 0,
+          "firstBreak": null,
+          "brokenMembers": 0,
+          "stable": true
+        }
+      ]
+    }
+  ]
+}

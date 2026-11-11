@@ -71,9 +71,11 @@ npm run test:browser
 
 `npm run build` type-checks and creates a production site in `public_html/`, including `index.html`, compiled assets, icons, the web app manifest, and the generated service worker. `public_html/` is generated and ignored by Git; do not edit it manually. `npm run test:browser` builds the app and checks production behavior in Chromium. Install the browser with `npx playwright install chromium` if needed. To use a system Chromium, set `FRAME_LAB_CHROMIUM` to its executable path.
 
-After a build, `node scripts/browser-smoke.mjs --solvers-only` checks Settings, solver routing, and canvas resizing on desktop, portrait touch, and landscape touch. Use the full suite for release validation.
+After a build, `node scripts/browser-smoke.mjs --solvers-only` checks Settings, solver routing, rope-prestrain controls and real worker initial stresses, and canvas resizing on desktop, portrait touch, and landscape touch. Use the full suite for release validation.
 
 The rejected larger Seri Wawasan designs are reproducible with `node --import tsx scripts/measure-seri-wawasan.ts`. The script applies the shared `measureProject` acceptance checks to saved experimental projects, without adding them to the gallery. See [the geometry-only trial report](examples/seri-wawasan-large/README.md) for results and the integration gate.
+
+Run `node --import tsx scripts/measure-prestrain.ts` for the 0.6.0 [physical rope-prestrain experiment](solvers/rope-prestrain.md). `--model <name>` measures one model independently. The diagnostic `PhysicsOptions.ropePrestrain` array controls natural lengths only for that run; omitted/zero values preserve 0.5.0 behavior. `measureProject` accepts an optional duration in seconds (default 20) so the same checks cover four-second screens and full acceptance runs. Since 0.7.0, Settings offers a session-only uniform prestrain switch and percentage selection, defaulting to off/0.5% on page load. Enabled starts build a fresh array from the current rope list; disabled starts omit it. The existing physics API and format 4 are unchanged, with no project field or automatic gallery tension.
 
 ## Refresh documentation screenshots
 

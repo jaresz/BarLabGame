@@ -6,7 +6,7 @@ const wrap = (v: number) => ((v + Math.PI) % TAU + TAU) % TAU - Math.PI;
 interface Distance { a: number; b: number; rest: number; compliance: number; lambda: number; tension: boolean; owner: number; cut: boolean }
 interface Angle { a: number; b: number; c: number; d: number; rest: number; compliance: number; lambda: number; owner: number; cut: boolean; internal: boolean; scale: number }
 export interface PhysicsMember { start: number; count: number; half: number; material: Material; profile: BeamProfile; broken: boolean; stress: number; overload: number }
-export interface PhysicsOptions { gravity?: number; damage?: boolean; bending?: number; axial?: number; iterations?: number; damping?: number; solver?: Solver; serpentineFromRight?: boolean; initialPerturbation?: number }
+export interface PhysicsOptions { gravity?: number; damage?: boolean; bending?: number; axial?: number; iterations?: number; damping?: number; solver?: Solver; serpentineFromRight?: boolean; initialPerturbation?: number; ropePrestrain?: readonly number[] }
 export interface Frame { positions: Float32Array; stresses: Float32Array; broken: Uint8Array; time: number; stepMs: number; points: number; constraints: number }
 export type SoundKind = 'beamStress' | 'ropeStress' | 'ropeBreak' | 'beamWall' | 'beamGround' | 'ropeGround';
 export interface SoundEvent { kind: SoundKind; x: number; intensity: number; length: number }
@@ -38,9 +38,15 @@ export class World {
   private activeParticles: number[] = [];
   time = 0; stepMs = 0;
   constructor(readonly project: Project, options: PhysicsOptions = {}) {
+    // Diagnostic strains address ropes in the supplied normalized project order.
+    // Copy the array so later caller edits cannot change the recorded settings;
+    // iterating values also rejects holes in an otherwise correctly sized array.
+    const ropePrestrain = options.ropePrestrain === undefined ? project.ropes.map(() => 0) : options.ropePrestrain;
+    if (!Array.isArray(ropePrestrain) || ropePrestrain.length !== project.ropes.length) throw new Error('ropePrestrain must contain one strain per project rope.');
+    for (const strain of ropePrestrain) if (typeof strain !== 'number' || !Number.isFinite(strain) || strain < 0 || strain > 0.01) throw new Error('Rope prestrain must be finite and between 0 and 0.01 (0–1%).');
     // Short steel beams should appear straight under their own weight. A modest
     // increase in solver sweeps prevents numerical compliance dominating bending.
-    this.options = { gravity: 9.81, damage: true, bending: 10000, axial: 2e6, iterations: 12, damping: 0.65, solver: 'original', serpentineFromRight: false, initialPerturbation: 0.001, ...options };
+    this.options = { gravity: 9.81, damage: true, bending: 10000, axial: 2e6, iterations: 12, damping: 0.65, solver: 'original', serpentineFromRight: false, initialPerturbation: 0.001, ...options, ropePrestrain: [...ropePrestrain] };
     const scanRank = new Int32Array(project.beams.length+project.ropes.length);
     if (this.options.solver === 'serpentine') serpentineMemberOrder(project,this.options.serpentineFromRight).forEach((owner,index) => { scanRank[owner] = index; });
     const positions: Point[] = [], masses: number[] = [], endpoints = new Map<string, Endpoint[]>();
@@ -51,6 +57,10 @@ export class World {
       this.memberLengths.push(len);
       let n = Math.max(4, Math.ceil(len / 0.5)); if (n % 2) n++;
       const half = n / 2 + 1, start = positions.length, owner = this.members.length, h = len / n;
+      // Keep the drawn geometry and discretization. A mounted rope is stretched
+      // relative to its shorter stress-free length; both mass and axial
+      // compliance use that natural length. Zero strain reproduces h exactly.
+      const rest = material === 'rope' ? h / (1 + this.options.ropePrestrain[index]) : h;
       const member: PhysicsMember = { start, count: n + 2, half, material, profile, broken: false, stress: 0, overload: 0 };
       this.members.push(member);
       // Keep separate rendering slots for the two halves. Their midpoint slots
@@ -62,8 +72,8 @@ export class World {
           // Rope area scales both line density and EA; the steel failure strain
           // stays at ten percent, so Heavy carries four times the axial force.
           const a = sideStart + j, b = a + 1, density = material === 'beam' ? 1.8 * properties.mass : 0.22 * ropeProperties.mass;
-          masses[a] += density * h / 2; masses[b] += density * h / 2;
-          this.distances.push({ a, b, rest: h, compliance: h / (material === 'beam' ? this.options.axial * properties.axial : 80000 * ropeProperties.axial), lambda: 0, tension: material === 'rope', owner, cut: false });
+          masses[a] += density * rest / 2; masses[b] += density * rest / 2;
+          this.distances.push({ a, b, rest, compliance: rest / (material === 'beam' ? this.options.axial * properties.axial : 80000 * ropeProperties.axial), lambda: 0, tension: material === 'rope', owner, cut: false });
         }
         if (material === 'beam') for (let j = 0; j < half - 2; j++) this.angles.push({ a: sideStart + j, b: sideStart + j + 1, c: sideStart + j + 1, d: sideStart + j + 2, rest: 0, compliance: h / (this.options.bending * properties.bending), lambda: 0, owner, cut: false, internal: true, scale: h });
       }
@@ -137,6 +147,9 @@ export class World {
     }
     this.applyInitialPerturbation();
     this.syncParticleSamples();
+    // Report the mounted elastic strain at t=0 without advancing an overload
+    // timer or playing a sound. Normal zero-prestrain startup stays unchanged.
+    if (this.options.ropePrestrain.some(strain => strain > 0)) this.measureStress();
   }
   private syncParticleSamples(): void {
     // Expand the common particle state into the stable per-member layout used
@@ -295,7 +308,7 @@ export class World {
     this.syncParticleSamples();
     this.measureDamage(); this.time += DT;
   }
-  private measureDamage(): void {
+  private measureStress(): void {
     for (const m of this.members) m.stress = 0;
     for (const c of this.distances) if (c.owner >= 0 && c.rest > 0) {
       const m = this.members[c.owner]; if (m.broken) continue;
@@ -306,6 +319,9 @@ export class World {
       const angle = wrap(Math.atan2(this.y[c.d] - this.y[c.c], this.x[c.d] - this.x[c.c]) - Math.atan2(this.y[c.b] - this.y[c.a], this.x[c.b] - this.x[c.a]) - c.rest);
       this.members[c.owner].stress = Math.max(this.members[c.owner].stress, Math.abs(angle) / c.scale / (0.95 * PROFILES[this.members[c.owner].profile].curvature));
     }
+  }
+  private measureDamage(): void {
+    this.measureStress();
     for (const [index, m] of this.members.entries()) if (!m.broken) {
       m.overload = m.stress > 1 ? m.overload + DT : 0;
       if (m.stress > (m.material === 'beam' ? .48 : .35) && m.stress > this.previousStress[index] + .035)
