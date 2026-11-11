@@ -1,0 +1,1088 @@
+{
+  "gameVersion": "0.4.78",
+  "seconds": 20,
+  "runs": [
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.3420670192987172,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.3413099380219993,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.2800451161956026,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.2792517132965342,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.2880432381800115,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.288849008286952,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 62,
+      "ropes": 5,
+      "maximumDisplacement": 4.590840270257922,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 62,
+      "ropes": 5,
+      "maximumDisplacement": 4.59283313111272,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 62,
+      "ropes": 5,
+      "maximumDisplacement": 4.807554474561746,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 62,
+      "ropes": 5,
+      "maximumDisplacement": 4.808774219583813,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 62,
+      "ropes": 5,
+      "maximumDisplacement": 8.895665752730624,
+      "newBoundaryContacts": 3948,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9833333333333333,
+      "brokenMembers": 1,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 62,
+      "ropes": 5,
+      "maximumDisplacement": 8.895871561674662,
+      "newBoundaryContacts": 3947,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9833333333333333,
+      "brokenMembers": 1,
+      "stable": false
+    }
+  ],
+  "projects": {
+    "goldenGate": {
+      "metadata": {
+        "size": [
+          32,
+          18
+        ],
+        "gameVersion": "0.4.78",
+        "formatVersion": 3
+      },
+      "objects": {
+        "b": [
+          [
+            -16,
+            -3,
+            -12,
+            -3,
+            "s"
+          ],
+          [
+            -12,
+            -3,
+            -9,
+            -3,
+            "s"
+          ],
+          [
+            -9,
+            6,
+            -9,
+            3,
+            "s"
+          ],
+          [
+            -9,
+            6,
+            -8,
+            6,
+            "s"
+          ],
+          [
+            -9,
+            3,
+            -9,
+            0,
+            "s"
+          ],
+          [
+            -9,
+            3,
+            -7,
+            3,
+            "s"
+          ],
+          [
+            -9,
+            0,
+            -9,
+            -3,
+            "s"
+          ],
+          [
+            -9,
+            0,
+            -7,
+            0,
+            "s"
+          ],
+          [
+            -9,
+            -3,
+            -9,
+            -9,
+            "h"
+          ],
+          [
+            -9,
+            -3,
+            -8,
+            -3,
+            "s"
+          ],
+          [
+            -8,
+            6,
+            -7,
+            6,
+            "s"
+          ],
+          [
+            -8,
+            -3,
+            -7,
+            -3,
+            "s"
+          ],
+          [
+            -7,
+            6,
+            -7,
+            3,
+            "s"
+          ],
+          [
+            -7,
+            3,
+            -7,
+            0,
+            "s"
+          ],
+          [
+            -7,
+            0,
+            -7,
+            -3,
+            "s"
+          ],
+          [
+            -7,
+            -3,
+            -7,
+            -9,
+            "h"
+          ],
+          [
+            -7,
+            -3,
+            -4,
+            -3,
+            "s"
+          ],
+          [
+            -4,
+            -3,
+            0,
+            -3,
+            "s"
+          ],
+          [
+            0,
+            -3,
+            4,
+            -3,
+            "s"
+          ],
+          [
+            4,
+            -3,
+            7,
+            -3,
+            "s"
+          ],
+          [
+            7,
+            6,
+            7,
+            3,
+            "s"
+          ],
+          [
+            7,
+            6,
+            8,
+            6,
+            "s"
+          ],
+          [
+            7,
+            3,
+            7,
+            0,
+            "s"
+          ],
+          [
+            7,
+            3,
+            9,
+            3,
+            "s"
+          ],
+          [
+            7,
+            0,
+            7,
+            -3,
+            "s"
+          ],
+          [
+            7,
+            0,
+            9,
+            0,
+            "s"
+          ],
+          [
+            7,
+            -3,
+            7,
+            -9,
+            "h"
+          ],
+          [
+            7,
+            -3,
+            8,
+            -3,
+            "s"
+          ],
+          [
+            8,
+            6,
+            9,
+            6,
+            "s"
+          ],
+          [
+            8,
+            -3,
+            9,
+            -3,
+            "s"
+          ],
+          [
+            9,
+            6,
+            9,
+            3,
+            "s"
+          ],
+          [
+            9,
+            3,
+            9,
+            0,
+            "s"
+          ],
+          [
+            9,
+            0,
+            9,
+            -3,
+            "s"
+          ],
+          [
+            9,
+            -3,
+            9,
+            -9,
+            "h"
+          ],
+          [
+            9,
+            -3,
+            12,
+            -3,
+            "s"
+          ],
+          [
+            12,
+            -3,
+            16,
+            -3,
+            "s"
+          ]
+        ],
+        "r": [
+          [
+            -16,
+            2,
+            -16,
+            -3
+          ],
+          [
+            -16,
+            2,
+            -12,
+            4
+          ],
+          [
+            -12,
+            4,
+            -12,
+            -3
+          ],
+          [
+            -12,
+            4,
+            -8,
+            6
+          ],
+          [
+            -8,
+            6,
+            -4,
+            4
+          ],
+          [
+            -4,
+            4,
+            -4,
+            -3
+          ],
+          [
+            -4,
+            4,
+            0,
+            2
+          ],
+          [
+            0,
+            2,
+            0,
+            -3
+          ],
+          [
+            0,
+            2,
+            4,
+            4
+          ],
+          [
+            4,
+            4,
+            4,
+            -3
+          ],
+          [
+            4,
+            4,
+            8,
+            6
+          ],
+          [
+            8,
+            6,
+            12,
+            4
+          ],
+          [
+            12,
+            4,
+            12,
+            -3
+          ],
+          [
+            12,
+            4,
+            16,
+            2
+          ],
+          [
+            16,
+            2,
+            16,
+            -3
+          ]
+        ]
+      },
+      "checksum": "fnv1a32:3fbdc70d"
+    },
+    "seriWawasan": {
+      "metadata": {
+        "size": [
+          24,
+          14
+        ],
+        "gameVersion": "0.4.78",
+        "formatVersion": 3
+      },
+      "objects": {
+        "b": [
+          [
+            -12,
+            -3,
+            -12,
+            -5,
+            "s"
+          ],
+          [
+            -12,
+            -3,
+            -10,
+            -3,
+            "h"
+          ],
+          [
+            -12,
+            -3,
+            -10,
+            -5,
+            "s"
+          ],
+          [
+            -12,
+            -5,
+            -10,
+            -5,
+            "h"
+          ],
+          [
+            -10,
+            -3,
+            -10,
+            -5,
+            "s"
+          ],
+          [
+            -10,
+            -3,
+            -9,
+            -3,
+            "h"
+          ],
+          [
+            -10,
+            -3,
+            -8,
+            -5,
+            "s"
+          ],
+          [
+            -10,
+            -5,
+            -8,
+            -5,
+            "h"
+          ],
+          [
+            -9,
+            -3,
+            -8,
+            -3,
+            "h"
+          ],
+          [
+            -8,
+            -3,
+            -8,
+            -5,
+            "s"
+          ],
+          [
+            -8,
+            -3,
+            -6,
+            -3,
+            "h"
+          ],
+          [
+            -8,
+            -3,
+            -6,
+            -5,
+            "s"
+          ],
+          [
+            -8,
+            -5,
+            -6,
+            -5,
+            "h"
+          ],
+          [
+            -6,
+            -3,
+            -6,
+            -5,
+            "h"
+          ],
+          [
+            -6,
+            -3,
+            -5,
+            1,
+            "h"
+          ],
+          [
+            -6,
+            -3,
+            -4,
+            -3,
+            "h"
+          ],
+          [
+            -6,
+            -3,
+            -4,
+            -5,
+            "s"
+          ],
+          [
+            -6,
+            -3,
+            -3,
+            1,
+            "h"
+          ],
+          [
+            -6,
+            -5,
+            -6,
+            -7,
+            "h"
+          ],
+          [
+            -6,
+            -5,
+            -4,
+            -5,
+            "h"
+          ],
+          [
+            -6,
+            -7,
+            -4,
+            -3,
+            "h"
+          ],
+          [
+            -6,
+            -7,
+            -4,
+            -7,
+            "h"
+          ],
+          [
+            -5,
+            1,
+            -3,
+            5,
+            "h"
+          ],
+          [
+            -5,
+            1,
+            -3,
+            1,
+            "h"
+          ],
+          [
+            -5,
+            1,
+            -2,
+            5,
+            "h"
+          ],
+          [
+            -4,
+            -3,
+            -4,
+            -5,
+            "h"
+          ],
+          [
+            -4,
+            -3,
+            -3,
+            1,
+            "h"
+          ],
+          [
+            -4,
+            -3,
+            -2,
+            -3,
+            "h"
+          ],
+          [
+            -4,
+            -3,
+            -2,
+            -5,
+            "s"
+          ],
+          [
+            -4,
+            -5,
+            -4,
+            -7,
+            "h"
+          ],
+          [
+            -4,
+            -5,
+            -2,
+            -5,
+            "h"
+          ],
+          [
+            -3,
+            5,
+            -2,
+            5,
+            "h"
+          ],
+          [
+            -3,
+            1,
+            -2,
+            5,
+            "h"
+          ],
+          [
+            -2,
+            -3,
+            -2,
+            -5,
+            "s"
+          ],
+          [
+            -2,
+            -3,
+            0,
+            -3,
+            "h"
+          ],
+          [
+            -2,
+            -3,
+            0,
+            -5,
+            "s"
+          ],
+          [
+            -2,
+            -5,
+            0,
+            -5,
+            "h"
+          ],
+          [
+            0,
+            -3,
+            0,
+            -5,
+            "s"
+          ],
+          [
+            0,
+            -3,
+            2,
+            -3,
+            "h"
+          ],
+          [
+            0,
+            -3,
+            2,
+            -5,
+            "s"
+          ],
+          [
+            0,
+            -5,
+            2,
+            -5,
+            "h"
+          ],
+          [
+            2,
+            -3,
+            2,
+            -5,
+            "s"
+          ],
+          [
+            2,
+            -3,
+            4,
+            -3,
+            "h"
+          ],
+          [
+            2,
+            -3,
+            4,
+            -5,
+            "s"
+          ],
+          [
+            2,
+            -5,
+            4,
+            -5,
+            "h"
+          ],
+          [
+            4,
+            -3,
+            4,
+            -5,
+            "s"
+          ],
+          [
+            4,
+            -3,
+            6,
+            -3,
+            "h"
+          ],
+          [
+            4,
+            -3,
+            6,
+            -5,
+            "s"
+          ],
+          [
+            4,
+            -5,
+            6,
+            -5,
+            "h"
+          ],
+          [
+            6,
+            -3,
+            6,
+            -5,
+            "s"
+          ],
+          [
+            6,
+            -3,
+            8,
+            -3,
+            "h"
+          ],
+          [
+            6,
+            -3,
+            8,
+            -5,
+            "s"
+          ],
+          [
+            6,
+            -5,
+            8,
+            -5,
+            "h"
+          ],
+          [
+            8,
+            -3,
+            8,
+            -5,
+            "s"
+          ],
+          [
+            8,
+            -3,
+            10,
+            -3,
+            "h"
+          ],
+          [
+            8,
+            -3,
+            10,
+            -5,
+            "s"
+          ],
+          [
+            8,
+            -5,
+            10,
+            -5,
+            "h"
+          ],
+          [
+            10,
+            -3,
+            10,
+            -5,
+            "s"
+          ],
+          [
+            10,
+            -3,
+            12,
+            -3,
+            "h"
+          ],
+          [
+            10,
+            -3,
+            12,
+            -5,
+            "s"
+          ],
+          [
+            10,
+            -5,
+            12,
+            -5,
+            "h"
+          ],
+          [
+            12,
+            -3,
+            12,
+            -5,
+            "s"
+          ]
+        ],
+        "r": [
+          [
+            -9,
+            -3,
+            -3,
+            5
+          ],
+          [
+            -2,
+            5,
+            0,
+            -3
+          ],
+          [
+            -2,
+            5,
+            4,
+            -3
+          ],
+          [
+            -2,
+            5,
+            8,
+            -3
+          ],
+          [
+            -2,
+            5,
+            12,
+            -3
+          ]
+        ]
+      },
+      "checksum": "fnv1a32:a4bf6276"
+    }
+  }
+}

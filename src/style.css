@@ -216,3 +216,7 @@ body:has(#version-panel:not([hidden])) #update-app,body:has(#guide-dialog[open])
 
 /* Match the header mark to the installed app icon without changing other orange accents. */
 .brand-symbol{background:#17454b;color:#fff5df}
+
+/* A fourfold rope area doubles its visible diameter. */
+[data-tool="rope"][data-profile="h"]>svg{stroke-width:4}
+#profile-picker button[hidden]{display:none!important}

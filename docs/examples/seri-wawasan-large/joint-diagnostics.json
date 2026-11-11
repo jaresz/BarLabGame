@@ -1,0 +1,43 @@
+{
+  "gameVersion": "0.4.79",
+  "candidate": "fork-standard-front",
+  "seconds": 0.6,
+  "steps": 72,
+  "gravity": 9.81,
+  "initialPerturbation": 0.001,
+  "acceptanceRuns": false,
+  "runs": [
+    {
+      "solver": "original",
+      "serpentineFromRight": true,
+      "iterations": 12,
+      "maximumJointGap": 0.06693994569535625,
+      "maximumDisplacement": 1.6490189155732171,
+      "brokenMembers": 0
+    },
+    {
+      "solver": "original",
+      "serpentineFromRight": true,
+      "iterations": 96,
+      "maximumJointGap": 0.01694912677269643,
+      "maximumDisplacement": 1.42664578700932,
+      "brokenMembers": 0
+    },
+    {
+      "solver": "serpentine",
+      "serpentineFromRight": true,
+      "iterations": 12,
+      "maximumJointGap": 0.16289638360612338,
+      "maximumDisplacement": 1.654931055783452,
+      "brokenMembers": 0
+    },
+    {
+      "solver": "serpentine",
+      "serpentineFromRight": true,
+      "iterations": 96,
+      "maximumJointGap": 0.0646178238345895,
+      "maximumDisplacement": 1.4379117781744015,
+      "brokenMembers": 0
+    }
+  ]
+}

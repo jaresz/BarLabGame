@@ -282,7 +282,7 @@ try {
     await page.screenshot({ path: join(tmpdir(), `frame-lab-${name}.png`) });
     await page.locator('#project-text').click();
     const original = await page.locator('#project-json').inputValue();
-    assert.equal(JSON.parse(original).metadata.formatVersion, 3);
+    assert.equal(JSON.parse(original).metadata.formatVersion, 4);
     assert.equal(JSON.parse(original).metadata.gameVersion, GAME_VERSION);
     assert.deepEqual(JSON.parse(original).metadata.size, [16, 10]);
     assert.match(await page.locator('#board-size').textContent(), /^16 . 10 GRID$/);
@@ -403,7 +403,7 @@ try {
     if (!mobile) await testMouseControls(page, point, readProject);
     // Overlapping previews must not stop rendering or prevent subsequent additions.
     await page.locator('#project-text').click();
-    await page.locator('#project-json').fill(JSON.stringify({ metadata: { size: [32,18], gameVersion: '0.4.0', formatVersion: 3 }, objects: { b: [[-3,0,1,0,'s']] } }));
+    await page.locator('#project-json').fill(JSON.stringify({ metadata: { size: [32,18], gameVersion: '0.4.0', formatVersion: 4 }, objects: { b: [[-3,0,1,0,'s']] } }));
     await page.locator('#load').click();
     await clickNode(15, 9);
     const overlapEnd = await point(19, 9);
@@ -427,7 +427,7 @@ try {
     await page.locator('#project-json').fill('{"size":[32,18],"formatVersion":2}');
     await page.locator('#load').click();
     assert.match(await page.locator('#import-error').textContent(), /Older formats/);
-    const next = { metadata: { size: [40,20], gameVersion: '0.4.0', formatVersion:3 }, objects: { b:[[-8,0,-4,0,'l'],[-4,0,0,0,'s'],[0,0,4,0,'h']], r:[[4,0,4,4]] } };
+    const next = { metadata: { size: [40,20], gameVersion: '0.4.0', formatVersion: 4 }, objects: { b:[[-8,0,-4,0,'l'],[-4,0,0,0,'s'],[0,0,4,0,'h']], r:[[4,0,4,4,'s']] } };
     await page.locator('#project-json').fill(JSON.stringify({...next,metadata:{...next.metadata,size:[39,20]}}));
     await page.locator('#load').click();
     assert.match(await page.locator('#import-error').textContent(), /even/);
@@ -440,6 +440,7 @@ try {
     await page.waitForFunction(() => /[1-9]\d*\.\d S/.test(document.querySelector('#performance')?.textContent || ''), undefined, {timeout:10000});
     assert.equal(await page.locator('#total-cost').textContent(),'Cost: 120 cr');
     await page.locator('#back').click();
+    await testRopeProfiles(page, mobile, point, readProject);
     await testContinuousDrawing(page, mobile, point, readProject);
     await testDrawingDrag(page, mobile, point, readProject);
     await testNodeMoves(page, mobile, point, readProject);
@@ -515,7 +516,7 @@ try {
     await page.locator('#examples').tap();
     const dialogBounds = await page.locator('#examples-dialog').boundingBox();
     assert.ok(dialogBounds.x >= 0 && dialogBounds.y >= 0 && dialogBounds.x + dialogBounds.width <= viewport.width && dialogBounds.y + dialogBounds.height <= viewport.height, `${name}: examples dialog fits viewport`);
-    assert.equal(await page.locator('[data-example]').count(), 5);
+    assert.equal(await page.locator('[data-example]').count(), 8);
     await page.screenshot({ path: join(tmpdir(), `frame-lab-${name}-examples.png`) });
     await page.locator('[data-example="blank"]').tap();
     assert.equal(await page.locator('#beam-count').textContent(), '0', `${name}: touch loads example`);
@@ -608,10 +609,10 @@ async function testTensionPlayback(browser, base) {
     });
     await page.goto(base, { waitUntil: 'load' });
     const objects = side === 'rope'
-      ? { b: [[-4, -1, 0, -1, 's']], r: [[-4, 5, -4, -1], [0, 5, 0, -1]] }
+      ? { b: [[-4, -1, 0, -1, 's']], r: [[-4, 5, -4, -1,'s'], [0, 5, 0, -1,'s']] }
       : { b: [side === 'left' ? [-8, 3, -2, 3, 'l'] : [2, 3, 8, 3, 'l']] };
     await page.locator('#project-text').click();
-    await page.locator('#project-json').fill(JSON.stringify({ metadata: { size: [16, 10], gameVersion: GAME_VERSION, formatVersion: 3 }, objects }));
+    await page.locator('#project-json').fill(JSON.stringify({ metadata: { size: [16, 10], gameVersion: GAME_VERSION, formatVersion: 4 }, objects }));
     await page.locator('#load').click();
     await page.locator('#run').click();
     await page.waitForFunction(() => window.soundSources.some(source => source.loop), undefined, { timeout: 10000 });
@@ -1127,7 +1128,7 @@ async function testOffline(browser, base) {
     const name = (await caches.keys()).find(key => key.startsWith('bar-lab-static-'));
     await (await caches.open(name)).put(new URL('assets/legacy.css', location.href), new Response('/* legacy */', { headers: { 'Content-Type': 'text/css' } }));
   });
-  const design = { metadata: { size: [32, 18], gameVersion: '0.4.0', formatVersion: 3 }, objects: { b: [[-3, 0, 1, 0, 's']] } };
+  const design = { metadata: { size: [32, 18], gameVersion: '0.4.0', formatVersion: 4 }, objects: { b: [[-3, 0, 1, 0, 's']] } };
   await page.locator('#project-text').click();
   await page.locator('#project-json').fill(JSON.stringify(design));
   await page.locator('#load').click();
@@ -1253,7 +1254,7 @@ async function testExamples(page, original) {
   const open = async () => { await page.locator('#examples').click(); assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), true); };
   const read = async () => { await page.locator('#project-text').click(); const value = await page.locator('#project-json').inputValue(); await page.locator('#close-text').click(); return value; };
   await open();
-  assert.equal(await page.locator('[data-example]').count(), 5);
+  assert.equal(await page.locator('[data-example]').count(), 8);
   assert.equal(await page.locator('[data-example="suspension"], [data-example="cantilever"]').count(), 0);
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), false);
@@ -1265,6 +1266,9 @@ async function testExamples(page, original) {
     eiffel: { beams: 38, ropes: 0, size: [18, 32], title: 'Eiffel Tower' },
     goldenGate: { beams: 36, ropes: 15, size: [32, 18], title: 'Golden Gate Bridge' },
     sydneyHarbour: { beams: 46, ropes: 0, size: [32, 18], title: 'Sydney Harbour Bridge' },
+    ponteLuisI: { beams: 69, ropes: 0, size: [24, 16], title: 'Ponte Luís I' },
+    rtcnKolowo: { beams: 65, ropes: 6, size: [28, 20], title: 'RTCN Kołowo' },
+    seriWawasan: { beams: 69, ropes: 5, size: [24, 14], title: 'Seri Wawasan Bridge' },
     blank: { beams: 0, ropes: 0, size: [16, 10], title: 'Blank canvas' },
   };
   // Load each card and check its drawn geometry, then undo both example loading and
@@ -1272,9 +1276,21 @@ async function testExamples(page, original) {
   for (const [name, { beams, ropes, size, title }] of Object.entries(expected)) {
     await open();
     const card = page.locator(`[data-example="${name}"]`);
+    // The expanded gallery scrolls on narrow screens; every card remains fully
+    // reachable before activation instead of requiring the dialog to fit all rows.
+    await card.scrollIntoViewIfNeeded();
     assert.equal(await card.locator('svg').count(), 1);
     assert.equal(await card.locator('span').textContent(), title);
-    assert.equal(await card.locator('.example-beams polyline').count() > 0, beams > 0, `${name}: thumbnail geometry`);
+    assert.equal(await card.locator('.example-beams polyline').count(), beams, `${name}: thumbnail beam geometry`);
+    assert.equal(await card.locator('.example-ropes polyline').count(), ropes, `${name}: thumbnail rope geometry`);
+    if (name === 'goldenGate' || name === 'seriWawasan') {
+      const widths=await card.locator('.example-ropes polyline').evaluateAll(lines=>lines.map(line=>[line.dataset.profile,Number(line.style.strokeWidth)]));
+      assert.ok(widths.some(([p,w])=>p==='h'&&w===2));
+      assert.ok(widths.some(([p,w])=>p==='s'&&w===1));
+    }
+    const thumbnail = await card.locator('.example-board').evaluate(el => ({ width:Number(el.getAttribute('width')),height:Number(el.getAttribute('height')) }));
+    assert.ok(Math.abs(thumbnail.width/thumbnail.height-size[0]/size[1])<1e-10, `${name}: thumbnail board aspect ratio`);
+    assert.ok(thumbnail.width<=136 && thumbnail.height<=76, `${name}: thumbnail fits`);
     if (name === 'eiffel') {
       const board = await card.locator('.example-board').evaluate(el => ({ width: Number(el.getAttribute('width')), height: Number(el.getAttribute('height')) }));
       assert.ok(board.height > board.width, 'Eiffel thumbnail uses a portrait board');
@@ -1287,8 +1303,8 @@ async function testExamples(page, original) {
     const exported = await read();
     assert.deepEqual(JSON.parse(exported).metadata.size, size, `${name}: board size`);
     assert.equal(JSON.parse(exported).metadata.gameVersion, GAME_VERSION, `${name}: export version`);
-    if (name === 'goldenGate') assert.equal(JSON.parse(exported).checksum, 'fnv1a32:3fbdc70d', 'Golden Gate matches the supplied design');
-    if (name === 'eiffel' || name === 'goldenGate' || name === 'sydneyHarbour') {
+    if (name === 'goldenGate') assert.equal(JSON.parse(exported).checksum, 'fnv1a32:adade5ce', 'Golden Gate retains its measured reinforced design');
+    if (name !== 'blank' && name !== 'bridge') {
       await page.locator('#run').click();
       await page.locator('#back').click();
       assert.equal(await read(), exported, `${name}: simulation leaves the design intact`);
@@ -1296,7 +1312,7 @@ async function testExamples(page, original) {
     assert.equal(await page.locator('#project-name').count(), 0, 'Project heading is removed');
     await page.locator('#undo').click();
     assert.equal(await read(), original, `${name}: Undo restores previous project`);
-    if (name === 'eiffel' || name === 'goldenGate' || name === 'sydneyHarbour') {
+    if (name !== 'blank' && name !== 'bridge') {
       await page.locator('#project-text').click();
       await page.locator('#project-json').fill(exported);
       await page.locator('#load').click();
@@ -1380,10 +1396,10 @@ async function testCanvasSize(page, original) {
 async function testMouseControls(page, point, readProject) {
   const load = async objects => {
     await page.locator('#project-text').click();
-    await page.locator('#project-json').fill(JSON.stringify({ metadata: {size:[32,18], gameVersion:'0.4.0', formatVersion:3}, objects }));
+    await page.locator('#project-json').fill(JSON.stringify({ metadata: {size:[32,18], gameVersion:'0.4.0', formatVersion: 4}, objects }));
     await page.locator('#load').click();
   };
-  const fixture = { b:[[-6,0,-2,0,'s'],[-2,0,2,0,'h']], r:[[2,0,6,0]] };
+  const fixture = { b:[[-6,0,-2,0,'s'],[-2,0,2,0,'h']], r:[[2,0,6,0,'s']] };
   const click = async (x,y,button='left') => { const p=await point(x,y); await page.mouse.click(p.x,p.y,{button}); };
   const ctrlClick = async (x,y) => { await page.keyboard.down('Control'); await click(x,y); await page.keyboard.up('Control'); };
   const box = async (a,b,add=false,zoom=1,pan=[0,0]) => {
@@ -1478,7 +1494,7 @@ async function testMouseControls(page, point, readProject) {
   assert.equal(await page.locator('#context-menu').isVisible(),false);
   assert.match(await page.locator('#inspector-title').textContent(),/1 selected/,'Empty right click preserves selection');
   await click(20,9,'right');
-  assert.equal(await page.locator('#context-menu button').count(),1,'Rope menu');
+  assert.equal(await page.locator('#context-menu button').count(),3,'Rope menu');
   await page.keyboard.press('Escape');
   await page.locator('#run').click();
   await click(14,9,'right'); await ctrlClick(14,9);
@@ -1533,10 +1549,10 @@ async function testNodeMoves(page, mobile, point, readProject) {
   };
   const move = p => mobile ? touch('touchMove', { ...p, id: 0 }) : page.mouse.move(p.x, p.y);
   const up = () => mobile ? touch('touchEnd') : page.mouse.up();
-  const fixture = { b: [[-4,0,0,0,'s']], r: [[0,0,3,0]], j: [[0,0,'o']] };
+  const fixture = { b: [[-4,0,0,0,'s']], r: [[0,0,3,0,'s']], j: [[0,0,'o']] };
   const load = async objects => {
     await page.locator('#project-text').click();
-    await page.locator('#project-json').fill(JSON.stringify({ metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:3}, objects }));
+    await page.locator('#project-json').fill(JSON.stringify({ metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion: 4}, objects }));
     await page.locator('#load').click();
     await page.locator('[data-tool="select"]').click();
     await page.waitForTimeout(60);
@@ -1553,7 +1569,7 @@ async function testNodeMoves(page, mobile, point, readProject) {
   await page.screenshot({path:resolve('screenshots', `node-move-${mobile ? 'touch' : 'mouse'}.png`)});
   await up();
   const moved = (await readProject()).objects;
-  assert.deepEqual(moved, {b:[[-4,0,0,2,'s']],r:[[0,2,3,0]],j:[[0,2,'o']]});
+  assert.deepEqual(moved, {b:[[-4,0,0,2,'s']],r:[[0,2,3,0,'s']],j:[[0,2,'o']]});
   assert.notEqual(await page.locator('#total-cost').textContent(), originalCost);
   await page.locator('#undo').click(); assert.deepEqual((await readProject()).objects, fixture, 'One undo restores the entire drag');
   await page.locator('#redo').click(); assert.deepEqual((await readProject()).objects, moved);
@@ -1583,7 +1599,7 @@ async function testNodeMoves(page, mobile, point, readProject) {
 
   // Drop onto an occupied node with duplicate beams and a collapsing rope; compare the
   // normalized export, exercise Undo/Redo and reload to verify the durable merged result.
-  const merging = { b:[[-4,0,0,0,'h'],[-4,2,0,0,'l']], r:[[-4,0,-4,2]], j:[[-4,0,'o']] };
+  const merging = { b:[[-4,0,0,0,'h'],[-4,2,0,0,'l']], r:[[-4,0,-4,2,'s']], j:[[-4,0,'o']] };
   await load(merging);
   const beforeMerge = (await readProject()).objects;
   await drag([12,9],[12,7]);
@@ -1610,11 +1626,11 @@ async function testBeamMoves(page, mobile, point, readProject) {
   const up = () => mobile ? touch('touchEnd') : page.mouse.up();
   const load = async objects => {
     await page.locator('#project-text').click();
-    await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:3},objects}));
+    await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion: 4},objects}));
     await page.locator('#load').click(); await page.locator('[data-tool="select"]').click(); await page.waitForTimeout(60);
   };
   const drag = async (a,b) => { await down(await point(...a)); await move(await point(...b)); await up(); };
-  const fixture = {b:[[-8,0,-4,0,'l'],[-4,0,0,0,'h']],r:[[0,0,4,0]],j:[[-4,0,'o']]};
+  const fixture = {b:[[-8,0,-4,0,'l'],[-4,0,0,0,'h']],r:[[0,0,4,0,'s']],j:[[-4,0,'o']]};
   await load(fixture);
   const before = (await readProject()).objects;
   const bounds = await page.locator('#canvas').boundingBox();
@@ -1627,7 +1643,7 @@ async function testBeamMoves(page, mobile, point, readProject) {
   await page.screenshot({path:resolve('screenshots',`beam-move-${mobile ? 'touch' : 'mouse'}.png`)});
   await up();
   const moved = (await readProject()).objects;
-  assert.deepEqual(moved,{b:[[-8,0,-3,2,'l'],[-3,2,1,2,'h']],r:[[1,2,4,0]],j:[[-3,2,'o']]},'Beam translates while connected members stretch');
+  assert.deepEqual(moved,{b:[[-8,0,-3,2,'l'],[-3,2,1,2,'h']],r:[[1,2,4,0,'s']],j:[[-3,2,'o']]},'Beam translates while connected members stretch');
   assert.equal(await page.locator('[data-change-profile="h"]').getAttribute('class'),'active','Moved beam remains selected');
   await page.locator('#undo').click(); assert.deepEqual((await readProject()).objects,before,'One Undo restores both endpoints and attached elements');
   await page.locator('#redo').click(); assert.deepEqual((await readProject()).objects,moved);
@@ -1656,7 +1672,7 @@ async function testBeamMoves(page, mobile, point, readProject) {
 
   // Drop both ends onto stationary nodes and a duplicate beam; compare the export to verify
   // collapsed-rope removal and precedence of the stationary beam profile.
-  await load({b:[[-4,0,0,0,'h'],[-4,2,0,2,'l']],r:[[-4,0,-4,2],[0,0,0,2]],j:[[-4,0,'o']]});
+  await load({b:[[-4,0,0,0,'h'],[-4,2,0,2,'l']],r:[[-4,0,-4,2,'s'],[0,0,0,2,'s']],j:[[-4,0,'o']]});
   await drag([14,9],[14,7]);
   assert.deepEqual((await readProject()).objects,{b:[[-4,2,0,2,'l']]},'Both ends merge and stationary profile wins');
   // Repeat translation for diagonal and vertical beams and compare exact endpoint exports
@@ -1707,15 +1723,15 @@ async function testGroupSelection(page, mobile) {
   // The rectangle below selects that chain's four nodes and three members (7 entries).
   // The third beam connects the group to the stationary node (8, 0), so it must stretch;
   // the fourth beam at y = 4 stays separate, providing an object outside the group to grab.
-  const fixture={b:[[-8,0,-4,0,'s'],[-4,0,0,0,'h'],[4,0,8,0,'l'],[8,4,12,4,'s']],r:[[0,0,4,0]],j:[[-4,0,'o']]};
+  const fixture={b:[[-8,0,-4,0,'s'],[-4,0,0,0,'h'],[4,0,8,0,'l'],[8,4,12,4,'s']],r:[[0,0,4,0,'s']],j:[[-4,0,'o']]};
   // Expected export after dragging the group one grid unit right and two units up:
   // add (1, 2) to its four nodes (pointer-grid delta is (1, -2)). The hinged joint
   // follows its node, the third beam's stationary end stays at (8, 0), and the
   // separate fourth beam is unchanged. Thus only the external connection changes length.
-  const moved={b:[[-7,2,-3,2,'s'],[-3,2,1,2,'h'],[5,2,8,0,'l'],[8,4,12,4,'s']],r:[[1,2,5,2]],j:[[-3,2,'o']]};
+  const moved={b:[[-7,2,-3,2,'s'],[-3,2,1,2,'h'],[5,2,8,0,'l'],[8,4,12,4,'s']],r:[[1,2,5,2,'s']],j:[[-3,2,'o']]};
   const load = async () => {
     await page.locator('#project-text').click();
-    await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:3},objects:fixture}));
+    await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion: 4},objects:fixture}));
     await page.locator('#load').click();await page.locator('[data-tool="select"]').click();
     view={zoom:1,pan:[0,0]};await page.waitForTimeout(50);
     await page.evaluate(() => {
@@ -1837,7 +1853,7 @@ async function testDrawingDrag(page, mobile, point, readProject) {
   const original = { b: [[-4, 0, 2, 0, 's']] };
   await page.locator('#project-text').click();
   await page.locator('#project-json').fill(JSON.stringify({
-    metadata: { size: [32, 18], gameVersion: '0.4.0', formatVersion: 3 },
+    metadata: { size: [32, 18], gameVersion: '0.4.0', formatVersion: 4 },
     objects: original,
   }));
   await page.locator('#load').click();
@@ -1877,7 +1893,7 @@ async function testDrawingDrag(page, mobile, point, readProject) {
     const fromEdge = (await readProject()).objects;
     assert.deepEqual(fromEdge, tool === 'beam'
       ? { b: [...original.b, [13, 0, 16, 0, 's']] }
-      : { ...original, r: [[13, 0, 16, 0]] });
+      : { ...original, r: [[13, 0, 16, 0,'s']] });
     await page.locator('#undo').click();
 
     for (const x of [12, 15, 20]) {
@@ -1887,7 +1903,7 @@ async function testDrawingDrag(page, mobile, point, readProject) {
       const base = x === 15 ? junction : original.b;
       const beams = tool === 'beam' ? [...base, [...added, 's']].sort((a, b) => a[0] - b[0] || b[1] - a[1]) : base;
       assert.deepEqual(project.b, beams, `${tool} from grid column ${x}`);
-      assert.deepEqual(project.r, tool === 'rope' ? [added] : undefined);
+      assert.deepEqual(project.r, tool === 'rope' ? [[...added,'s']] : undefined);
       if(x===20) {
         const next=await point(22,6);
         if(mobile) await page.touchscreen.tap(next.x,next.y); else await page.mouse.click(next.x,next.y);
@@ -2028,7 +2044,7 @@ async function testEdgePan(page, mobile, readProject, wideLandscape = false) {
   await tick(300);
   const afterReleaseBounds = await page.locator('#canvas').boundingBox();
   assert.deepEqual(await coords(), end, `Releasing the pointer stops edge pan; canvas ${JSON.stringify(beforeReleaseBounds)} -> ${JSON.stringify(afterReleaseBounds)}`);
-  assert.deepEqual((await readProject()).objects.r, [[...start, ...end]], 'Release uses the displayed endpoint exactly once');
+  assert.deepEqual((await readProject()).objects.r, [[...start, ...end, 's']], 'Release uses the displayed endpoint exactly once');
   await page.locator('#undo').click();
 
   await fit();
@@ -2042,7 +2058,7 @@ async function testEdgePan(page, mobile, readProject, wideLandscape = false) {
   await tick(500);
   assert.equal((await coords())[0], 16, 'Edge pan stops at the board boundary');
   await up();
-  assert.deepEqual((await readProject()).objects.r, [[0,0,10,0]], 'A long rope is shortened after edge pan');
+  assert.deepEqual((await readProject()).objects.r, [[0,0,16,0,'s']], 'A sixteen-unit rope fits the new limit after edge pan');
   await page.locator('#undo').click();
 
   await fit();
@@ -2094,7 +2110,7 @@ async function testEdgePan(page, mobile, readProject, wideLandscape = false) {
 // check solid/dashed geometry, length/cost labels, profile variants and blinking validation errors.
 async function testDrawingPreview(page, mobile, name) {
   await page.locator('#project-text').click();
-  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:'0.4.0',formatVersion:3},objects:{}}));
+  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:'0.4.0',formatVersion: 4},objects:{}}));
   await page.locator('#load').click();
   await page.locator('[data-tool="beam"]').click();
   await page.evaluate(() => {
@@ -2144,16 +2160,17 @@ async function testDrawingPreview(page, mobile, name) {
     if(profile==='s') await page.screenshot({path:join(tmpdir(),'frame-lab-'+name+'-shortened-preview.png')});
     await cancel();
   }
-  // Aim a rope beyond its limit; inspect solid stroke width and the ten-unit label to verify
+  // Aim a rope beyond its limit; inspect solid stroke width and the twenty-unit label to verify
   // material-specific preview styling and limits.
   await page.locator('[data-tool="rope"]').click();
   await down(2,11); await move(30,11);
   let f=await snapshot(); assert.equal(solid(f).width,2);
-  assert.ok(f.texts.some(t=>t.text.includes('10.00 / 10 units')));
+  assert.ok(f.texts.some(t=>t.text.includes('20.00 / 20 units')));
+  assert.ok(f.texts.some(t=>t.text.includes('40 cr')), 'Preview charges two credits per unit of added rope');
   await cancel();
   // Real validation failures still blink and never change the project.
   await page.locator('#project-text').click();
-  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:'0.4.6',formatVersion:3},objects:{b:[[-4,-2,0,-2,'s']]}}));
+  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:'0.4.6',formatVersion: 4},objects:{b:[[-4,-2,0,-2,'s']]}}));
   await page.locator('#load').click();
   await page.locator('[data-tool="beam"]').click();
   await down(14,11); await move(17,11);
@@ -2171,19 +2188,31 @@ async function testDrawingPreview(page, mobile, name) {
 // Build beam and rope chains through mouse clicks/drags and touch taps/drags, comparing saved
 // endpoints after each step; test limit shortening, short spans, no-ops, Undo, cancellation and recovery.
 async function testContinuousDrawing(page, mobile, point, readProject) {
- const click = async(x,y) => {const p=await point(x,y); if(mobile) await page.touchscreen.tap(p.x,p.y); else await page.mouse.click(p.x,p.y);};
- const load = async(objects={}) => {
+ let boardWidth=32;
+ const click = async(x,y) => {
+  // The rope chain needs sixty units of span. Compute fitted coordinates for
+  // its wider board instead of using the caller's 32-unit projection.
+  const p=boardWidth===32 ? await point(x,y) : await page.locator('#canvas').evaluate((canvas,{x,y,boardWidth})=>{
+   const r=canvas.getBoundingClientRect(),margin=r.height<400?20:r.width<600?30:58;
+   const scale=Math.min((r.width-margin*2)/boardWidth,(r.height-margin*2)/18);
+   return {x:r.left+r.width/2+(x-boardWidth/2)*scale,y:r.top+r.height/2+(y-9)*scale};
+  },{x,y,boardWidth});
+  if(mobile) await page.touchscreen.tap(p.x,p.y); else await page.mouse.click(p.x,p.y);
+ };
+ const load = async(objects={},width=32) => {
+  boardWidth=width;
   await page.locator('#project-text').click();
-  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:'0.4.6',formatVersion:3},objects}));
+  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[width,18],gameVersion:GAME_VERSION,formatVersion: 4},objects}));
   await page.locator('#load').click();
  };
  // Repeat a distant target with each material to build three limit-length segments from
  // four inputs; reject a reverse duplicate, undo each segment, then test short spans and no-op clicks.
- for(const [tool,limit] of [['beam',6],['rope',10]]) {
-  await load(); await page.locator('[data-tool="'+tool+'"]').click();
-  await click(1,9); await click(31,9); await click(31,9); await click(31,9);
+ for(const [tool,limit] of [['beam',6],['rope',20]]) {
+  await load({},tool==='rope'?64:32); await page.locator('[data-tool="'+tool+'"]').click();
+  await click(1,9); await click(boardWidth-1,9); await click(boardWidth-1,9); await click(boardWidth-1,9);
   let project=(await readProject()).objects;
-  const expected=[0,1,2].map(i=>[i*limit-15,0,(i+1)*limit-15,0,...(tool==='beam'?['s']:[])]);
+  const origin=1-boardWidth/2;
+  const expected=[0,1,2].map(i=>[i*limit+origin,0,(i+1)*limit+origin,0,'s']);
   assert.deepEqual(project[tool==='beam'?'b':'r'],expected,'Four inputs add three maximum-length connected elements');
   await click(1+2*limit,9);
   assert.match(await page.locator('#toast').textContent(),/exists/,'Reversing the last element rejects a duplicate');
@@ -2239,9 +2268,9 @@ async function testClipboard(page, mobile) {
   const count=async n=>assert.match(await page.locator('#inspector-title').textContent(),new RegExp(`^${n} selected`));
   // Centered export coordinates describe a four-unit heavy beam and a three-unit
   // vertical rope: pointer-grid (8,6)-(12,6)-(12,9). The distant beam is not copied.
-  const fixture={b:[[-8,3,-4,3,'h'],[9,0,13,0,'l']],r:[[-4,3,-4,0]],j:[[-8,3,'o'],[-4,3,'o']]};
+  const fixture={b:[[-8,3,-4,3,'h'],[9,0,13,0,'l']],r:[[-4,3,-4,0,'s']],j:[[-8,3,'o'],[-4,3,'o']]};
   await page.locator('#project-text').click();
-  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:3},objects:fixture}));
+  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion: 4},objects:fixture}));
   await page.locator('#load').click();await page.locator('[data-tool="select"]').click();await page.locator('#fit').click();
   await drag([4,2],[15,12]);await count(5);
   const original=await read();
@@ -2291,7 +2320,7 @@ async function testClipboard(page, mobile) {
     assert.equal(await writes(),beforeWrites+1);await count(5);
     const result=await read(),beamY=flipY?-4:-1,ropeX=flipX?2:6;
     assert.ok(result.b.some(b=>JSON.stringify(b)===JSON.stringify([2,beamY,6,beamY,'h'])));
-    assert.ok(result.r.some(r=>JSON.stringify(r)===JSON.stringify([ropeX,-1,ropeX,-4])));
+    assert.ok(result.r.some(r=>JSON.stringify(r)===JSON.stringify([ropeX,-1,ropeX,-4,'s'])));
     assert.equal(await page.locator('#paste-actions').isVisible(),false);
     await page.locator('#undo').click();assert.deepEqual(await read(),original);
     await page.locator('#redo').click();assert.deepEqual(await read(),result);
@@ -2359,4 +2388,69 @@ async function testClipboard(page, mobile) {
   assert.deepEqual(await read(),saved,'Placed copies survive reload');
   assert.equal(await page.locator('#paste-selection').isEnabled(),false,'Clipboard is scoped to this tab session');
   console.log(`${mobile?'Touch':'Mouse'} clipboard: repeated paste, both mirrors, no-op merge, preview, cancellation, history and persistence.`);
+}
+
+// Exercise real pointer holds, keyboard menus and selection edits for both rope profiles.
+async function testRopeProfiles(page, mobile, point, readProject) {
+ const load=async objects=>{
+  await page.locator('#project-text').click();
+  await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:3},objects}));
+  await page.locator('#load').click();
+ };
+ await load({r:[[-8,0,-4,0]]});
+ assert.equal((await readProject()).objects.r[0][4],'s','Legacy ropes import as Standard');
+ const button=page.locator('[data-tool="rope"]');
+ const box=await button.boundingBox(),center={x:box.x+box.width/2,y:box.y+box.height/2};
+ if(mobile){
+  const session=await page.context().newCDPSession(page);
+  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[center]});
+  await page.waitForTimeout(600);
+  await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await session.detach();
+ }else{await page.mouse.move(center.x,center.y);await page.mouse.down();await page.waitForTimeout(600);await page.mouse.up();}
+ assert.equal(await page.locator('#profile-picker').getAttribute('aria-label'),'Rope profile');
+ assert.equal(await page.locator('#profile-picker button:visible').count(),2);
+ await page.locator('#profile-picker [data-profile="h"]').click();
+ assert.equal(await page.locator('#rope-profile-indicator').textContent(),'H');
+ await button.focus();await page.keyboard.press('ArrowDown');
+ assert.match(await page.locator('#material-rate').textContent(),/8 cr/);
+ await mkdir('screenshots',{recursive:true});
+ await page.screenshot({path:resolve('screenshots',`rope-profile-${mobile?'touch':'mouse'}.png`)});
+ await page.keyboard.press('Escape');
+ assert.equal(await page.locator('#profile-picker').isVisible(),false);
+ // Switching the beam menu must neither overwrite nor expose a Light rope profile.
+ await chooseProfile(page,'l');await button.click();
+ assert.equal(await page.locator('#rope-profile-indicator').textContent(),'H');
+ const click=async(x,y)=>{const p=await point(x,y);if(mobile)await page.touchscreen.tap(p.x,p.y);else await page.mouse.click(p.x,p.y);};
+ // Capture the actual canvas label, including the selected Heavy material price.
+ await page.evaluate(()=>{
+  window.ropeLabels=[];window.ropeOriginalText=CanvasRenderingContext2D.prototype.fillText;
+  CanvasRenderingContext2D.prototype.fillText=function(text,...args){window.ropeLabels.push(String(text));return window.ropeOriginalText.call(this,text,...args);};
+ });
+ await click(18,9);const end=await point(22,9);
+ let previewTouch;
+ if(mobile){previewTouch=await page.context().newCDPSession(page);await previewTouch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[end]});}
+ else await page.mouse.move(end.x,end.y);
+ await page.waitForFunction(()=>window.ropeLabels.some(s=>s.includes('4.00 / 20 units')&&s.includes('+32 cr')));
+ if(mobile){await previewTouch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await previewTouch.detach();}
+ else await page.mouse.click(end.x,end.y);
+ await page.evaluate(()=>{CanvasRenderingContext2D.prototype.fillText=window.ropeOriginalText;});
+ await page.keyboard.press('Escape');
+ assert.equal((await readProject()).objects.r.find(r=>r[0]===2)[4],'h');
+ assert.match(await page.locator('#total-cost').textContent(),/40 cr/);
+ await page.locator('[data-tool="select"]').click();
+ // Select both distinct profiles to verify a mixed inspector state and atomic Undo.
+ const first=await point(10,9);
+ await page.mouse.click(first.x,first.y);await page.waitForTimeout(100);
+ const second=await point(20,9);await page.keyboard.down('Control');
+ await page.mouse.click(second.x,second.y);await page.keyboard.up('Control');
+ assert.match(await page.locator('#inspector-copy').textContent(),/Mixed/);
+ await page.locator('[data-change-rope-profile="h"]').click();
+ assert.ok((await readProject()).objects.r.every(r=>r[4]==='h'));
+ assert.match(await page.locator('#total-cost').textContent(),/64 cr/);
+ await page.locator('#undo').click();assert.deepEqual((await readProject()).objects.r.map(r=>r[4]),['s','h']);
+ await page.locator('#redo').click();assert.ok((await readProject()).objects.r.every(r=>r[4]==='h'));
+ // Restore defaults for the following generic drawing tests.
+ await button.click({button:'right'});await page.locator('#profile-picker [data-profile="s"]').click();
+ await chooseProfile(page,'s');await load({});
+ console.log((mobile?'Touch':'Mouse')+' rope profiles: legacy import, hold, keyboard/context menus, independent choices, drawing, costs and mixed selection Undo/Redo.');
 }

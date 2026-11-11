@@ -6,7 +6,7 @@ export function copySelection(project: Project, selection: readonly Selection[])
   const explicit = new Set(selection.flatMap(s => 'node' in s ? [s.node] : []));
   const include = (material: Material, m: Member) => memberSelected([...selection],material,m)
     || (explicit.has(key([m[0],m[1]])) && explicit.has(key([m[2],m[3]])));
-  const beams = project.beams.filter(b => include('beam',b.endpoints)), ropes = project.ropes.filter(m => include('rope',m));
+  const beams = project.beams.filter(b => include('beam',b.endpoints)), ropes = project.ropes.filter(m => include('rope',m.endpoints));
   const active = [...nodes({...project,beams,ropes}).values()];
   if (!active.length) return null;
   const left = Math.min(...active.map(p => p[0])), top = Math.min(...active.map(p => p[1]));
@@ -14,7 +14,7 @@ export function copySelection(project: Project, selection: readonly Selection[])
   // never accumulate rounding or depend on later edits to the original geometry.
   const local = (m: Member): Member => [m[0]-left,m[1]-top,m[2]-left,m[3]-top];
   return {size:[Math.max(...active.map(p => p[0]))-left,Math.max(...active.map(p => p[1]))-top],
-    beams:beams.map(b => ({endpoints:local(b.endpoints),profile:b.profile})), ropes:ropes.map(local),
+    beams:beams.map(b => ({endpoints:local(b.endpoints),profile:b.profile})), ropes:ropes.map(r => ({...r,endpoints:local(r.endpoints)})),
     nodes:active.map(p => ({point:[p[0]-left,p[1]-top],joint:project.joints[key(p)] ?? 'x',
       support:boundary(p,project.size) ? project.anchors[key(p)] ?? 'x' : null}))};
 }
@@ -24,7 +24,7 @@ export function pastedSelection(project: Project, fragment: Fragment, placement:
   const transformed = transformFragment(fragment,placement);
   return translatedSelection(project,[...transformed.nodes.map(n => ({node:key(n.point)})),
     ...transformed.beams.map(b => ({material:'beam' as const,endpoints:b.endpoints})),
-    ...transformed.ropes.map(endpoints => ({material:'rope' as const,endpoints}))],[0,0]);
+    ...transformed.ropes.map(r => ({material:'rope' as const,endpoints:r.endpoints}))],[0,0]);
 }
 
 export type Selection = { node: string } | { material: Material; endpoints: Member };
@@ -59,7 +59,7 @@ export function translatedSelection(project: Project, selection: readonly Select
       if (active.has(id)) add({node:id});
     } else {
       const span = item.endpoints.map((v,i) => v+delta[i%2]) as Member;
-      const members = item.material === 'beam' ? project.beams.map(b => b.endpoints) : project.ropes;
+      const members = item.material === 'beam' ? project.beams.map(b => b.endpoints) : project.ropes.map(r => r.endpoints);
       for (const endpoints of members) {
         const matches = item.material === 'beam'
           ? pointOnMember([endpoints[0],endpoints[1]],span) && pointOnMember([endpoints[2],endpoints[3]],span)
@@ -74,7 +74,7 @@ export function translatedSelection(project: Project, selection: readonly Select
 export function rectangleSelection(project: Project, a: Point, b: Point): Selection[] {
   const contains = (p: Point) => p[0] >= Math.min(a[0], b[0]) - 1e-8 && p[0] <= Math.max(a[0], b[0]) + 1e-8 && p[1] >= Math.min(a[1], b[1]) - 1e-8 && p[1] <= Math.max(a[1], b[1]) + 1e-8;
   const result: Selection[] = [...nodes(project)].filter(([, p]) => contains(p)).map(([node]) => ({ node }));
-  for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes]] as const) {
+  for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes.map(r => r.endpoints)]] as const) {
     for (const endpoints of list) if (contains([endpoints[0], endpoints[1]]) && contains([endpoints[2], endpoints[3]])) result.push({ material, endpoints });
   }
   return result;
@@ -82,7 +82,7 @@ export function rectangleSelection(project: Project, a: Point, b: Point): Select
 export function deletionTargets(project: Project, selection: Selection[]): Selection[] {
   const selectedNodes = new Set(selection.filter(s => 'node' in s).map(s => s.node));
   const result: Selection[] = [];
-  for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes]] as const) {
+  for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes.map(r => r.endpoints)]] as const) {
     for (const endpoints of list) if (memberSelected(selection, material, endpoints) || selectedNodes.has(key([endpoints[0], endpoints[1]])) || selectedNodes.has(key([endpoints[2], endpoints[3]]))) result.push({ material, endpoints });
   }
   return result;
@@ -90,14 +90,14 @@ export function deletionTargets(project: Project, selection: Selection[]): Selec
 export function removeSelection(project: Project, selection: Selection[]): Project {
   const p = cloneProject(project), targets = deletionTargets(p, selection);
   p.beams = p.beams.filter(b => !memberSelected(targets, 'beam', b.endpoints));
-  p.ropes = p.ropes.filter(m => !memberSelected(targets, 'rope', m));
+  p.ropes = p.ropes.filter(m => !memberSelected(targets, 'rope', m.endpoints));
 
   const selectedNodes = new Map<string, Beam[]>();
   for (const item of selection) if ('node' in item) selectedNodes.set(item.node, []);
   if (!selectedNodes.size) return normalizeProject(p);
 
   const endpointKeys = ([ax, ay, bx, by]: Member) => [key([ax, ay]), key([bx, by])];
-  const ropeNodes = new Set(project.ropes.flatMap(endpointKeys));
+  const ropeNodes = new Set(project.ropes.flatMap(r => endpointKeys(r.endpoints)));
   for (const beam of project.beams) {
     for (const id of endpointKeys(beam.endpoints)) selectedNodes.get(id)?.push(beam);
   }

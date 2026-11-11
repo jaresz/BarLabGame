@@ -63,7 +63,7 @@ test('Eiffel and Sydney examples stay intact in every solver for 20 simulated se
     const project = example(name);
     assert.deepEqual(importProject(exportProject(project)), project, `${name}: project text round trip`);
     for (const beam of project.beams) assert.ok(length(beam.endpoints) <= MAX_LENGTH.beam, `${name}: beam length`);
-    for (const rope of project.ropes) assert.ok(length(rope) <= MAX_LENGTH.rope, `${name}: rope length`);
+    for (const rope of project.ropes) assert.ok(length(rope.endpoints) <= MAX_LENGTH.rope, `${name}: rope length`);
 
     // Serpentine randomly chooses its starting side in the app, so both directions
     // need independent runs. The other solvers have a single deterministic order.
@@ -258,7 +258,7 @@ test('Impact sounds identify material and surface, then stop at rest', () => {
   for (const material of ['beam', 'rope'] as const) {
     const project = emptyProject();
     if (material === 'beam') project.beams.push({ endpoints: [3, 6, 5, 6], profile: 's' });
-    else project.ropes.push([3, 6, 5, 6]);
+    else project.ropes.push({endpoints:[3, 6, 5, 6],profile:'s'});
     const world = new World(project, { gravity: 200, damage: false });
     const heard = [];
     for (let step = 0; step < 100; step++) { world.step(); heard.push(...world.drainSounds()); }
@@ -288,7 +288,7 @@ test('Rising beam stress and a rope fracture emit their distinct sounds once', (
   for (const material of ['beam', 'rope'] as const) {
     const project = emptyProject();
     if (material === 'beam') project.beams.push({ endpoints: [3, 4, 5, 4], profile: 's' });
-    else project.ropes.push([3, 4, 5, 4]);
+    else project.ropes.push({endpoints:[3, 4, 5, 4],profile:'s'});
     const world = new World(project, { gravity: 0, iterations: 0 });
     // With solver iterations disabled, this displacement stays strained long
     // enough to exercise the sound transition and the normal damage threshold.
@@ -303,7 +303,7 @@ test('Rising beam stress and a rope fracture emit their distinct sounds once', (
 test('Stress beds summarize count, length and load by material and stereo zone', () => {
   const project = emptyProject(); project.size = [12, 8];
   project.beams.push({ endpoints: [1, 2, 2, 2], profile: 's' }, { endpoints: [1, 3, 5, 3], profile: 's' });
-  project.ropes.push([8, 2, 12, 2]);
+  project.ropes.push({endpoints:[8, 2, 12, 2],profile:'s'});
   const world = new World(project);
   world.members[0].stress = .5; world.members[1].stress = .9; world.members[2].stress = .7;
   const beds = world.stressBeds();
@@ -322,7 +322,7 @@ test('Dense stressed structures still produce at most six bed controls', () => {
   for (let index = 0; index < 120; index++) {
     const x = 1 + index % 12;
     if (index % 2) project.beams.push({ endpoints: [x, 3, x + 1, 3], profile: 's' });
-    else project.ropes.push([x, 5, x + 1, 5]);
+    else project.ropes.push({endpoints:[x, 5, x + 1, 5],profile:'s'});
   }
   const world = new World(project);
   for (const member of world.members) member.stress = .8;
@@ -333,7 +333,7 @@ test('Dense stressed structures still produce at most six bed controls', () => {
 test('Ordinary supported steel and cable loads reach the quiet tension bed', () => {
   const project = emptyProject();
   project.beams.push({ endpoints: [4, 6, 8, 6], profile: 's' });
-  project.ropes.push([4, 0, 4, 6], [8, 0, 8, 6]);
+  project.ropes.push({endpoints:[4, 0, 4, 6],profile:'s'}, {endpoints:[8, 0, 8, 6],profile:'s'});
   const world = new World(project);
   for (let step = 0; step < 240; step++) world.step();
   const beds = world.stressBeds();
@@ -341,4 +341,29 @@ test('Ordinary supported steel and cable loads reach the quiet tension bed', () 
   const beam = new World({ ...emptyProject(), beams: [{ endpoints: [0, 2, 6, 2], profile: 'l' }] });
   for (let step = 0; step < 120; step++) beam.step();
   assert.ok(beam.stressBeds().some(bed => bed.material === 'beam'), 'A flexing cantilever has a quiet bed');
+});
+
+// Compare equal geometry so only cross-sectional area changes; compression must
+// remain slack for both profiles, with no added bending constraints.
+test('Heavy rope scales density and axial rigidity without changing failure strain or tension-only behavior', () => {
+ const worlds=(['s','h'] as const).map(profile => {
+  const p=emptyProject();p.ropes=[{endpoints:[4,4,8,4],profile}];
+  return new World(p,{gravity:0,initialPerturbation:0});
+ });
+ const [standard,heavy]=worlds;
+ assert.ok(Math.abs([...standard.mass].reduce((a,b)=>a+b,0)-4*.22)<1e-12);
+ for(const c of standard.distances)if(c.rest>0)assert.equal(c.compliance,c.rest/80000);
+ assert.equal(heavy.angles.length,0);
+ for(let i=0;i<standard.mass.length;i++) assert.equal(heavy.mass[i],4*standard.mass[i]);
+ const a=standard.distances.filter(c=>c.rest>0),b=heavy.distances.filter(c=>c.rest>0);
+ for(let i=0;i<a.length;i++){assert.equal(b[i].compliance,a[i].compliance/4);assert.equal(b[i].tension,true);}
+ for(const w of worlds){
+  const original=[...w.x];for(let i=0;i<w.x.length;i++)w.x[i]=4+(w.x[i]-4)*.8;
+  w.step();assert.equal(w.members[0].stress,0);
+  for(let i=0;i<w.x.length;i++)assert.ok(Math.abs(w.x[i]-(4+(original[i]-4)*.8))<1e-12);
+  for(let i=0;i<w.x.length;i++)w.x[i]=4+(original[i]-4)*1.12;
+  // Damage measures elastic strain independently of EA and ignores compression.
+  (w as unknown as {measureDamage():void}).measureDamage();
+  assert.ok(Math.abs(w.members[0].stress-1.2)<1e-10);
+ }
 });

@@ -1,4 +1,4 @@
-import { PROFILES, boundary, key, type Project, type Point, type Material, type BeamProfile } from './model';
+import { PROFILES, ROPE_PROFILES, boundary, key, type Project, type Point, type Material, type BeamProfile } from './model';
 import { serpentineMemberOrder, type Solver } from './solver-strategies';
 export const DT = 1 / 120;
 const TAU = 2 * Math.PI;
@@ -38,8 +38,8 @@ export class World {
     if (this.options.solver === 'serpentine') serpentineMemberOrder(project,this.options.serpentineFromRight).forEach((owner,index) => { scanRank[owner] = index; });
     const positions: Point[] = [], masses: number[] = [], endpoints = new Map<string, Endpoint[]>();
     const addPoint = (x: number, y: number, owner: number) => { const id = positions.length; positions.push([x, y]); masses.push(0); this.particleOwner.push(owner); return id; };
-    for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes]] as const) for (const [index, m] of list.entries()) {
-      const profile = material === 'beam' ? project.beams[index].profile : 's', properties = PROFILES[profile];
+    for (const [material, list] of [['beam', project.beams.map(b => b.endpoints)], ['rope', project.ropes.map(r => r.endpoints)]] as const) for (const [index, m] of list.entries()) {
+      const profile = material === 'beam' ? project.beams[index].profile : project.ropes[index].profile, properties = PROFILES[profile], ropeProperties = ROPE_PROFILES[profile as 's' | 'h'];
       const len = Math.hypot(m[2] - m[0], m[3] - m[1]);
       this.memberLengths.push(len);
       let n = Math.max(4, Math.ceil(len / 0.5)); if (n % 2) n++;
@@ -51,9 +51,11 @@ export class World {
         const sideStart = positions.length;
         for (let j = 0; j < half; j++) { const t = (side * (n / 2) + j) / n; addPoint(m[0] + (m[2] - m[0]) * t, m[1] + (m[3] - m[1]) * t, owner); }
         for (let j = 0; j < half - 1; j++) {
-          const a = sideStart + j, b = a + 1, density = material === 'beam' ? 1.8 * properties.mass : 0.22;
+          // Rope area scales both line density and EA; the steel failure strain
+          // stays at ten percent, so Heavy carries four times the axial force.
+          const a = sideStart + j, b = a + 1, density = material === 'beam' ? 1.8 * properties.mass : 0.22 * ropeProperties.mass;
           masses[a] += density * h / 2; masses[b] += density * h / 2;
-          this.distances.push({ a, b, rest: h, compliance: h / (material === 'beam' ? this.options.axial * properties.axial : 80000), lambda: 0, tension: material === 'rope', owner, cut: false });
+          this.distances.push({ a, b, rest: h, compliance: h / (material === 'beam' ? this.options.axial * properties.axial : 80000 * ropeProperties.axial), lambda: 0, tension: material === 'rope', owner, cut: false });
         }
         if (material === 'beam') for (let j = 0; j < half - 2; j++) this.angles.push({ a: sideStart + j, b: sideStart + j + 1, c: sideStart + j + 1, d: sideStart + j + 2, rest: 0, compliance: h / (this.options.bending * properties.bending), lambda: 0, owner, cut: false, internal: true, scale: h });
       }

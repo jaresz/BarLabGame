@@ -1,10 +1,10 @@
-import { boundary, canonical, cloneProject, key, nodes, normalizeProject, validateMember, type Beam, type JointType, type Member, type Point, type Project } from './model';
+import { boundary, canonical, cloneProject, key, nodes, normalizeProject, validateMember, type Beam, type Rope, type JointType, type Member, type Point, type Project } from './model';
 
 /** A clipboard snapshot in local grid coordinates: x points right, y points down. */
 export interface Fragment {
   size: Point;
   beams: Beam[];
-  ropes: Member[];
+  ropes: Rope[];
   nodes: { point: Point; joint: JointType; support: JointType | null }[];
 }
 export interface FragmentPlacement { origin: Point; flipX: boolean; flipY: boolean }
@@ -15,7 +15,7 @@ export function transformFragment(fragment: Fragment, placement: FragmentPlaceme
     placement.origin[1] + (placement.flipY ? fragment.size[1]-y : y)];
   const member = (m: Member): Member => canonical([...point([m[0],m[1]]),...point([m[2],m[3]])]);
   return { size: [...fragment.size], beams: fragment.beams.map(b => ({ endpoints: member(b.endpoints), profile: b.profile })),
-    ropes: fragment.ropes.map(member), nodes: fragment.nodes.map(n => ({...n,point:point(n.point)})) };
+    ropes: fragment.ropes.map(r => ({ ...r, endpoints: member(r.endpoints) })), nodes: fragment.nodes.map(n => ({...n,point:point(n.point)})) };
 }
 
 /** Build preview geometry without normalizing: invalid spans must remain visible. */
@@ -24,7 +24,7 @@ export function fragmentPreview(project: Project, fragment: Fragment, placement:
   // Keep stationary profiles on exact duplicates. Partial overlaps are retained
   // here for the red preview and rejected atomically by pasteFragment below.
   for (const beam of transformed.beams) if (!next.beams.some(b => canonical(b.endpoints).join(',') === beam.endpoints.join(','))) next.beams.push(beam);
-  for (const rope of transformed.ropes) if (!next.ropes.some(r => canonical(r).join(',') === rope.join(','))) next.ropes.push(rope);
+  for (const rope of transformed.ropes) if (!next.ropes.some(r => canonical(r.endpoints).join(',') === rope.endpoints.join(','))) next.ropes.push(rope);
   for (const node of transformed.nodes) {
     const id = key(node.point);
     if (stationary.has(id)) continue;
@@ -40,15 +40,15 @@ export function fragmentPreview(project: Project, fragment: Fragment, placement:
 export function pasteFragment(project: Project, fragment: Fragment, placement: FragmentPlacement): { project: Project; changed: boolean } {
   if (!placement.origin.every(Number.isSafeInteger)) throw new Error('Stay inside the build area on whole grid points.');
   const transformed = transformFragment(fragment,placement), checked = cloneProject(project);
-  for (const [material,list] of [['beam',transformed.beams.map(b => b.endpoints)],['rope',transformed.ropes]] as const) {
+  for (const [material,list] of [['beam',transformed.beams.map(b => b.endpoints)],['rope',transformed.ropes.map(r => r.endpoints)]] as const) {
     // Check against stationary members and earlier copies without committing any
     // partial result. Exact duplicates are merges; shared beam intervals are errors.
     for (const span of list) {
-      const existing = material === 'beam' ? checked.beams.map(b => b.endpoints) : checked.ropes;
+      const existing = material === 'beam' ? checked.beams.map(b => b.endpoints) : checked.ropes.map(r => r.endpoints);
       if (existing.some(m => canonical(m).join(',') === span.join(','))) continue;
       const error = validateMember(checked,material,span);
       if (error) throw new Error(error);
-      if (material === 'beam') checked.beams.push({endpoints:span,profile:'s'}); else checked.ropes.push(span);
+      if (material === 'beam') checked.beams.push({endpoints:span,profile:'s'}); else checked.ropes.push({endpoints:span,profile:'s'});
     }
   }
   const result = normalizeProject(fragmentPreview(project,fragment,placement));

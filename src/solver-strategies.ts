@@ -5,7 +5,7 @@ export const SOLVERS: Record<Solver, string> = { original: 'Basic XPBD Solver', 
 
 /** First intersection of each member with a top-to-bottom, integer-row scan. */
 export function serpentineMemberOrder(project: Project, fromRight = false): number[] {
-  const geometry = [...project.beams.map(b => b.endpoints), ...project.ropes];
+  const geometry = [...project.beams.map(b => b.endpoints), ...project.ropes.map(r => r.endpoints)];
   const top = Math.min(...geometry.map(m => Math.min(m[1],m[3])));
   const scan = geometry.map(([ax,ay,bx,by], index) => {
     // Internal Y grows downward. Each board row reverses the horizontal scan;

@@ -4,7 +4,7 @@ import { toCentered } from './coordinates';
 import './style.css';
 import branding from './branding.json' with { type: 'json' };
 
-import { translateNodes, translateNodesPreview, key, drawingEndpoint, addMember, PROFILES, ROPE_PRICE, projectCost, MAX_LENGTH, GAME_VERSION, emptyProject, resizeProject, toggleNode, boundary, cloneProject, exportProject, fromKey, History, importProject, projectChecksumWarning, inside, nodes, type BeamProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
+import { translateNodes, translateNodesPreview, key, drawingEndpoint, addMember, PROFILES, ROPE_PROFILES, projectCost, MAX_LENGTH, GAME_VERSION, emptyProject, resizeProject, toggleNode, boundary, cloneProject, exportProject, fromKey, History, importProject, projectChecksumWarning, inside, nodes, type BeamProfile, type RopeProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
 
 import { example, exampleNames, starterProject, type Example } from './examples';
 
@@ -220,9 +220,9 @@ function exampleThumbnail(name: Example): string {
   const segment = ([x1, y1, x2, y2]: Member) => `${left + x1 * scale},${top + y1 * scale} ${left + x2 * scale},${top + y2 * scale}`;
   const grid = Array.from({ length: 5 }, (_, i) => `<path d="M${left + width * scale * i / 4} ${top}v${height * scale} M${left} ${top + height * scale * i / 4}h${width * scale}"/>`).join('');
   const lines = (members: Member[]) => members.map(member => `<polyline points="${segment(member)}"/>`).join('');
-  return `<svg viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect x="${left}" y="${top}" width="${width * scale}" height="${height * scale}" class="example-board"/><g class="example-grid">${grid}</g><g class="example-beams">${lines(project.beams.map(beam => beam.endpoints))}</g><g class="example-ropes">${lines(project.ropes)}</g></svg>`;
+  return `<svg viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect x="${left}" y="${top}" width="${width * scale}" height="${height * scale}" class="example-board"/><g class="example-grid">${grid}</g><g class="example-beams">${lines(project.beams.map(beam => beam.endpoints))}</g><g class="example-ropes">${project.ropes.map(r => lines([r.endpoints]).replace('<polyline ', `<polyline data-profile="${r.profile}" style="stroke-width:${r.profile === 'h' ? 2 : 1}" `)).join('')}</g></svg>`;
 }
-const exampleChoices: Example[] = ['bridge', 'eiffel', 'goldenGate', 'sydneyHarbour', 'blank'];
+const exampleChoices: Example[] = ['bridge', 'eiffel', 'goldenGate', 'sydneyHarbour', 'ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'blank'];
 const solverChoices = Object.entries(SOLVERS).map(([id, name]) => `<label class="solver-option"><input type="radio" name="solver" value="${id}" ${id === 'serpentine' ? 'checked' : ''}><span>${name}</span></label>`).join('');
 
 $('app').innerHTML = `
@@ -231,11 +231,11 @@ $('app').innerHTML = `
 
 <main class="workbench">
 
-<section class="stage" aria-label="Construction workspace"><canvas id="canvas" tabindex="0" aria-label="Construction canvas. Choose Beam or Rope, then two grid points. Double-click a node to toggle its connection. Ctrl+click to select. In Select, drag empty space for a selection box, or drag a selected element or its endpoint to move the group. Drag an unselected node or beam to clear the group and move that object. Copy and Paste duplicate a selection; placement controls can flip either axis. Drag from an existing node in Beam or Rope to build. Beams: 6 units; ropes: 10 units."></canvas>
+<section class="stage" aria-label="Construction workspace"><canvas id="canvas" tabindex="0" aria-label="Construction canvas. Choose Beam or Rope, then two grid points. Double-click a node to toggle its connection. Ctrl+click to select. In Select, drag empty space for a selection box, or drag a selected element or its endpoint to move the group. Drag an unselected node or beam to clear the group and move that object. Copy and Paste duplicate a selection; placement controls can flip either axis. Drag from an existing node in Beam or Rope to build. Beams: ${MAX_LENGTH.beam} units; ropes: ${MAX_LENGTH.rope} units."></canvas>
 
 
 
-<aside id="inspector" class="inspector"><div class="inspector-heading"><span class="eyebrow" id="inspector-eyebrow">THE IDEA IS SIMPLE</span><button id="hide-inspector" class="mini-button" aria-label="Hide tips">${icon('minus')}</button></div><h1 id="inspector-title">Build. Test.<br>Try again.</h1><p id="inspector-copy">A few beams. A little gravity.<br>See what holds together.</p><div class="inspector-rule"></div><div id="inspector-body"><div class="material-row"><span class="material-swatch beam-swatch"></span><span>Steel beams</span><strong id="beam-count">0</strong></div><div class="material-row"><span class="material-swatch rope-swatch"></span><span>Steel ropes</span><strong id="rope-count">0</strong></div><div class="inspector-note">${icon('anchor')}Orange markers are fixed supports.</div></div><div id="cost-breakdown" class="cost-breakdown"></div><div id="selected-profile" hidden><span class="field-label">Beam profile</span><div class="segmented"><button data-change-profile="l">Light</button><button data-change-profile="s">Standard</button><button data-change-profile="h">Heavy</button></div></div><div id="node-controls" hidden><span class="field-label">Connection</span><div class="segmented"><button data-node="x">Rigid</button><button data-node="o">Hinge</button></div><div id="anchor-controls"><span class="field-label">Boundary support</span><div class="segmented"><button data-anchor="x">Fixed</button><button data-anchor="o">Pinned</button></div></div></div><button id="delete-selection" class="delete-button" hidden>${icon('trash')}Delete selection</button></aside>
+<aside id="inspector" class="inspector"><div class="inspector-heading"><span class="eyebrow" id="inspector-eyebrow">THE IDEA IS SIMPLE</span><button id="hide-inspector" class="mini-button" aria-label="Hide tips">${icon('minus')}</button></div><h1 id="inspector-title">Build. Test.<br>Try again.</h1><p id="inspector-copy">A few beams. A little gravity.<br>See what holds together.</p><div class="inspector-rule"></div><div id="inspector-body"><div class="material-row"><span class="material-swatch beam-swatch"></span><span>Steel beams</span><strong id="beam-count">0</strong></div><div class="material-row"><span class="material-swatch rope-swatch"></span><span>Steel ropes</span><strong id="rope-count">0</strong></div><div class="inspector-note">${icon('anchor')}Orange markers are fixed supports.</div></div><div id="cost-breakdown" class="cost-breakdown"></div><div id="selected-profile" hidden><span class="field-label">Beam profile</span><div class="segmented"><button data-change-profile="l">Light</button><button data-change-profile="s">Standard</button><button data-change-profile="h">Heavy</button></div></div><div id="selected-rope-profile" hidden><span class="field-label">Rope profile</span><div class="segmented"><button data-change-rope-profile="s">Standard</button><button data-change-rope-profile="h">Heavy</button></div></div><div id="node-controls" hidden><span class="field-label">Connection</span><div class="segmented"><button data-node="x">Rigid</button><button data-node="o">Hinge</button></div><div id="anchor-controls"><span class="field-label">Boundary support</span><div class="segmented"><button data-anchor="x">Fixed</button><button data-anchor="o">Pinned</button></div></div></div><button id="delete-selection" class="delete-button" hidden>${icon('trash')}Delete selection</button></aside>
 
 <div id="stress-legend" class="stress-legend" hidden><span>RELATIVE STRESS</span><div></div><p><span>Relaxed</span><span>At limit</span></p></div>
 
@@ -243,7 +243,7 @@ $('app').innerHTML = `
 
 <div class="canvas-note"><span class="coordinate" id="coordinate">X — &nbsp; Y —</span><span>1 square = 1 unit · Y ↑</span></div>
 
-<div class="toolbar-wrap"><div id="paste-actions" class="paste-actions" role="group" aria-label="Paste placement" hidden><button id="paste-flip-x" class="outline-button" aria-pressed="false">Flip left–right</button><button id="paste-flip-y" class="outline-button" aria-pressed="false">Flip up–down</button><button id="paste-place" class="primary-button">Place</button><button id="paste-cancel" class="outline-button">Cancel</button></div><div id="touch-actions" class="touch-actions" hidden><button id="cancel-draw" class="outline-button">Cancel</button></div><div id="profile-picker" class="profile-picker" role="group" aria-label="Beam profile" hidden><span>Beam profile</span><button data-profile="l">${icon('beam')}<span>Light (L)</span></button><button data-profile="s" class="active">${icon('beam')}<span>Standard (S)</span></button><button data-profile="h">${icon('beam')}<span>Heavy (H)</span></button><span id="material-rate">8 cr / unit</span></div><div class="toolbar" role="toolbar" aria-label="Construction tools"><button data-tool="select" title="Select (V)" aria-label="Select">${icon('select')}<span>Select</span><kbd>V</kbd></button><span class="tool-divider"></span><button data-tool="beam" class="active" title="Beam (B) — hold or press Down arrow to choose profile" aria-label="Beam — hold or press Down arrow to choose profile" aria-haspopup="true" aria-expanded="false">${icon('beam')}<span>Beam <small id="beam-profile-indicator">S</small></span><kbd>B</kbd></button><button data-tool="rope" title="Rope (R)" aria-label="Rope">${icon('rope')}<span>Rope</span><kbd>R</kbd></button><button data-tool="erase" title="Erase (E)" aria-label="Erase">${icon('erase')}<span>Erase</span><kbd>E</kbd></button><span class="tool-divider"></span><div class="joint-choice" role="group" aria-label="New node connection type"><button data-joint="x" class="active" title="Rigid connections" aria-label="Rigid connections">${icon('rigidJoint')}</button><button data-joint="o" title="Hinge connections" aria-label="Hinge connections">${icon('hingeJoint')}</button></div><button id="copy-selection" class="icon-button" title="Copy selection (Ctrl/⌘ C)" aria-label="Copy selection">${icon('copy')}</button><button id="paste-selection" class="icon-button" title="Paste selection (Ctrl/⌘ V)" aria-label="Paste selection">${icon('paste')}</button><button id="guide" class="icon-button" aria-label="Info" title="Info">${icon('info')}</button><button id="undo" class="icon-button" title="Undo (Ctrl/⌘ Z)" aria-label="Undo">${icon('undo')}</button><button id="redo" class="icon-button" title="Redo (Ctrl/⌘ Shift Z)" aria-label="Redo">${icon('redo')}</button><button id="settings" class="icon-button" title="Settings" aria-label="Settings" aria-haspopup="dialog" aria-controls="settings-dialog">${icon('settings')}</button><button id="clear-canvas" class="icon-button" title="Clear the canvas (can be undone)" aria-label="Clear canvas">${icon('trash')}</button><button id="examples" class="icon-button" aria-label="Load an example" title="Load an example" aria-haspopup="dialog">${icon('folder')}</button><button id="project-text" class="outline-button" aria-label="Project text" title="Project text">${icon('code')}<span>Project text</span></button><button id="run" class="icon-button" aria-label="Run simulation" title="Run simulation (Space)">${icon('play')}</button><button id="sound" class="sound-control" type="button" aria-label="Mute sounds" aria-pressed="true" title="Mute sounds"></button><button id="stress" class="stress-control" type="button" aria-label="Show stress" title="Show stress" aria-pressed="false">${icon('stress')}</button></div><div class="toolbar-caption" id="hint">Choose a start point, then an endpoint. <span>Beams: 6 · Ropes: 10 units.</span></div></div>
+<div class="toolbar-wrap"><div id="paste-actions" class="paste-actions" role="group" aria-label="Paste placement" hidden><button id="paste-flip-x" class="outline-button" aria-pressed="false">Flip left–right</button><button id="paste-flip-y" class="outline-button" aria-pressed="false">Flip up–down</button><button id="paste-place" class="primary-button">Place</button><button id="paste-cancel" class="outline-button">Cancel</button></div><div id="touch-actions" class="touch-actions" hidden><button id="cancel-draw" class="outline-button">Cancel</button></div><div id="profile-picker" class="profile-picker" role="group" aria-label="Beam profile" hidden><span>Beam profile</span><button data-profile="l">${icon('beam')}<span>Light (L)</span></button><button data-profile="s" class="active">${icon('beam')}<span>Standard (S)</span></button><button data-profile="h">${icon('beam')}<span>Heavy (H)</span></button><span id="material-rate">8 cr / unit</span></div><div class="toolbar" role="toolbar" aria-label="Construction tools"><button data-tool="select" title="Select (V)" aria-label="Select">${icon('select')}<span>Select</span><kbd>V</kbd></button><span class="tool-divider"></span><button data-tool="beam" class="active" title="Beam (B) — hold or press Down arrow to choose profile" aria-label="Beam — hold or press Down arrow to choose profile" aria-haspopup="true" aria-expanded="false">${icon('beam')}<span>Beam <small id="beam-profile-indicator">S</small></span><kbd>B</kbd></button><button data-tool="rope" title="Rope (R) — hold or press Down arrow to choose profile" aria-label="Rope" aria-haspopup="true" aria-expanded="false">${icon('rope')}<span>Rope <small id="rope-profile-indicator">S</small></span><kbd>R</kbd></button><button data-tool="erase" title="Erase (E)" aria-label="Erase">${icon('erase')}<span>Erase</span><kbd>E</kbd></button><span class="tool-divider"></span><div class="joint-choice" role="group" aria-label="New node connection type"><button data-joint="x" class="active" title="Rigid connections" aria-label="Rigid connections">${icon('rigidJoint')}</button><button data-joint="o" title="Hinge connections" aria-label="Hinge connections">${icon('hingeJoint')}</button></div><button id="copy-selection" class="icon-button" title="Copy selection (Ctrl/⌘ C)" aria-label="Copy selection">${icon('copy')}</button><button id="paste-selection" class="icon-button" title="Paste selection (Ctrl/⌘ V)" aria-label="Paste selection">${icon('paste')}</button><button id="guide" class="icon-button" aria-label="Info" title="Info">${icon('info')}</button><button id="undo" class="icon-button" title="Undo (Ctrl/⌘ Z)" aria-label="Undo">${icon('undo')}</button><button id="redo" class="icon-button" title="Redo (Ctrl/⌘ Shift Z)" aria-label="Redo">${icon('redo')}</button><button id="settings" class="icon-button" title="Settings" aria-label="Settings" aria-haspopup="dialog" aria-controls="settings-dialog">${icon('settings')}</button><button id="clear-canvas" class="icon-button" title="Clear the canvas (can be undone)" aria-label="Clear canvas">${icon('trash')}</button><button id="examples" class="icon-button" aria-label="Load an example" title="Load an example" aria-haspopup="dialog">${icon('folder')}</button><button id="project-text" class="outline-button" aria-label="Project text" title="Project text">${icon('code')}<span>Project text</span></button><button id="run" class="icon-button" aria-label="Run simulation" title="Run simulation (Space)">${icon('play')}</button><button id="sound" class="sound-control" type="button" aria-label="Mute sounds" aria-pressed="true" title="Mute sounds"></button><button id="stress" class="stress-control" type="button" aria-label="Show stress" title="Show stress" aria-pressed="false">${icon('stress')}</button></div><div class="toolbar-caption" id="hint">Choose a start point, then an endpoint. <span>Beams: ${MAX_LENGTH.beam} · Ropes: ${MAX_LENGTH.rope} units.</span></div></div>
 
 <div id="simulation-controls" class="simulation-controls" hidden><button id="pause" class="outline-button" aria-label="Pause simulation" title="Pause simulation">${icon('pause')}</button><button id="back" class="primary-button" aria-label="Stop simulation and return to build" title="Stop simulation and return to build">${icon('stopSquare')}</button></div>
 
@@ -438,6 +438,8 @@ $('hide-inspector').setAttribute('aria-label', 'Close selection properties');
 const canvas = $<HTMLCanvasElement>('canvas'), renderer = new Renderer(canvas), history = new History(await loadSavedProject()), sound = new SoundEngine();
 
 let profile: BeamProfile = 's';
+let ropeProfile: RopeProfile = 's';
+let pickerMaterial: Material = 'beam';
 
 let cost = projectCost(history.project);
 
@@ -475,7 +477,7 @@ function refreshUI(): void {
 
   $('total-cost').textContent = `Cost: ${cost.total} cr`;
 
-  $('cost-breakdown').innerHTML = Object.entries(cost.breakdown).filter(([, value]) => value > 0).map(([type, value]) => `<div><span>${type === 'r' ? 'Rope' : PROFILES[type as BeamProfile].name}</span><strong>${value} cr</strong></div>`).join('');
+  $('cost-breakdown').innerHTML = Object.entries(cost.breakdown).filter(([, value]) => value > 0).map(([type, value]) => `<div><span>${type === 'r' ? 'Standard rope' : type === 'rh' ? 'Heavy rope' : PROFILES[type as BeamProfile].name}</span><strong>${value} cr</strong></div>`).join('');
 
   if (running) closeProfilePicker();
   runButton.dataset.solver = solver;
@@ -488,9 +490,17 @@ function refreshUI(): void {
   beamButton.title = `Beam: ${PROFILES[profile].name} (B) — hold or press Down arrow to choose profile`;
   beamButton.setAttribute('aria-label', beamButton.title);
 
-  $('material-rate').textContent = `${PROFILES[profile].price} cr / unit`;
+  const pickerProfile = pickerMaterial === 'beam' ? profile : ropeProfile;
+  $('material-rate').textContent = `${pickerMaterial === 'beam' ? PROFILES[profile].price : ROPE_PROFILES[ropeProfile].price} cr / unit`;
+  $('rope-profile-indicator').textContent = ropeProfile.toUpperCase();
+  const ropeButton = document.querySelector<HTMLButtonElement>('[data-tool="rope"]')!;
+  ropeButton.dataset.profile = ropeProfile;
+  ropeButton.title = `Rope: ${ROPE_PROFILES[ropeProfile].name} (R) — hold or press Down arrow to choose profile`;
+  ropeButton.setAttribute('aria-label', ropeButton.title);
+  $('profile-picker').setAttribute('aria-label', pickerMaterial === 'beam' ? 'Beam profile' : 'Rope profile');
+  $('profile-picker').querySelector('span')!.textContent = pickerMaterial === 'beam' ? 'Beam profile' : 'Rope profile';
 
-  document.querySelectorAll<HTMLButtonElement>('#profile-picker [data-profile]').forEach(b => { b.classList.toggle('active', b.dataset.profile === profile); b.setAttribute('aria-pressed', String(b.dataset.profile === profile)); });
+  document.querySelectorAll<HTMLButtonElement>('#profile-picker [data-profile]').forEach(b => { b.hidden = pickerMaterial === 'rope' && b.dataset.profile === 'l'; b.classList.toggle('active', b.dataset.profile === pickerProfile); b.setAttribute('aria-pressed', String(b.dataset.profile === pickerProfile)); b.querySelector('svg')!.innerHTML = icon(pickerMaterial).replace(/^<svg[^>]*>|<\/svg>$/g, ''); });
 
   $('beam-count').textContent = String(p.beams.length); $('rope-count').textContent = String(p.ropes.length); $('board-size').textContent = `${p.size[0]} × ${p.size[1]} GRID`;
 
@@ -569,11 +579,15 @@ function refreshUI(): void {
 
   const allBoundary = allNodes && nodeIds.every(id => boundary(fromKey(id), p.size));
 
+  const allRopes = selected.length > 0 && selected.every(s => 'material' in s && s.material === 'rope');
   const profiles = p.beams.filter(b => memberSelected(selected, 'beam', b.endpoints)).map(b => b.profile);
 
   const common = <T,>(values: T[]): T | undefined => values.length && values.every(v => v === values[0]) ? values[0] : undefined;
 
   const selectedProfile = common(profiles);
+  const selectedRopeProfile = common(p.ropes.filter(r => memberSelected(selected,'rope',r.endpoints)).map(r=>r.profile));
+  $('selected-rope-profile').hidden = !allRopes || running;
+  document.querySelectorAll<HTMLButtonElement>('[data-change-rope-profile]').forEach(b => { b.classList.toggle('active', allRopes && b.dataset.changeRopeProfile === selectedRopeProfile); b.disabled = !!pasteState; });
 
   const connection = common(nodeIds.map(id => p.joints[id] || 'x'));
 
@@ -597,7 +611,7 @@ function refreshUI(): void {
 
     $('inspector-title').textContent = `${selected.length} selected ${selected.length === 1 ? 'element' : 'elements'}`;
 
-    let description = allBeams ? `Beam profile: ${selectedProfile ? PROFILES[selectedProfile].name : 'Mixed'}.` : allNodes ? `Connection: ${connection === undefined ? 'Mixed' : connection === 'x' ? 'Rigid' : 'Hinge'}.` : 'Select only beams or only nodes to change their type.';
+    let description = allBeams ? `Beam profile: ${selectedProfile ? PROFILES[selectedProfile].name : 'Mixed'}.` : allRopes ? `Rope profile: ${selectedRopeProfile ? ROPE_PROFILES[selectedRopeProfile].name : 'Mixed'}.` : allNodes ? `Connection: ${connection === undefined ? 'Mixed' : connection === 'x' ? 'Rigid' : 'Hinge'}.` : 'Select only beams, only ropes or only nodes to change their type.';
 
     if (allBoundary) { description += ` Support: ${support === undefined ? 'Mixed' : support === 'x' ? 'Fixed' : 'Pinned'}.`; }
 
@@ -687,7 +701,7 @@ function finishMember(): void {
   if (end[0] === start[0] && end[1] === start[1]) return;
   try {
     const beamCenterX = (start[0] + end[0]) / (2 * history.project.size[0]);
-    const next = addMember(history.project, tool, [...start, ...end], joint, profile);
+    const next = addMember(history.project, tool, [...start, ...end], joint, tool === 'rope' ? ropeProfile : profile);
     const createdNode = !nodes(history.project).has(key(end));
     recordProject(next); start = end; selected = []; lastClick = null; lastName = 'Untitled structure';
     if (tool === 'beam') sound.playEdit('beamPlace', beamCenterX);
@@ -709,7 +723,7 @@ function hitTest(screen: Point): Selection | null {
 
   let best = threshold, hit: Selection | null = null;
 
-  for (const [material, list] of [['beam', history.project.beams.map(b => b.endpoints)], ['rope', history.project.ropes]] as const) list.forEach(m => { const distance = distanceToSegment(w, m); if (distance <= best) { best = distance; hit = { material, endpoints: m }; } });
+  for (const [material, list] of [['beam', history.project.beams.map(b => b.endpoints)], ['rope', history.project.ropes.map(r => r.endpoints)]] as const) list.forEach(m => { const distance = distanceToSegment(w, m); if (distance <= best) { best = distance; hit = { material, endpoints: m }; } });
 
   return hit;
 
@@ -723,7 +737,7 @@ function deleteSelection(): void {
 
 }
 
-function changeSelection(kind: 'profile' | 'node' | 'anchor', value: string): void {
+function changeSelection(kind: 'profile' | 'ropeProfile' | 'node' | 'anchor', value: string): void {
 
   if (running || !selected.length) return;
 
@@ -735,6 +749,9 @@ function changeSelection(kind: 'profile' | 'node' | 'anchor', value: string): vo
 
     for (const beam of p.beams) if (memberSelected(selected, 'beam', beam.endpoints)) beam.profile = value as BeamProfile;
 
+  } else if (kind === 'ropeProfile') {
+    if (!selected.every(s => 'material' in s && s.material === 'rope')) return;
+    for (const rope of p.ropes) if (memberSelected(selected, 'rope', rope.endpoints)) rope.profile = value as RopeProfile;
   } else {
 
     if (!selected.every(s => 'node' in s)) return;
@@ -779,6 +796,7 @@ function openMenu(p: Point): void {
 
   };
 
+  if (selected.every(s => 'material' in s && s.material === 'rope')) for (const value of ['s', 'h'] as const) add(`${ROPE_PROFILES[value].name} rope`, () => changeSelection('ropeProfile', value));
   if (selected.every(s => 'material' in s && s.material === 'beam')) for (const value of ['l', 's', 'h'] as const) add(`${PROFILES[value].name} beam`, () => changeSelection('profile', value));
 
   if (selected.every(s => 'node' in s)) {
@@ -1265,30 +1283,41 @@ const profilePicker = $('profile-picker');
 let profileHold: ReturnType<typeof setTimeout> | undefined;
 let profilePointerStart: [number, number] | null = null;
 let profileHoldOpened = false;
-function closeProfilePicker(): void { profilePicker.hidden = true; beamButton.setAttribute('aria-expanded', 'false'); }
-function openProfilePicker(): void {
-  if (running) return;
-  closeMenu(); chooseTool('beam');
-  profilePicker.hidden = false; beamButton.setAttribute('aria-expanded', 'true');
-  const anchor = beamButton.getBoundingClientRect(), box = profilePicker.getBoundingClientRect();
-  // Keep the menu away from the held button so releasing a finger cannot select an item.
-  const left = anchor.right + box.width + 8 <= window.innerWidth ? anchor.right + 8 : Math.max(4, anchor.left - box.width - 8);
-  const top = Math.max(4, Math.min(anchor.top, window.innerHeight - box.height - 4));
-  profilePicker.style.left = `${left}px`;
-  profilePicker.style.top = `${top}px`;
+// Both material tools share the same menu, but retain independent profile choices.
+function pickerButton(): HTMLButtonElement { return document.querySelector<HTMLButtonElement>(`[data-tool="${pickerMaterial}"]`)!; }
+function closeProfilePicker(): void {
+  profilePicker.hidden = true;
+  for (const material of ['beam','rope']) document.querySelector(`[data-tool="${material}"]`)!.setAttribute('aria-expanded','false');
 }
-beamButton.addEventListener('pointerdown', e => {
-  if (e.button !== 0) return;
-  profileHoldOpened = false; profilePointerStart = [e.clientX, e.clientY];
-  clearTimeout(profileHold); profileHold = setTimeout(() => { profileHoldOpened = true; openProfilePicker(); }, 500);
+function openProfilePicker(material: Material = 'beam'): void {
+  if (running) return;
+  closeMenu(); chooseTool(material); pickerMaterial = material; refreshUI();
+  profilePicker.hidden = false; pickerButton().setAttribute('aria-expanded', 'true');
+  const anchor = pickerButton().getBoundingClientRect(), box = profilePicker.getBoundingClientRect();
+  // Place the menu beside the held button, constrained to the viewport edges.
+  const left = anchor.right + box.width + 8 <= window.innerWidth ? anchor.right + 8 : Math.max(4, anchor.left - box.width - 8);
+  profilePicker.style.left = `${left}px`;
+  profilePicker.style.top = `${Math.max(4, Math.min(anchor.top, window.innerHeight - box.height - 4))}px`;
+}
+for (const material of ['beam','rope'] as const) {
+  const button = document.querySelector<HTMLButtonElement>(`[data-tool="${material}"]`)!;
+  button.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    profileHoldOpened = false; profilePointerStart = [e.clientX,e.clientY];
+    clearTimeout(profileHold); profileHold = setTimeout(() => { profileHoldOpened = true; openProfilePicker(material); },500);
+  });
+  button.addEventListener('pointermove', e => { if (profilePointerStart && Math.hypot(e.clientX-profilePointerStart[0],e.clientY-profilePointerStart[1]) > 10) clearTimeout(profileHold); });
+  for (const event of ['pointerup','pointercancel','pointerleave'] as const) button.addEventListener(event, () => { clearTimeout(profileHold); profilePointerStart = null; });
+  button.addEventListener('contextmenu', e => { e.preventDefault(); clearTimeout(profileHold); profileHoldOpened = true; openProfilePicker(material); });
+  button.addEventListener('click', e => { if (profileHoldOpened) { e.stopImmediatePropagation(); e.preventDefault(); profileHoldOpened = false; } },true);
+  button.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || (e.shiftKey && e.key === 'F10')) { e.preventDefault(); openProfilePicker(material); profilePicker.querySelector<HTMLButtonElement>('button:not([hidden])')?.focus(); } });
+}
+document.addEventListener('pointerdown', e => { if (!profilePicker.hidden && !profilePicker.contains(e.target as Node) && !pickerButton().contains(e.target as Node)) closeProfilePicker(); });
+document.querySelectorAll<HTMLButtonElement>('#profile-picker [data-profile]').forEach(b => b.onclick = () => {
+  if (pickerMaterial === 'beam') profile = b.dataset.profile as BeamProfile; else ropeProfile = b.dataset.profile as RopeProfile;
+  closeProfilePicker(); refreshUI(); pickerButton().focus();
 });
-beamButton.addEventListener('pointermove', e => { if (profilePointerStart && Math.hypot(e.clientX - profilePointerStart[0], e.clientY - profilePointerStart[1]) > 10) clearTimeout(profileHold); });
-for (const event of ['pointerup', 'pointercancel', 'pointerleave'] as const) beamButton.addEventListener(event, () => { clearTimeout(profileHold); profilePointerStart = null; });
-beamButton.addEventListener('contextmenu', e => { e.preventDefault(); clearTimeout(profileHold); profileHoldOpened = true; openProfilePicker(); });
-beamButton.addEventListener('click', e => { if (profileHoldOpened) { e.stopImmediatePropagation(); e.preventDefault(); profileHoldOpened = false; } }, true);
-beamButton.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || (e.shiftKey && e.key === 'F10')) { e.preventDefault(); openProfilePicker(); profilePicker.querySelector<HTMLButtonElement>('[data-profile]')?.focus(); } });
-document.addEventListener('pointerdown', e => { if (!profilePicker.hidden && !profilePicker.contains(e.target as Node) && e.target !== beamButton && !beamButton.contains(e.target as Node)) closeProfilePicker(); });
-document.querySelectorAll<HTMLButtonElement>('#profile-picker [data-profile]').forEach(b => b.onclick = () => { profile = b.dataset.profile as BeamProfile; closeProfilePicker(); refreshUI(); beamButton.focus(); });
+document.querySelectorAll<HTMLButtonElement>('[data-change-rope-profile]').forEach(b => b.onclick = () => changeSelection('ropeProfile',b.dataset.changeRopeProfile!));
 
 document.querySelectorAll<HTMLButtonElement>('[data-change-profile]').forEach(b => b.onclick = () => changeSelection('profile', b.dataset.changeProfile!));
 
@@ -1437,7 +1466,7 @@ document.addEventListener('keydown', e => {
 
   if ((e.target as HTMLElement).matches('input, textarea, select') || textDialog.open || guideDialog.open || settingsDialog.open || examplesDialog.open) return;
 
-  if (e.key === 'Escape') { e.preventDefault(); if (!profilePicker.hidden) { closeProfilePicker(); beamButton.focus(); } else if (!contextMenu.hidden) closeMenu(); else if (pasteState || start || marquee || pointerDown) resetInteraction(); else selected = []; refreshUI(); return; }
+  if (e.key === 'Escape') { e.preventDefault(); if (!profilePicker.hidden) { closeProfilePicker(); pickerButton().focus(); } else if (!contextMenu.hidden) closeMenu(); else if (pasteState || start || marquee || pointerDown) resetInteraction(); else selected = []; refreshUI(); return; }
 
   if (!contextMenu.hidden) return;
 
@@ -1492,7 +1521,7 @@ function animate(now: number): void {
         : editDrag?.active ? {targets:editDrag.targets,error:editDrag.error,mergeTargets:editDrag.mergeTargets,kind:editDrag.kind} : null,
       tool,cursor,start,selected:pasteState ? pastedSelection(project,pasteState.fragment,pasteState.placement)
         : editDrag?.active ? dragSelection(project,editDrag) : selected,
-      marquee,frame,members,stress,joint,profile,baseCost:cost.total },now);
+      marquee,frame,members,stress,joint,profile,ropeProfile,baseCost:cost.total },now);
     needsDraw = false;
   }
 

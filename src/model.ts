@@ -3,19 +3,25 @@ import { centeredMember, fromCentered, toCentered } from './coordinates';
 export type Point = [number, number];
 export type Member = [number, number, number, number];
 export type BeamProfile = 'l' | 's' | 'h';
+export type RopeProfile = 's' | 'h';
+export interface Rope { endpoints: Member; profile: RopeProfile }
 export interface Beam { endpoints: Member; profile: BeamProfile }
 export const PROFILES = {
   l: { name: 'Light', mass: 0.5, bending: 0.25, axial: 0.5, curvature: 1.4, price: 4, width: 0.10, color: '#83969a' },
   s: { name: 'Standard', mass: 1, bending: 1, axial: 1, curvature: 1, price: 8, width: 0.15, color: '#345a60' },
   h: { name: 'Heavy', mass: 2, bending: 4, axial: 2, curvature: 0.7, price: 16, width: 0.24, color: '#253c50' },
 } as const;
-export const ROPE_PRICE = 2;
+// A fourfold area doubles diameter; steel density and modulus stay unchanged.
+export const ROPE_PROFILES = {
+  s: { name: 'Standard', mass: 1, axial: 1, price: 2, width: 0.065, color: '#a2824b' },
+  h: { name: 'Heavy', mass: 4, axial: 4, price: 8, width: 0.13, color: '#806233' },
+} as const;
 export type JointType = 'x' | 'o';
 export type Material = 'beam' | 'rope';
-export interface Project { size: Point; beams: Beam[]; ropes: Member[]; joints: Record<string, JointType>; anchors: Record<string, JointType> }
+export interface Project { size: Point; beams: Beam[]; ropes: Rope[]; joints: Record<string, JointType>; anchors: Record<string, JointType> }
 // Bump this after every application change; the status bar and exported project metadata use it.
-export const GAME_VERSION = '0.4.76';
-export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 6, rope: 10 };
+export const GAME_VERSION = '0.4.79';
+export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 6, rope: 20 };
 
 /** Resolve a snapped drawing target without changing import/member validation. */
 export function drawingEndpoint(start: Point, target: Point, material: Material, size: Point): Point {
@@ -47,7 +53,7 @@ export function resizeProject(project: Project, size: Point): Project {
     throw new Error('Board size must be even: width 12–64, height 8–40.');
   }
   const next = cloneProject(project);
-  if ([...next.beams.map(b => b.endpoints), ...next.ropes].some(m => m[0] > size[0] || m[2] > size[0] || m[1] > size[1] || m[3] > size[1])) {
+  if ([...next.beams.map(b => b.endpoints), ...next.ropes.map(r => r.endpoints)].some(m => m[0] > size[0] || m[2] > size[0] || m[1] > size[1] || m[3] > size[1])) {
     throw new Error('The new size would cut off existing elements. Increase the canvas or move the elements first.');
   }
   next.size = [...size];
@@ -57,7 +63,7 @@ export function resizeProject(project: Project, size: Point): Project {
 export const cloneProject = (p: Project): Project => structuredClone(p);
 export function canonical(m: Member): Member { return m[0] < m[2] || (m[0] === m[2] && m[1] <= m[3]) ? [...m] : [m[2], m[3], m[0], m[1]]; }
 const compare = (a: number[], b: number[]) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; };
-export function nodes(p: Project): Map<string, Point> { const out = new Map<string, Point>(); for (const m of [...p.beams.map(b => b.endpoints), ...p.ropes]) { const a: Point = [m[0], m[1]], b: Point = [m[2], m[3]]; out.set(key(a), a); out.set(key(b), b); } return out; }
+export function nodes(p: Project): Map<string, Point> { const out = new Map<string, Point>(); for (const m of [...p.beams.map(b => b.endpoints), ...p.ropes.map(r => r.endpoints)]) { const a: Point = [m[0], m[1]], b: Point = [m[2], m[3]]; out.set(key(a), a); out.set(key(b), b); } return out; }
 export function pointOnMember(p: Point, m: Member, interior = false): boolean {
   const dx = m[2] - m[0], dy = m[3] - m[1], px = p[0] - m[0], py = p[1] - m[1];
   if (Math.abs(dx * py - dy * px) > 1e-8) return false;
@@ -86,8 +92,8 @@ export function normalizeProject(source: Project): Project {
       if (i === count || endpoints.has(key(next))) { split.push({ endpoints: canonical([...prev, ...next] as Member), profile: beam.profile }); prev = next; }
     }
   }
-  p.beams = split.sort((a, b) => compare(a.endpoints, b.endpoints)); p.ropes = p.ropes.map(canonical).sort(compare);
-  for (const list of [p.beams.map(b => b.endpoints), p.ropes]) { const seen = new Set<string>(); for (const m of list) { const id = m.join(','); if (seen.has(id)) throw new Error('Duplicate or overlapping elements are not allowed.'); seen.add(id); } }
+  p.beams = split.sort((a, b) => compare(a.endpoints, b.endpoints)); p.ropes = p.ropes.map(r => ({ ...r, endpoints: canonical(r.endpoints) })).sort((a,b) => compare(a.endpoints,b.endpoints));
+  for (const list of [p.beams.map(b => b.endpoints), p.ropes.map(r => r.endpoints)]) { const seen = new Set<string>(); for (const m of list) { const id = m.join(','); if (seen.has(id)) throw new Error('Duplicate or overlapping elements are not allowed.'); seen.add(id); } }
   const active = nodes(p);
   for (const id of Object.keys(p.joints)) if (!active.has(id) || p.joints[id] === 'x') delete p.joints[id];
   for (const id of Object.keys(p.anchors)) if (!active.has(id) || !boundary(fromKey(id), p.size) || p.anchors[id] === 'x') delete p.anchors[id];
@@ -98,7 +104,7 @@ export function validateMember(p: Project, material: Material, m: Member): strin
   const l = length(m);
   if (l < 1e-8) return 'Choose a different endpoint.';
   if (l > MAX_LENGTH[material] + 1e-8) return `Maximum ${material} length is ${MAX_LENGTH[material]} grid units.`;
-  const list = material === 'beam' ? p.beams.map(b => b.endpoints) : p.ropes;
+  const list = material === 'beam' ? p.beams.map(b => b.endpoints) : p.ropes.map(r => r.endpoints);
   const id = canonical(m).join(',');
   if (list.some(e => canonical(e).join(',') === id)) return 'This element already exists.';
   if (material === 'beam' && list.some(e => membersOverlap(m, e))) return 'This beam overlaps an existing beam.';
@@ -107,7 +113,7 @@ export function validateMember(p: Project, material: Material, m: Member): strin
 export function addMember(p: Project, material: Material, m: Member, type: JointType = 'x', profile: BeamProfile = 's'): Project {
   const error = validateMember(p, material, m); if (error) throw new Error(error);
   const next = cloneProject(p), before = nodes(p);
-  if (material === 'beam') next.beams.push({ endpoints: m, profile }); else next.ropes.push(m);
+  if (material === 'beam') next.beams.push({ endpoints: m, profile }); else { if (profile === 'l') throw new Error('Rope profile must be s or h.'); next.ropes.push({ endpoints: m, profile }); }
   for (const pt of [[m[0], m[1]], [m[2], m[3]]] as Point[]) if (!before.has(key(pt)) && type === 'o') {
     next.joints[key(pt)] = 'o'; if (boundary(pt, next.size)) next.anchors[key(pt)] = 'o';
   }
@@ -147,10 +153,10 @@ function movedNodesPreview(project: Project, moves: readonly NodeMove[]): Projec
       if (!length(endpoints) || seenBeams.has(id)) return [];
       seenBeams.add(id); return [{ endpoints, profile: b.profile }];
     });
-  next.ropes = project.ropes.flatMap(m => {
-    const moved = relocate(m), id = moved.join(',');
-    if (!length(moved) || seenRopes.has(id)) return [];
-    seenRopes.add(id); return [moved];
+  next.ropes = [...project.ropes].sort((a,b) => Number(touchesSource(a.endpoints)) - Number(touchesSource(b.endpoints))).flatMap(r => {
+    const endpoints = relocate(r.endpoints), id = endpoints.join(',');
+    if (!length(endpoints) || seenRopes.has(id)) return [];
+    seenRopes.add(id); return [{ endpoints, profile: r.profile }];
   });
   for (const [sourceId,target] of destinations) {
     const targetId = key(target);
@@ -196,7 +202,7 @@ function moveNodes(project: Project, moves: readonly NodeMove[]): Project {
     if (!target.every(Number.isSafeInteger) || !inside(target,project.size)) throw new Error('Stay inside the build area.');
   }
   const next = movedNodesPreview(project,moves);
-  for (const [material,list] of [['beam',next.beams.map(b => b.endpoints)],['rope',next.ropes]] as const) {
+  for (const [material,list] of [['beam',next.beams.map(b => b.endpoints)],['rope',next.ropes.map(r => r.endpoints)]] as const) {
     for (let i=0;i<list.length;i++) {
       if (length(list[i]) > MAX_LENGTH[material]+1e-8) throw new Error(`Maximum ${material} length is ${MAX_LENGTH[material]} grid units.`);
       if (material === 'beam' && list.slice(i+1).some(m => membersOverlap(list[i],m))) throw new Error('This beam overlaps an existing beam.');
@@ -214,26 +220,26 @@ export function moveBeam(project: Project, endpoints: Member, delta: Point): Pro
   if (!project.beams.some(b => canonical(b.endpoints).join(',') === id)) throw new Error('This beam does not exist.');
   return translateNodes(project,[[endpoints[0],endpoints[1]],[endpoints[2],endpoints[3]]],delta);
 }
-export function projectCost(p: Project): { total: number; breakdown: Record<BeamProfile | 'r', number> } {
-  const raw = { l: 0, s: 0, h: 0, r: 0 };
+export function projectCost(p: Project): { total: number; breakdown: Record<BeamProfile | 'r' | 'rh', number> } {
+  const raw = { l: 0, s: 0, h: 0, r: 0, rh: 0 };
   for (const b of p.beams) raw[b.profile] += length(b.endpoints) * PROFILES[b.profile].price;
-  for (const r of p.ropes) raw.r += length(r) * ROPE_PRICE;
-  const breakdown = { l: 0, s: 0, h: 0, r: 0 };
-  for (const type of ['l', 's', 'h', 'r'] as const) breakdown[type] = Math.max(0, Math.ceil(raw[type] - 1e-9));
+  for (const r of p.ropes) raw[r.profile === 'h' ? 'rh' : 'r'] += length(r.endpoints) * ROPE_PROFILES[r.profile].price;
+  const breakdown = { l: 0, s: 0, h: 0, r: 0, rh: 0 };
+  for (const type of ['l', 's', 'h', 'r', 'rh'] as const) breakdown[type] = Math.max(0, Math.ceil(raw[type] - 1e-9));
   return { total: Object.values(breakdown).reduce((a, b) => a + b, 0), breakdown };
 }
 export function exportProject(project: Project): string {
   const p = normalizeProject(project);
   const objects: Record<string, unknown[]> = {};
   if (p.beams.length) objects.b = p.beams.map(b => [...centeredMember(b.endpoints, p.size), b.profile]);
-  if (p.ropes.length) objects.r = p.ropes.map(m => centeredMember(m, p.size));
+  if (p.ropes.length) objects.r = p.ropes.map(r => [...centeredMember(r.endpoints, p.size), r.profile]);
   for (const [name, settings] of [['j', p.joints], ['a', p.anchors]] as const) {
     const rows = Object.entries(settings).filter(([, t]) => t !== 'x').map(([id, type]) => [...toCentered(fromKey(id), p.size), type]).sort((a, b) => compare(a.slice(0, 2) as number[], b.slice(0, 2) as number[]));
     if (rows.length) objects[name] = rows;
   }
   const lines = Object.entries(objects).map(([k, rows]) => `    "${k}": [${rows.map(r => JSON.stringify(r)).join(', ')}]`);
   const checksum = checksumObjects(objects);
-  return `{\n  "metadata": {\n    "size": ${JSON.stringify(p.size)},\n    "gameVersion": "${GAME_VERSION}",\n    "formatVersion": 3\n  },\n  "objects": {${lines.length ? '\n' + lines.join(',\n') + '\n  ' : ''}},\n  "checksum": "${checksum}"\n}`;
+  return `{\n  "metadata": {\n    "size": ${JSON.stringify(p.size)},\n    "gameVersion": "${GAME_VERSION}",\n    "formatVersion": 4\n  },\n  "objects": {${lines.length ? '\n' + lines.join(',\n') + '\n  ' : ''}},\n  "checksum": "${checksum}"\n}`;
 }
 
 function canonicalJson(value: unknown): string {
@@ -275,7 +281,7 @@ export function importProject(text: string): Project {
   for (const [obj, allowed] of [[data, ['metadata', 'objects', 'checksum']], [meta, ['size', 'gameVersion', 'formatVersion']], [objects, ['b', 'r', 'j', 'a']]] as [Record<string, unknown>, string[]][]) {
     for (const k of Object.keys(obj)) if (!allowed.includes(k)) throw new Error(`Unknown project field: ${k}.`);
   }
-  if (meta.formatVersion !== 3) throw new Error('Unsupported formatVersion. This game supports version 3.');
+  if (meta.formatVersion !== 3 && meta.formatVersion !== 4) throw new Error('Unsupported formatVersion. This game supports versions 3 and 4.');
   if (typeof meta.gameVersion !== 'string' || !meta.gameVersion.length) throw new Error('gameVersion must be a nonempty string.');
   const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v);
   if (!Array.isArray(meta.size) || meta.size.length !== 2 || !meta.size.every(integer) || meta.size[0] < 12 || meta.size[0] > 64 || meta.size[1] < 8 || meta.size[1] > 40 || meta.size.some(v => v % 2)) throw new Error('Board size must be even: width 12–64, height 8–40.');
@@ -286,15 +292,16 @@ export function importProject(text: string): Project {
   };
   const rows = (name: string): unknown[][] => { if (objects[name] === undefined) return []; if (!Array.isArray(objects[name]) || !(objects[name] as unknown[]).every(Array.isArray)) throw new Error(`${name} must be an array of rows.`); return objects[name] as unknown[][]; };
   for (const name of ['b', 'r'] as const) for (const row of rows(name)) {
-    if (row.length !== (name === 'b' ? 5 : 4)) throw new Error(name === 'b' ? 'Beams must be [x1, y1, x2, y2, profile].' : 'Ropes need four coordinates.');
+    if (row.length !== (name === 'b' || meta.formatVersion === 4 ? 5 : 4)) throw new Error(name === 'b' ? 'Beams must be [x1, y1, x2, y2, profile].' : 'Ropes need four coordinates in format 3, or four coordinates and a profile in format 4.');
     if (name === 'b' && !['l', 's', 'h'].includes(row[4] as string)) throw new Error('Beam profile must be l, s, or h.');
+    if (name === 'r' && meta.formatVersion === 4 && !['s', 'h'].includes(row[4] as string)) throw new Error('Rope profile must be s or h.');
     const m: Member = [...readPoint(row[0], row[1]), ...readPoint(row[2], row[3])];
     if (!inside([m[0], m[1]], p.size) || !inside([m[2], m[3]], p.size)) throw new Error('An element is outside the build area.');
     const material = name === 'b' ? 'beam' : 'rope';
     if (length(m) <= 0 || length(m) > MAX_LENGTH[material] + 1e-8) throw new Error(`${material} length must be greater than 0 and at most ${MAX_LENGTH[material]} grid units.`);
-    if (name === 'b') p.beams.push({ endpoints: m, profile: row[4] as BeamProfile }); else p.ropes.push(m);
+    if (name === 'b') p.beams.push({ endpoints: m, profile: row[4] as BeamProfile }); else p.ropes.push({ endpoints: m, profile: meta.formatVersion === 3 ? 's' : row[4] as RopeProfile });
   }
-  for (const list of [p.beams.map(b => b.endpoints), p.ropes]) if (new Set(list.map(m => canonical(m).join(','))).size !== list.length) throw new Error('Duplicate elements are not allowed.');
+  for (const list of [p.beams.map(b => b.endpoints), p.ropes.map(r => r.endpoints)]) if (new Set(list.map(m => canonical(m).join(','))).size !== list.length) throw new Error('Duplicate elements are not allowed.');
   const active = nodes(normalizeProject(p));
   for (const name of ['j', 'a'] as const) {
     const settings = name === 'j' ? p.joints : p.anchors;

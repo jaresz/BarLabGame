@@ -1,9 +1,9 @@
 import { toCentered } from './coordinates';
-import { drawingEndpoint, MAX_LENGTH, PROFILES, ROPE_PRICE, projectCost, addMember, boundary, fromKey, key, nodes, validateMember, type BeamProfile, type JointType, type Material, type Point, type Project } from './model';
+import { drawingEndpoint, MAX_LENGTH, PROFILES, ROPE_PROFILES, projectCost, addMember, boundary, fromKey, key, nodes, validateMember, type BeamProfile, type RopeProfile, type JointType, type Material, type Point, type Project } from './model';
 import type { Frame, PhysicsMember } from './physics';
 export type Tool = Material | 'select' | 'erase';
 import { memberSelected, type Selection } from './selection';
-export interface RenderState { editMove?: { targets: Point[]; error: string | null; mergeTargets: Point[]; kind: 'node' | 'beam' | 'group' | 'paste' } | null; project: Project; tool: Tool; cursor: Point | null; start: Point | null; selected: Selection[]; marquee: [Point, Point] | null; frame: Frame | null; members: PhysicsMember[]; stress: boolean; joint: JointType; profile: BeamProfile; baseCost: number }
+export interface RenderState { editMove?: { targets: Point[]; error: string | null; mergeTargets: Point[]; kind: 'node' | 'beam' | 'group' | 'paste' } | null; project: Project; tool: Tool; cursor: Point | null; start: Point | null; selected: Selection[]; marquee: [Point, Point] | null; frame: Frame | null; members: PhysicsMember[]; stress: boolean; joint: JointType; profile: BeamProfile; ropeProfile: RopeProfile; baseCost: number }
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
   private previewErrorSince: number | null = null;
@@ -58,14 +58,14 @@ export class Renderer {
     if (state.frame) {
       state.members.forEach((member, i) => {
         const points = state.frame!.positions, broken = !!state.frame!.broken[i], stress = state.frame!.stresses[i];
-        let color = member.material === 'beam' ? PROFILES[member.profile].color : '#a2824b'; if (state.stress && !broken) color = this.stressColor(stress); if (broken) color = '#9a7469';
-        c.lineWidth = member.material === 'beam' ? PROFILES[member.profile].width : 0.065; c.strokeStyle = color;
+        let color: string = member.material === 'beam' ? PROFILES[member.profile].color : ROPE_PROFILES[member.profile as RopeProfile].color; if (state.stress && !broken) color = this.stressColor(stress); if (broken) color = '#9a7469';
+        c.lineWidth = member.material === 'beam' ? PROFILES[member.profile].width : ROPE_PROFILES[member.profile as RopeProfile].width; c.strokeStyle = color;
         for (let side = 0; side < 2; side++) {
           const start = member.start + side * member.half; c.beginPath(); c.moveTo(points[start * 2], points[start * 2 + 1]);
           for (let j = 1; j < member.half; j++) c.lineTo(points[(start + j) * 2], points[(start + j) * 2 + 1]); c.stroke();
           if (member.material === 'beam' && member.profile === 'h') { c.strokeStyle = '#aab8c2'; c.lineWidth = 0.035; c.stroke(); c.strokeStyle = color; c.lineWidth = PROFILES.h.width; }
         }
-        const original = member.material === 'beam' ? state.project.beams[i].endpoints : state.project.ropes[i - state.project.beams.length];
+        const original = member.material === 'beam' ? state.project.beams[i].endpoints : state.project.ropes[i - state.project.beams.length].endpoints;
         for (const [id, endpoint] of [[member.start, 0], [member.start + member.count - 1, 2]]) {
           const nodeId = key([original[endpoint], original[endpoint + 1]]);
           this.drawNode([points[id * 2], points[id * 2 + 1]], state.project.joints[nodeId] || 'x', color);
@@ -73,11 +73,11 @@ export class Renderer {
         if (broken) { c.fillStyle = '#df744f'; for (const id of [member.start + member.half - 1, member.start + member.half]) { c.beginPath(); c.arc(points[id * 2], points[id * 2 + 1], 0.09, 0, Math.PI * 2); c.fill(); } }
       });
     } else {
-      for (const [material, list] of [['beam', state.project.beams.map(b => b.endpoints)], ['rope', state.project.ropes]] as const) list.forEach((m, index) => {
-        const profile = material === 'beam' ? state.project.beams[index].profile : 's', properties = PROFILES[profile];
+      for (const [material, list] of [['beam', state.project.beams.map(b => b.endpoints)], ['rope', state.project.ropes.map(r => r.endpoints)]] as const) list.forEach((m, index) => {
+        const profile = material === 'beam' ? state.project.beams[index].profile : state.project.ropes[index].profile, properties = material === 'beam' ? PROFILES[profile] : ROPE_PROFILES[profile as RopeProfile];
         const selected = memberSelected(state.selected, material, m);
         if (selected) { c.strokeStyle = '#edb89b'; c.lineWidth = 0.34; c.beginPath(); c.moveTo(m[0], m[1]); c.lineTo(m[2], m[3]); c.stroke(); }
-        c.strokeStyle = material === 'beam' ? properties.color : '#a2824b'; c.lineWidth = material === 'beam' ? properties.width : 0.065;
+        c.strokeStyle = properties.color; c.lineWidth = properties.width;
         c.beginPath(); c.moveTo(m[0], m[1]); c.lineTo(m[2], m[3]); c.stroke();
         if (material === 'beam' && profile !== 'l') { c.strokeStyle = profile === 'h' ? '#aab8c2' : '#6d9290'; c.lineWidth = 0.035; c.beginPath(); c.moveTo(m[0], m[1] - 0.025); c.lineTo(m[2], m[3] - 0.025); c.stroke(); }
       });
@@ -104,7 +104,7 @@ export class Renderer {
       c.save(); c.strokeStyle = color; c.lineWidth = 3;
       // Iterate over every beam and rope in the preview. Each m contains both
       // endpoints in grid units: [startX, startY, endX, endY].
-      for (const m of [...state.project.beams.map(b => b.endpoints), ...state.project.ropes]) {
+      for (const m of [...state.project.beams.map(b => b.endpoints), ...state.project.ropes.map(r => r.endpoints)]) {
         // Highlight members attached to any moved endpoint; t is a target grid point.
         if (move.targets.some(t => (m[0] === t[0] && m[1] === t[1]) || (m[2] === t[0] && m[3] === t[1]))) {
           // a and b are the member's endpoints converted to canvas CSS pixels.
@@ -155,13 +155,15 @@ export class Renderer {
         const visible = !error || (now - this.previewErrorSince!) % 1000 < 650;
         if (visible) {
           c.save(); c.strokeStyle = previewColor;
-          c.lineWidth = state.tool === 'beam' ? Math.max(2, PROFILES[state.profile].width * this.scale) : 2;
+          // Rope previews keep the established two-pixel Standard stroke; area
+          // scaling doubles Heavy at every zoom, including small phone views.
+          c.lineWidth = state.tool === 'beam' ? Math.max(2, PROFILES[state.profile].width * this.scale) : 2 * ROPE_PROFILES[state.ropeProfile].width / ROPE_PROFILES.s.width;
           c.globalAlpha = error ? 1 : 0.9; c.setLineDash(error ? [8, 5] : []);
           c.beginPath(); c.moveTo(ax, ay); c.lineTo(sx, sy); c.stroke(); c.restore();
         }
         let delta = '';
         if (!error) {
-          const next = addMember(state.project, state.tool as Material, [...state.start!, ...pt], state.joint, state.profile);
+          const next = addMember(state.project, state.tool as Material, [...state.start!, ...pt], state.joint, state.tool === 'rope' ? state.ropeProfile : state.profile);
           delta = ` · +${projectCost(next).total - state.baseCost} cr`;
         }
         const lines = [`${dist.toFixed(2)} / ${MAX_LENGTH[state.tool as Material]} units${delta}`];

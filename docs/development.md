@@ -40,6 +40,8 @@ Open the local URL printed by Vite. Changes to source files reload automatically
 
 Open the repository folder in your IDE. Start with `src/main.ts` for user interactions, follow imports to the relevant subsystem, and use `src/style.css` for appearance changes. The interface and source are in English.
 
+The [landmark examples](examples/README.md) document the simplified Ponte Luís I, RTCN Kołowo, and Seri Wawasan geometries. Run `node --import tsx scripts/measure-landmarks.ts` to refresh their 20-second measurements for all three solver schedules and both initial disturbance signs. The landmark tests check the same trajectories as part of `npm test`.
+
 Basic XPBD Solver keeps the original XPBD constraint ordering. Serpentine is selected when the app opens; the Settings dialog can change the solver for the current page session. Alternative solvers retain stable member IDs and change constraint visit order rather than exported geometry. Serpentine also selects each welded joint's reference member in scan order; changing sweeps alone would leave that directional bias in place. Each Serpentine start independently samples `Math.random() < 0.5` for its starting side. No previous side is stored. The worker receives that explicit side, so the trajectory is reproducible once the choice is known; pause/resume does not redraw it.
 
 Detailed solver explanations include labelled figures, worked numerical examples and actual solver animations: [Overview and common fixture](solvers/README.md), [Basic XPBD Solver](solvers/original.md), [Serpentine](solvers/serpentine.md). Recreate the media with `node --import tsx scripts/generate-solver-docs.ts` followed by `python scripts/render-solver-docs.py` (Python 3 and Pillow required). The first command audits the worked XPBD example and writes measurements; the second renders the diagrams and GIFs from sampled World trajectories.
@@ -60,6 +62,8 @@ npm run test:browser
 `npm run build` type-checks and creates a production site in `public_html/`, including `index.html`, compiled assets, icons, the web app manifest, and the generated service worker. `public_html/` is generated and ignored by Git; do not edit it manually. `npm run test:browser` builds the app and checks production behavior in Chromium. Install the browser with `npx playwright install chromium` if needed. To use a system Chromium, set `FRAME_LAB_CHROMIUM` to its executable path.
 
 After a build, `node scripts/browser-smoke.mjs --solvers-only` checks Settings, solver routing, and canvas resizing on desktop, portrait touch, and landscape touch. Use the full suite for release validation.
+
+The rejected larger Seri Wawasan designs are reproducible with `node --import tsx scripts/measure-seri-wawasan.ts`. The script applies the shared `measureProject` acceptance checks to saved experimental projects, without adding them to the gallery. See [the geometry-only trial report](examples/seri-wawasan-large/README.md) for results and the integration gate.
 
 ## Refresh documentation screenshots
 
