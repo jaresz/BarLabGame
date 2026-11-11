@@ -1,5 +1,5 @@
 import { toCentered } from './coordinates';
-import { drawingEndpoint, MAX_LENGTH, PROFILES, ROPE_PROFILES, projectCost, addMember, boundary, fromKey, key, nodes, validateMember, type BeamProfile, type RopeProfile, type JointType, type Material, type Point, type Project } from './model';
+import { drawingEndpoint, MAX_LENGTH, PROFILES, ROPE_PROFILES, projectCost, addMember, memberKey, boundary, fromKey, key, nodes, validateMember, type BeamProfile, type RopeProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
 import type { Frame, PhysicsMember } from './physics';
 export type Tool = Material | 'select' | 'erase';
 import { memberSelected, type Selection } from './selection';
@@ -52,6 +52,11 @@ export class Renderer {
   }
   draw(state: RenderState, now = performance.now()): boolean {
     let animatePreview = false;
+    // Resolve drawing geometry once for both the stationary strokes and overlay.
+    const drawingEnd = !state.frame && !state.editMove && state.start && state.cursor && (state.tool === 'beam' || state.tool === 'rope')
+      ? drawingEndpoint(state.start,state.cursor,state.tool,state.project.size) : null;
+    const candidate: Member | null = drawingEnd ? [...state.start!,...drawingEnd] : null;
+    const candidateError = candidate ? validateMember(state.project,state.tool as Material,candidate) : null;
     if (!this.width || !this.height) this.resize(); this.camera(state.project.size); this.paintBackground(state.project.size);
     const c = this.ctx; c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, this.canvas.width, this.canvas.height); c.drawImage(this.background, 0, 0); c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     c.save(); c.translate(...this.origin); c.scale(this.scale, this.scale); c.beginPath(); c.rect(0, 0, ...state.project.size); c.clip(); c.lineCap = 'round'; c.lineJoin = 'round';
@@ -73,7 +78,11 @@ export class Renderer {
         if (broken) { c.fillStyle = '#df744f'; for (const id of [member.start + member.half - 1, member.start + member.half]) { c.beginPath(); c.arc(points[id * 2], points[id * 2 + 1], 0.09, 0, Math.PI * 2); c.fill(); } }
       });
     } else {
+      // Hide the stationary stroke only for a valid exact replacement. Keeping a
+      // Heavy beam beneath a Light beam or rope preview would show the wrong width.
+      const replacementId = candidate && !candidateError ? memberKey(candidate) : null;
       for (const [material, list] of [['beam', state.project.beams.map(b => b.endpoints)], ['rope', state.project.ropes.map(r => r.endpoints)]] as const) list.forEach((m, index) => {
+        if (memberKey(m) === replacementId) return;
         const profile = material === 'beam' ? state.project.beams[index].profile : state.project.ropes[index].profile, properties = material === 'beam' ? PROFILES[profile] : ROPE_PROFILES[profile as RopeProfile];
         const selected = memberSelected(state.selected, material, m);
         if (selected) { c.strokeStyle = '#edb89b'; c.lineWidth = 0.34; c.beginPath(); c.moveTo(m[0], m[1]); c.lineTo(m[2], m[3]); c.stroke(); }
@@ -137,11 +146,11 @@ export class Renderer {
     }
     if (!state.editMove && !state.frame && state.cursor) {
       const drawing = state.start && (state.tool === 'beam' || state.tool === 'rope');
-      const pt = drawing ? drawingEndpoint(state.start!, state.cursor, state.tool as Material, state.project.size) : state.cursor;
+      const pt = drawingEnd ?? state.cursor;
       const [sx, sy] = this.screen(pt); let error: string | null = null;
       const shortened = pt[0] !== state.cursor[0] || pt[1] !== state.cursor[1];
       const dist = drawing ? Math.hypot(pt[0] - state.start![0], pt[1] - state.start![1]) : 0;
-      if (drawing && dist > 1e-8) error = validateMember(state.project, state.tool as Material, [...state.start!, ...pt]);
+      if (drawing && dist > 1e-8) error = candidateError;
       if (error) { this.previewErrorSince ??= now; animatePreview = true; }
       else this.previewErrorSince = null;
       const previewColor = error ? '#ce5c49' : '#3979b7';
@@ -164,7 +173,8 @@ export class Renderer {
         let delta = '';
         if (!error) {
           const next = addMember(state.project, state.tool as Material, [...state.start!, ...pt], state.joint, state.tool === 'rope' ? state.ropeProfile : state.profile);
-          delta = ` · +${projectCost(next).total - state.baseCost} cr`;
+          const difference = projectCost(next).total - state.baseCost;
+          delta = ` · ${difference >= 0 ? '+' : ''}${difference} cr`;
         }
         const lines = [`${dist.toFixed(2)} / ${MAX_LENGTH[state.tool as Material]} units${delta}`];
         if (shortened && !error) lines.push('Shortened to length limit');

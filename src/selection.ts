@@ -52,7 +52,7 @@ export function translatedSelection(project: Project, selection: readonly Select
   const active = nodes(project), result = new Map<string, Selection>();
   const add = (item: Selection) => result.set(selectionKey(item),item);
   // Rebuild only the original selection, not every member stretched by the move.
-  // Normalization may split a translated beam or keep a stationary duplicate's profile.
+  // Normalization may split a translated beam after replacing a stationary span.
   for (const item of selection) {
     if ('node' in item) {
       const p = fromKey(item.node), id = key([p[0]+delta[0],p[1]+delta[1]]);

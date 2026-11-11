@@ -1,7 +1,7 @@
 import { selectionNodes, selectionContains, translatedSelection, deletionTargets, memberSelected, rectangleSelection, removeSelection, selectionKey, type Selection } from '../src/selection';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { translateNodes, translateNodesPreview, moveBeam, moveNode, nodes, drawingEndpoint, addMember, emptyProject, exportProject, History, importProject, MAX_LENGTH, normalizeProject, projectCost, toggleNode, validateMember, type Member } from '../src/model';
+import { translateNodes, translateNodesPreview, moveBeam, moveNode, nodes, drawingEndpoint, addMember, emptyProject, exportProject, History, importProject, importProjectWithWarnings, projectChecksumWarning, MAX_LENGTH, normalizeProject, projectCost, toggleNode, validateMember, type Member } from '../src/model';
 import { fromCentered } from '../src/coordinates';
 import { fragmentPreview, pasteFragment, transformFragment } from '../src/fragment';
 import { copySelection, pastedSelection } from '../src/selection';
@@ -46,17 +46,19 @@ test('Clipboard reflections preserve integer geometry, profiles and immutable re
  const history=new History(source);history.commit(a);history.undo();assert.deepEqual(history.project,source);history.redo();assert.deepEqual(history.project,a);
 });
 
-// Paste over an existing beam to verify no-op deduplication and stationary profile precedence,
+// Paste over an existing beam to verify incoming profile precedence and unchanged repeated placement,
 // then paste across a rope endpoint and check that selection follows only the resulting beam segments.
 test('Pasting keeps stationary metadata, deduplicates, and follows normalized beam splits', () => {
  const source=addMember(emptyProject(),'beam',[0,2,4,2],'o','h');
  const fragment=copySelection(source,[{material:'beam',endpoints:[0,2,4,2]}])!;
  const target=addMember(addMember(emptyProject(),'beam',[2,6,6,6],'x','l'),'rope',[4,6,4,8]);
- // Use a fresh unsplit duplicate to verify stationary profile precedence.
+ // Use a fresh unsplit duplicate to verify incoming profile precedence.
  const duplicate=addMember(emptyProject(),'beam',[2,6,6,6],'x','l');
  const placement={origin:[2,6] as [number,number],flipX:false,flipY:false};
  const noChange=pasteFragment(duplicate,fragment,placement);
- assert.equal(noChange.changed,false);assert.deepEqual(noChange.project,duplicate);
+ assert.equal(noChange.changed,true);assert.equal(noChange.project.beams[0].profile,'h');
+ assert.deepEqual(noChange.project.joints,duplicate.joints);
+ assert.equal(pasteFragment(noChange.project,fragment,placement).changed,false);
  assert.equal(pastedSelection(noChange.project,fragment,placement).length,3);
  const ropeOnly={...target,beams:[]};
  const split=pasteFragment(ropeOnly,fragment,placement).project;
@@ -160,7 +162,7 @@ test('Group movement validates every external element and all bounds atomically'
 });
 
 // Move a selected beam onto an existing midpoint and onto a duplicate beam; rebuild selection
-// and verify that split pieces remain selected, stationary profiles win and neighbors stay excluded.
+// and verify that split pieces remain selected, incoming profiles win and neighbors stay excluded.
 test('Translated selection follows beam splits and stationary duplicates without selecting stretched neighbors', () => {
  let p=addMember(addMember(emptyProject(),'beam',[2,2,6,2],'x','h'),'rope',[4,4,4,8]);
  const selected: Selection[]=[{material:'beam',endpoints:[2,2,6,2]}];
@@ -170,7 +172,7 @@ test('Translated selection follows beam splits and stationary duplicates without
  assert.equal(result.every(item=>'material' in item && item.material==='beam'),true);
  p=addMember(addMember(emptyProject(),'beam',[2,2,6,2],'x','h'),'beam',[2,4,6,4],'x','l');
  const merged=translateNodes(p,selectionNodes(selected),[0,2]);
- assert.equal(merged.beams.every(b=>b.profile==='l'),true);
+ assert.equal(merged.beams.every(b=>b.profile==='h'),true);
  assert.equal(translatedSelection(merged,[...selected,...selected],[0,2]).length,1,'Duplicate selection entries remain unique after merging');
 });
 
@@ -247,12 +249,12 @@ test('Beam movement rejects invalid endpoints, limits of adjacent members and pa
 
 // Move a beam onto a stationary beam connected by two ropes; compare the collapsed/deduplicated
 // result, then move a boundary beam inside and back to verify joint and support preservation.
-test('Both translated endpoints merge with stationary targets and preserve their profiles and settings', () => {
+test('Both translated endpoints merge with stationary targets and preserve incoming profiles and stationary settings', () => {
  const beam: Member=[2,4,6,4];
  let p=addMember(addMember(emptyProject(),'beam',beam,'o','h'),'beam',[2,6,6,6],'x','l');
  p=addMember(addMember(p,'rope',[2,4,2,6]),'rope',[6,4,6,6]);
  const q=moveBeam(p,beam,[0,2]);
- assert.deepEqual(q.beams,[{endpoints:[2,6,6,6],profile:'l'}]);
+ assert.deepEqual(q.beams,[{endpoints:[2,6,6,6],profile:'h'}]);
  assert.deepEqual(q.ropes,[]); assert.deepEqual(q.joints,{});
  const source=addMember(emptyProject(),'beam',[0,2,0,6],'o');
  const interior=moveBeam(source,[0,2,0,6],[1,0]);
@@ -318,18 +320,17 @@ test('Moves enforce all material limits before splitting, bounds and beam overla
  assert.throws(()=>moveNode(overlap,[3,2],[3,3]),/overlaps/);
 });
 
-// Merge two connected nodes in either direction and inspect beams, ropes and metadata to verify
-// collapsed-member removal, duplicate elimination and stationary precedence; also collapse the last beam.
-test('Merge removes collapsed members and duplicates while stationary profiles and types win', () => {
+// Merge endpoints in either direction: the moved member wins while target node
+// settings survive. A member whose endpoints collapse to one point disappears.
+test('Merge removes collapsed members and replaces stationary spans while target settings win', () => {
  let p=addMember(addMember(addMember(emptyProject(),'beam',[4,4,8,4],'o','h'),'beam',[4,6,8,4],'x','l'),'rope',[4,4,4,6]);
- p=addMember(addMember(p,'rope',[4,4,8,4]),'rope',[4,6,8,4]);
  const q=moveNode(p,[4,4],[4,6]);
- assert.deepEqual(q.beams,[{endpoints:[4,6,8,4],profile:'l'}]);
- assert.deepEqual(q.ropes.map(r=>r.endpoints),[[4,6,8,4]]);
+ assert.deepEqual(q.beams,[{endpoints:[4,6,8,4],profile:'h'}]);
+ assert.deepEqual(q.ropes,[]);
  assert.equal(q.joints['4,6'],undefined);
  assert.equal(nodes(q).has('4,4'),false);
  const reverse=moveNode(p,[4,6],[4,4]);
- assert.equal(reverse.beams[0].profile,'h'); assert.equal(reverse.joints['4,4'],'o');
+ assert.equal(reverse.beams[0].profile,'l'); assert.equal(reverse.joints['4,4'],'o');
  assert.deepEqual(moveNode(addMember(emptyProject(),'beam',[2,2,3,2]),[2,2],[3,2]),emptyProject());
 });
 
@@ -365,13 +366,13 @@ test('Profiles, signed coordinates, settings and cost survive deterministic roun
  assert.equal(JSON.parse(text).metadata.formatVersion,4);
 });
 // Add a rope at the midpoint of a diagonal heavy beam; inspect split profiles and rounded beam
-// cost, then attempt an identical beam with another profile to verify duplicate rejection.
+// cost, then replace the original beam with another profile.
 test('Splitting a diagonal preserves its profile, mass length and rounded category cost', () => {
  const p = addMember(emptyProject(),'beam',[10,5,14,9],'x','h');
  const q = addMember(p,'rope',[12,7,12,10]);
  assert.deepEqual(q.beams.map(b=>b.profile), ['h','h']);
  assert.equal(projectCost(p).breakdown.h,projectCost(q).breakdown.h);
- assert.throws(()=>addMember(p,'beam',[10,5,14,9],'x','l'),/exists/);
+ assert.equal(addMember(p,'beam',[10,5,14,9],'x','l').beams[0].profile,'l');
 });
 // For each material, validate a span exactly at its length limit and a slightly longer diagonal;
 // also check a diagonal rope to confirm Euclidean rather than axis-wise validation.
@@ -455,7 +456,7 @@ test('Only reasonable even board sizes and the new JSON schema are accepted', ()
  assert.throws(()=>importProject(document({b:[[0,0,4,0,'z']]})),/profile/);
  assert.throws(()=>importProject(document({b:[[15,0,17,0,'s']]})),/outside/);
  assert.throws(()=>importProject(document({b:[[0.5,0,4,0,'s']]})),/integers/);
- assert.throws(()=>importProject(document({b:[[0,0,4,0,'s'],[4,0,0,0,'h']]})),/Duplicate/);
+ assert.equal(importProject(document({b:[[0,0,4,0,'s'],[4,0,0,0,'h']]})).beams[0].profile,'h');
  assert.throws(()=>importProject(document({j:[[0,0,'o']]})),/does not exist/);
 });
 // Commit profile changes, a boundary-node toggle and a clear operation to History; step through
@@ -480,11 +481,11 @@ test('Rectangle selection includes boundaries and whole members in either direct
  assert.deepEqual(rectangleSelection(p,[14,9],[10,8]).map(selectionKey), selected.map(selectionKey));
  assert.equal(rectangleSelection(p,[11,8],[13,10]).length,0,'Crossing a member is insufficient');
 });
-// Match a reversed beam selection against reordered geometry with another profile and a coincident
+// Match a reversed beam selection against reordered geometry with another profile and a parallel
 // rope; verify identity by span/material and confirm that beam deletion preserves the rope.
 test('Selection uses geometry and kind, independent of ordering and beam profile', () => {
  const selected: Selection[] = [{material:'beam',endpoints:[14,9,10,9]}];
- const p = importProject(document({ b:[[-6,0,-2,0,'h'],[-10,0,-8,0,'s']], r:[[-6,0,-2,0]] }));
+ const p = importProject(document({ b:[[-6,0,-2,0,'h'],[-10,0,-8,0,'s']], r:[[-6,-1,-2,-1]] }));
  assert.ok(memberSelected(selected,'beam',p.beams[1].endpoints));
  assert.ok(!memberSelected(selected,'beam',p.beams[0].endpoints));
  assert.ok(!memberSelected(selected,'rope',p.ropes[0].endpoints));
@@ -604,8 +605,94 @@ test('Rope profiles retain prices, format compatibility, clipboard metadata and 
  const pasted=pasteFragment(p,fragment,{origin:[2,5],flipX:true,flipY:true}).project;
  assert.ok(pasted.ropes.every(r=>r.profile==='h'));
  const stationary=addMember(p,'rope',[2,5,6,5],'x','s');
- assert.equal(pasteFragment(stationary,fragment,{origin:[2,5],flipX:false,flipY:false}).project.ropes.find(r=>r.endpoints[1]===5)!.profile,'s');
+ assert.equal(pasteFragment(stationary,fragment,{origin:[2,5],flipX:false,flipY:false}).project.ropes.find(r=>r.endpoints[1]===5)!.profile,'h');
  const merged=translateNodes(stationary,[[2,2],[6,2]],[0,3]);
- assert.deepEqual(merged.ropes,[{endpoints:[2,5,6,5],profile:'s'}]);
- const h=new History(p);h.commit(merged);h.undo();assert.equal(h.project.ropes[0].profile,'h');h.redo();assert.equal(h.project.ropes[0].profile,'s');
+ assert.deepEqual(merged.ropes,[{endpoints:[2,5,6,5],profile:'h'}]);
+ const h=new History(p);h.commit(merged);h.undo();assert.equal(h.project.ropes[0].profile,'h');h.redo();assert.equal(h.project.ropes[0].profile,'h');
+});
+
+// Exercise every material/profile pair and both drawing directions. Geometry identity
+// is independent of kind, while node metadata and undo boundaries remain stable.
+test('Drawing exact spans replaces every material and profile and preserves node settings', () => {
+ const variants = [['beam','l'],['beam','s'],['beam','h'],['rope','s'],['rope','h']] as const;
+ for (const [oldMaterial,oldProfile] of variants) for (const [material,profile] of variants) for (const reverse of [false,true]) {
+  const p=addMember(emptyProject(),oldMaterial,[0,4,4,4],'o',oldProfile);
+  const before=exportProject(p), span: Member=reverse ? [4,4,0,4] : [0,4,4,4];
+  const next=addMember(p,material,span,'x',profile);
+  assert.equal(next.beams.length+next.ropes.length,1);
+  assert.equal((material==='beam' ? next.beams : next.ropes)[0].profile,profile);
+  assert.deepEqual(next.joints,p.joints); assert.deepEqual(next.anchors,p.anchors);
+  assert.equal(exportProject(p),before); assert.deepEqual(importProject(exportProject(next)),next);
+  const h=new History(p);h.commit(next);
+  if (oldMaterial===material && oldProfile===profile) assert.equal(h.canUndo,false);
+  else { assert.ok(h.undo());assert.deepEqual(h.project,p);assert.ok(h.redo());assert.deepEqual(h.project,next); }
+ }
+});
+
+// Incoming geometry replaces the stationary material for both clipboard and node
+// translations; previews must already show the committed cost and selection kind.
+test('Paste and move replace the other material with incoming profiles and matching previews', () => {
+ for (const material of ['beam','rope'] as const) {
+  const other=material==='beam' ? 'rope' : 'beam';
+  const source=addMember(emptyProject(),material,[0,2,4,2],'o','h');
+  const fragment=copySelection(source,[{material,endpoints:[0,2,4,2]}])!;
+  const target=addMember(emptyProject(),other,[0,4,4,4],'x','s');target.anchors['0,4']='o';
+  const placement={origin:[0,4] as [number,number],flipX:true,flipY:false};
+  const pasted=pasteFragment(target,fragment,placement).project;
+  assert.deepEqual(normalizeProject(fragmentPreview(target,fragment,placement)),pasted);
+  assert.equal(pasted.beams.length+pasted.ropes.length,1);
+  assert.equal(pasted.anchors['0,4'],'o');assert.deepEqual(pasted.joints,target.joints);
+  assert.ok(pastedSelection(pasted,fragment,placement).some(s=>'material' in s && s.material===material));
+  const combined=addMember(source,other,[0,4,4,4],'x','s');
+  const moved=translateNodes(combined,[[0,2],[4,2]],[0,2]);
+  assert.deepEqual(normalizeProject(translateNodesPreview(combined,[[0,2],[4,2]],[0,2])),moved);
+  assert.equal(moved.beams.length+moved.ropes.length,1);
+  assert.equal((material==='beam' ? moved.beams : moved.ropes)[0].profile,'h');
+ }
+});
+
+// Raw exact spans may be replaced, but beam segments created by normalization
+// cannot silently overwrite ropes, nor can ambiguous incoming groups choose a winner.
+test('Post-split and incoming group conflicts reject atomically', () => {
+ const p=addMember(emptyProject(),'rope',[4,4,6,4]);const before=exportProject(p);
+ assert.match(validateMember(p,'beam',[2,4,8,4])!,/Duplicate|overlapping/);
+ assert.throws(()=>addMember(p,'beam',[2,4,8,4]),/Duplicate|overlapping/);
+ assert.equal(exportProject(p),before);
+ const source=addMember(emptyProject(),'beam',[0,2,6,2]);
+ const fragment=copySelection(source,[{material:'beam',endpoints:[0,2,6,2]}])!;
+ assert.throws(()=>pasteFragment(p,fragment,{origin:[2,4],flipX:false,flipY:false}),/Duplicate|overlapping/);
+ const ambiguous={...fragment,ropes:[{endpoints:[6,0,0,0] as Member,profile:'s' as const}]};
+ assert.throws(()=>pasteFragment(emptyProject(),ambiguous,{origin:[2,4],flipX:false,flipY:false}),/Duplicate/);
+ const moving=addMember(addMember(emptyProject(),'beam',[2,2,6,2]),'beam',[2,4,6,2]);
+ const saved=exportProject(moving);
+ assert.throws(()=>translateNodes(moving,[[2,2],[6,2]],[0,2]),/Duplicate/);
+ assert.equal(exportProject(moving),saved);
+ assert.throws(()=>importProject(document({b:[[-6,0,0,0,'s']],r:[[-4,0,-2,0]]})),/Duplicate/);
+});
+
+// Material sections follow their textual order, not a hard-coded beam-first pass.
+// Every discarded row counts, even if all its properties match the later row.
+test('Import keeps later rows and material sections with accurate replacement warnings', () => {
+ const beam=[0,0,4,0,'l'],reverseBeam=[4,0,0,0,'h'],rope=[4,0,0,0,'h'];
+ const load=(objects: object)=>JSON.stringify({metadata:{size:[32,18],gameVersion:'0.7.1',formatVersion:4},objects});
+ for (const [objects,kind,profile,count] of [
+  [{b:[beam,reverseBeam,reverseBeam]},'beam','h',2],
+  [{r:[rope,rope,rope]},'rope','h',2],
+  [{b:[beam,reverseBeam],r:[rope]},'rope','h',2],
+  [{r:[rope],b:[reverseBeam]},'beam','h',1],
+  [{b:[beam]},'beam','l',0],
+ ] as const) {
+  const text=load(objects), result=importProjectWithWarnings(text);
+  assert.equal(result.project.beams.length+result.project.ropes.length,1);
+  assert.equal((kind==='beam' ? result.project.beams : result.project.ropes)[0].profile,profile);
+  if (count) {assert.equal(result.warnings.length,1);assert.match(result.warnings[0],new RegExp(`${count} duplicate`));assert.match(result.warnings[0],/later in the file/);}
+  else assert.deepEqual(result.warnings,[]);
+  assert.deepEqual(importProject(text),result.project);
+  assert.deepEqual(importProjectWithWarnings(exportProject(result.project)).warnings,[]);
+ }
+ const damaged=JSON.parse(load({b:[beam,reverseBeam]}));damaged.checksum='fnv1a32:00000000';
+ const text=JSON.stringify(damaged);
+ assert.ok(projectChecksumWarning(text));assert.equal(importProjectWithWarnings(text).warnings.length,1);
+ assert.throws(()=>importProject(load({b:[[0,0,4,0,'z'],beam]})),/profile/,'Invalid rows cannot hide behind later replacements');
+ assert.throws(()=>importProject(load({b:[[0,0,11,0,'s'],beam]})),/at most/);
 });

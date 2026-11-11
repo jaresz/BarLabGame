@@ -3,6 +3,7 @@ import { createServer } from 'node:http';
 import { mkdir, readFile } from 'node:fs/promises';
 import { resolve, extname, sep, join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { deflateSync } from 'node:zlib';
 import { chromium } from 'playwright';
 import { createServer as createViteServer } from 'vite';
 import { tsImport } from 'tsx/esm/api';
@@ -150,6 +151,7 @@ try {
   }
   console.log('Deployment: page, styles and simulation work under / and /frameLab/.');
   await testDialogBackdropGestures(browser, base);
+  await testReplacementImports(browser, base);
   await checkGuideLink(browser, base);
   // The dev server has its own history fallback, so verify its guide route separately.
   const vite = await createViteServer({ server: { host: '127.0.0.1', port: 0 } });
@@ -448,6 +450,7 @@ try {
     assert.equal(await page.locator('#total-cost').textContent(),'Cost: 120 cr');
     await page.locator('#back').click();
     await testRopeProfiles(page, mobile, point, readProject);
+    await testExactReplacements(page, mobile, point, readProject);
     await testContinuousDrawing(page, mobile, point, readProject);
     await testDrawingDrag(page, mobile, point, readProject);
     await testNodeMoves(page, mobile, point, readProject);
@@ -1881,7 +1884,7 @@ async function testNodeMoves(page, mobile, point, readProject) {
   await load(merging);
   const beforeMerge = (await readProject()).objects;
   await drag([12,9],[12,7]);
-  assert.deepEqual((await readProject()).objects, {b:[[-4,2,0,0,'l']]}, 'Merge removes zero-length and duplicate members and keeps stationary types/profile');
+  assert.deepEqual((await readProject()).objects, {b:[[-4,2,0,0,'h']]}, 'Merge removes collapsed members and keeps incoming profile');
   await page.locator('#undo').click(); assert.deepEqual((await readProject()).objects, beforeMerge);
   await page.locator('#redo').click();
   const saved = (await readProject()).objects;
@@ -1950,10 +1953,10 @@ async function testBeamMoves(page, mobile, point, readProject) {
   }
 
   // Drop both ends onto stationary nodes and a duplicate beam; compare the export to verify
-  // collapsed-rope removal and precedence of the stationary beam profile.
+  // collapsed-rope removal and precedence of the incoming beam profile.
   await load({b:[[-4,0,0,0,'h'],[-4,2,0,2,'l']],r:[[-4,0,-4,2,'s'],[0,0,0,2,'s']],j:[[-4,0,'o']]});
   await drag([14,9],[14,7]);
-  assert.deepEqual((await readProject()).objects,{b:[[-4,2,0,2,'l']]},'Both ends merge and stationary profile wins');
+  assert.deepEqual((await readProject()).objects,{b:[[-4,2,0,2,'h']]},'Both ends merge and incoming profile wins');
   // Repeat translation for diagonal and vertical beams and compare exact endpoint exports
   // to verify preservation of length and orientation beyond the horizontal fixture.
   for (const {beam,from,to,expected} of [
@@ -2488,7 +2491,7 @@ async function testContinuousDrawing(page, mobile, point, readProject) {
   await page.locator('#load').click();
  };
  // Repeat a distant target with each material to build three limit-length segments from
- // four inputs; reject a reverse duplicate, undo each segment, then test short spans and no-op clicks.
+ // four inputs; redraw a reversed span without adding history, then undo each segment.
  for(const [tool,limit] of Object.entries(MAX_LENGTH)) {
   // Leave one grid unit at either end and round up to a supported even board width.
   await load({},Math.max(32,2*Math.ceil((3*limit+2)/2))); await page.locator('[data-tool="'+tool+'"]').click();
@@ -2498,8 +2501,8 @@ async function testContinuousDrawing(page, mobile, point, readProject) {
   const expected=[0,1,2].map(i=>[i*limit+origin,0,(i+1)*limit+origin,0,'s']);
   assert.deepEqual(project[tool==='beam'?'b':'r'],expected,'Four inputs add three maximum-length connected elements');
   await click(1+2*limit,9);
-  assert.match(await page.locator('#toast').textContent(),/exists/,'Reversing the last element rejects a duplicate');
-  assert.deepEqual((await readProject()).objects,project,'Duplicate errors preserve the project');
+  assert.match(await page.locator('#status').textContent(),/Element added/,'Reversing the last element is accepted');
+  assert.deepEqual((await readProject()).objects,project,'Identical reversed replacement preserves the project without an Undo step');
   for(let remaining=2;remaining>=0;remaining--) {
    await page.locator('#undo').click();
    assert.equal(((await readProject()).objects[tool==='beam'?'b':'r']||[]).length,remaining,'Each member is a separate Undo');
@@ -2736,4 +2739,93 @@ async function testRopeProfiles(page, mobile, point, readProject) {
  await button.click({button:'right'});await page.locator('#profile-picker [data-profile="s"]').click();
  await chooseProfile(page,'s');await load({});
  console.log((mobile?'Touch':'Mouse')+' rope profiles: legacy import, hold, keyboard/context menus, independent choices, drawing, costs and mixed selection Undo/Redo.');
+}
+
+// Open the same duplicate document through each user-facing import path. The
+// checksum warning concerns the original file and must coexist with replacements.
+async function testReplacementImports(browser, base) {
+ const context=await browser.newContext({viewport:{width:1440,height:1000}});
+ try {
+  const page=await context.newPage(),dialogs=[];
+  page.on('dialog',async dialog=>{dialogs.push(dialog.message());await dialog.accept();});
+  await page.goto(base);await page.locator('#run').waitFor();
+  const doc={metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:4},
+    objects:{r:[[0,0,4,0,'h']],b:[[0,0,4,0,'l'],[4,0,0,0,'h']]}};
+  const check=async()=>{
+   assert.equal(await page.locator('#beam-count').textContent(),'1');
+   assert.equal(await page.locator('#rope-count').textContent(),'0');
+   await page.locator('#project-text').click();
+   const exported=JSON.parse(await page.locator('#project-json').inputValue());
+   assert.deepEqual(exported.objects,{b:[[0,0,4,0,'h']]});
+   await page.locator('#close-text').click();
+  };
+  const load=async text=>{
+   await page.locator('#project-text').click();await page.locator('#project-json').fill(text);
+   await page.locator('#load').click();
+   assert.match(await page.locator('#toast').textContent(),/Warning: 2 duplicate.*later in the file/);
+  };
+  await load(JSON.stringify(doc));assert.equal(dialogs.length,0,'Replacements require no confirmation');await check();
+  const damaged=JSON.stringify({...doc,checksum:'fnv1a32:00000000'});
+  await load(damaged);
+  assert.match(await page.locator('#toast').textContent(),/accepting the checksum warning/);assert.equal(dialogs.length,1);await check();
+  await page.evaluate(text=>localStorage.setItem('bar-lab:last-project:v1',text),damaged);
+  await page.reload();await page.locator('#run').waitFor();
+  assert.match(await page.locator('#status').textContent(),/accepting the checksum warning.*Warning: 2 duplicate/);await check();
+  // Build a valid link envelope around the untouched duplicate file. Its CRC is
+  // independent of the optional object checksum inside the compressed JSON.
+  const payload='z:'+deflateSync(damaged).toString('base64url');
+  let crc=0xffffffff;
+  for(const byte of Buffer.from(payload)) {crc^=byte;for(let bit=0;bit<8;bit++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}
+  const checksum=((crc^0xffffffff)>>>0).toString(16).padStart(8,'0');
+  await page.goto(`${base}/?replacement-import=share#project=${payload}.${checksum}`);await page.locator('#run').waitFor();
+  assert.match(await page.locator('#status').textContent(),/Shared project opened after accepting the checksum warning.*Warning: 2 duplicate/);await check();
+  assert.equal(dialogs.length,3,'Only checksum warnings ask for confirmation across all paths');
+  console.log('Import replacements: file order, counts, text, saved project, share links and concurrent checksum warnings verified.');
+ } finally {await context.close();}
+}
+
+// Replace a heavy beam in reverse with a cheaper beam and with a rope. Capture
+// the real canvas label to verify negative price differences on mouse and touch.
+async function testExactReplacements(page,mobile,point,readProject) {
+ const session=mobile ? await page.context().newCDPSession(page) : null;
+ await page.evaluate(()=>{
+  window.replacementLabels=[];window.replacementStrokes=[];
+  window.replacementFillText=CanvasRenderingContext2D.prototype.fillText;
+  window.replacementStroke=CanvasRenderingContext2D.prototype.stroke;
+  window.replacementClear=CanvasRenderingContext2D.prototype.clearRect;
+  CanvasRenderingContext2D.prototype.clearRect=function(...args){window.replacementStrokes=[];return window.replacementClear.apply(this,args);};
+  CanvasRenderingContext2D.prototype.stroke=function(...args){window.replacementStrokes.push(this.strokeStyle);return window.replacementStroke.apply(this,args);};
+  CanvasRenderingContext2D.prototype.fillText=function(text,...args){window.replacementLabels.push(String(text));return window.replacementFillText.call(this,text,...args);};
+ });
+ try {
+  for(const [material,profile,delta] of [['beam','l',-48],['rope','s',-56]]) {
+   await page.locator('#project-text').click();
+   await page.locator('#project-json').fill(JSON.stringify({metadata:{size:[32,18],gameVersion:GAME_VERSION,formatVersion:4},objects:{b:[[-4,0,0,0,'h']]}}));
+   await page.locator('#load').click();
+   if(material==='beam') await chooseProfile(page,profile);
+   else {
+    const button=page.locator('[data-tool="rope"]');await button.focus();await page.keyboard.press('ArrowDown');
+    await page.locator(`#profile-picker [data-profile="${profile}"]`).click();
+   }
+   await page.locator(`[data-tool="${material}"]`).click();
+   const start=await point(16,9),end=await point(12,9);
+   await page.evaluate(()=>window.replacementLabels=[]);
+   if(mobile) {
+    await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[start]});
+    await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[end]});
+   } else {await page.mouse.move(start.x,start.y);await page.mouse.down();await page.mouse.move(end.x,end.y);}
+   await page.waitForFunction(delta=>window.replacementLabels.some(text=>text.includes(`${delta} cr`)&&!text.includes(`+${delta}`)),delta);
+   assert.equal(await page.evaluate(()=>window.replacementStrokes.includes('#253c50')),false,'Replaced heavy beam does not remain beneath the candidate stroke');
+   if(mobile) await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});else await page.mouse.up();
+   const expected={[material==='beam'?'b':'r']:[[-4,0,0,0,profile]]};
+   assert.deepEqual((await readProject()).objects,expected,'Incoming material and profile replace the old beam');
+   await page.locator('#undo').click();assert.deepEqual((await readProject()).objects,{b:[[-4,0,0,0,'h']]});
+   await page.locator('#redo').click();assert.deepEqual((await readProject()).objects,expected);
+  }
+ } finally {
+  await page.evaluate(()=>{CanvasRenderingContext2D.prototype.fillText=window.replacementFillText;CanvasRenderingContext2D.prototype.stroke=window.replacementStroke;CanvasRenderingContext2D.prototype.clearRect=window.replacementClear;delete window.replacementFillText;delete window.replacementStroke;delete window.replacementClear;delete window.replacementLabels;delete window.replacementStrokes;});
+  await session?.detach();
+ }
+ await chooseProfile(page,'s');
+ console.log(`${mobile?'Touch':'Mouse'} exact replacements: profiles, cross-material spans, negative preview costs and Undo/Redo verified.`);
 }

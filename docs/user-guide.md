@@ -22,6 +22,8 @@ The examples include Ponte Luís I, the two RTCN Kołowo masts, and Seri Wawasan
 
 Beams can be up to 6 units long; ropes can be up to 20. A farther target is shortened to a nearby grid point within the limit. The solid blue preview shows the element that will be added; a faint dashed remainder indicates the rest of the pointer's distance. Invalid placements show an explanation.
 
+Drawing an element between the same two endpoints replaces the previous element with the selected material and profile, even when drawn in reverse. Existing node and support settings remain unchanged. Replacement is one Undo step; an unchanged result adds no history step. Partial beam overlaps remain blocked.
+
 Follow the highlighted pointer to build a small triangle. Choose **Beam**, click or tap a boundary support to start, then click or tap each next grid point to place a beam and continue the chain. Press `Esc` or tap **Cancel** to finish, then choose **Run** to test the structure.
 
 ![Step-by-step guide to choosing Beam, tapping grid points to build a small triangle, and ending the drawing chain](images/frame-lab-build-basics.gif)
@@ -34,7 +36,7 @@ Choose **Light**, **Standard**, or **Heavy** beside Beam. On desktop, hold the B
 - `Ctrl`/`Cmd`+click toggles individual items; `Ctrl`/`Cmd`+drag from empty space adds a rectangle to the selection. `Shift`+drag can start a rectangle over an element, and `Ctrl`/`Cmd`+`Shift`+drag adds it. A short click or tap on empty space clears the selection; cancelling a rectangle restores the earlier selection.
 - Drag a selected member or one of its endpoints to move the whole group. A shared node moves only once. Beams and ropes within the group keep their length and orientation; external connections stretch with their moving endpoints. The preview shows cost and any placement error.
 - Dragging an unselected node or beam immediately clears the old group and moves only that object. An unselected rope cannot be dragged. Dragging a beam moves both ends together. Cancelling or releasing an invalid move restores the design; a group cleared by an outside grab stays cleared.
-- Drop a moving node onto an existing node to merge them. The stationary node keeps its joint and support settings. Existing beam and rope profiles take precedence over exact duplicates. Boundary nodes moved into the interior become ordinary nodes. Bounds and material length limits apply to every affected member; one invalid member blocks the whole move.
+- Drop a moving node onto an existing node to merge them. The stationary node keeps its joint and support settings. Moved elements replace existing elements with the same two endpoints, including elements of another material. Conflicting incoming elements block the whole move. Boundary nodes moved into the interior become ordinary nodes. Bounds and material length limits apply to every affected member; one invalid member blocks the whole move.
 - Double-click a node to switch between rigid and hinged connections. On touch, tap the node. Boundary nodes also switch between fixed and pinned supports; use the inspector to edit connection and support settings separately. Right-click an element or selection for its context menu.
 - Press `Delete` or `Backspace` to remove the selection. Removing a node also removes connected members; an eligible straight pair of same-profile beams can join into one beam within the length limit. Use Undo to restore the change.
 - Use the size control to resize the board. Width must be even and between 12 and 64 units; height must be even and between 8 and 40 units.
@@ -52,7 +54,7 @@ To join copies, align an outer endpoint of the preview with an existing endpoint
 
 ![Copying one selected frame and pasting it twice, with each copy joined to the previous frame at a shared outer endpoint](images/frame-lab-copy-repeat.gif)
 
-Each completed paste is one Undo step and one automatic save. The new group becomes selected. Exact duplicates retain the existing elements and profiles; a paste consisting entirely of duplicates creates no new history step. Existing nodes keep their connection and support settings. A copied boundary support becomes an ordinary joint when placed inside the board. Partial beam overlaps or out-of-bounds placements block the whole paste and show an explanation. The preview also shows the resulting cost.
+Each completed paste is one Undo step and one automatic save. The new group becomes selected. Pasted elements replace existing elements with the same two endpoints, including elements of another material. Conflicting incoming elements block the whole paste. A paste that leaves the project unchanged creates no new history step. Existing nodes keep their connection and support settings. A copied boundary support becomes an ordinary joint when placed inside the board. Partial beam overlaps or out-of-bounds placements block the whole paste and show an explanation. The preview also shows the resulting cost.
 
 The group clipboard belongs to the current page. It supports repeated pastes and survives loading another design in that page, but reloading or closing the page clears it. Use **Project text** to transfer a complete design between devices or browser tabs.
 
@@ -113,6 +115,8 @@ Hold **Rope**, right-click it, or focus it and press Down to choose Standard or 
 The latest design is saved automatically in this browser and restored on the next visit. Browser storage is separate per device and browser, and clearing site data removes the saved design. Use **Project text** to copy a backup or move a design to another device. Importing project text replaces the current design only when the text is valid; successful imports can be undone.
 
 Project text is JSON, format version 4. Coordinates are measured from the board center, with positive Y pointing up. Beam and rope entries contain four coordinates followed by their profile. Ropes use `s` (Standard) or `h` (Heavy). Format 3 projects remain importable: their coordinate-only rope entries become Standard ropes. New exports use format 4 and contain the original design, not simulation damage or prices; older app releases cannot open the new format.
+
+When opening project text, a share link, or a saved project, duplicate spans keep the element appearing later in the file. Both row order and the order of the `b` and `r` sections count. A warning reports how many replacements occurred. Conflicts created only by splitting beams at nodes remain invalid.
 
 ## Install and play offline
 

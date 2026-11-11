@@ -4,7 +4,7 @@ import { toCentered } from './coordinates';
 import './style.css';
 import branding from './branding.json' with { type: 'json' };
 
-import { translateNodes, translateNodesPreview, key, drawingEndpoint, addMember, PROFILES, ROPE_PROFILES, projectCost, MAX_LENGTH, GAME_VERSION, emptyProject, resizeProject, toggleNode, boundary, cloneProject, exportProject, fromKey, History, importProject, projectChecksumWarning, inside, nodes, type BeamProfile, type RopeProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
+import { translateNodes, translateNodesPreview, key, drawingEndpoint, addMember, PROFILES, ROPE_PROFILES, projectCost, MAX_LENGTH, GAME_VERSION, emptyProject, resizeProject, toggleNode, boundary, cloneProject, exportProject, fromKey, History, importProjectWithWarnings, projectChecksumWarning, inside, nodes, type BeamProfile, type RopeProfile, type JointType, type Material, type Member, type Point, type Project } from './model';
 
 import { example, exampleNames, starterProject, type Example } from './examples';
 
@@ -31,7 +31,7 @@ let sharedProjectLoaded = false;
 async function loadSavedProject(): Promise<Project> {
   try {
     if (location.hash.startsWith('#project=')) {
-      let shared: { project: Project; warning: string | null } | null = null;
+      let shared: { project: Project; warnings: string[]; warning: string | null } | null = null;
       try {
         shared = await decodeShareProject(location.hash.slice('#project='.length));
       } catch (error) {
@@ -44,20 +44,20 @@ async function loadSavedProject(): Promise<Project> {
         if (shared.warning && !confirmChecksumWarning(shared.warning)) restoreNotice = 'Opening the shared project was canceled.';
         else {
           sharedProjectLoaded = true;
-          restoreNotice = shared.warning ? 'Shared project opened after accepting the checksum warning.' : 'Shared project loaded as a local copy.';
+          restoreNotice = [shared.warning ? 'Shared project opened after accepting the checksum warning.' : 'Shared project loaded as a local copy.', ...shared.warnings].join(' ');
           return shared.project;
         }
       }
     }
     const saved = localStorage.getItem(PROJECT_STORAGE_KEY);
     if (saved === null) return starterProject();
-    const project = importProject(saved);
+    const {project,warnings} = importProjectWithWarnings(saved);
     const warning = projectChecksumWarning(saved);
     if (warning && !confirmChecksumWarning(warning)) {
       restoreNotice = 'Opening the saved project was canceled.';
       return starterProject();
     }
-    if (warning) restoreNotice = 'Saved project opened after accepting the checksum warning.';
+    restoreNotice = [warning ? 'Saved project opened after accepting the checksum warning.' : '', ...warnings].filter(Boolean).join(' ');
     return project;
   } catch {
     restoreNotice = 'Saved project could not be restored. The starter project is open.';
@@ -65,7 +65,7 @@ async function loadSavedProject(): Promise<Project> {
   }
 }
 
-async function decodeShareProject(encoded: string): Promise<{ project: Project; warning: string | null }> {
+async function decodeShareProject(encoded: string): Promise<{ project: Project; warnings: string[]; warning: string | null }> {
   if (!encoded || encoded.length > 1_500_000) throw new Error('The project link is empty or too large.');
   // The z: marker identifies the current compressed link format, so obsolete uncompressed links are rejected clearly.
   if (!encoded.startsWith('z:')) throw new Error('Unsupported project link format. Create a new share link from the current version.');
@@ -99,7 +99,7 @@ async function decodeShareProject(encoded: string): Promise<{ project: Project; 
   let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
   const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-  return { project: importProject(text), warning: projectChecksumWarning(text) };
+  return { ...importProjectWithWarnings(text), warning: projectChecksumWarning(text) };
 }
 
 function confirmChecksumWarning(warning: string): boolean {
@@ -1471,7 +1471,7 @@ $('share-link').onclick = async () => {
   } catch (error) { $('import-error').textContent = (error as Error).message; }
 };
 
-$('load').onclick = () => { try { const warning = projectChecksumWarning(textarea.value); if (warning && !confirmChecksumWarning(warning)) return; const p = importProject(textarea.value); if (running) stopSimulation(); commit(p); start = cursor = null; renderer.fit(); lastName = 'Imported structure'; refreshUI(); textDialog.close(); notify(warning ? 'Project opened after accepting the checksum warning.' : 'Project loaded. Your previous design is available with Undo.'); } catch (e) { $('import-error').textContent = (e as Error).message; } };
+$('load').onclick = () => { try { const warning = projectChecksumWarning(textarea.value); if (warning && !confirmChecksumWarning(warning)) return; const {project:p,warnings} = importProjectWithWarnings(textarea.value); if (running) stopSimulation(); commit(p); start = cursor = null; renderer.fit(); lastName = 'Imported structure'; refreshUI(); textDialog.close(); notify([warning ? 'Project opened after accepting the checksum warning.' : 'Project loaded. Your previous design is available with Undo.', ...warnings].join(' ')); } catch (e) { $('import-error').textContent = (e as Error).message; } };
 
 const guideDialog = $<HTMLDialogElement>('guide-dialog'); $('guide').onclick = () => guideDialog.showModal(); $('close-guide').onclick = () => guideDialog.close();
 

@@ -20,7 +20,7 @@ export type JointType = 'x' | 'o';
 export type Material = 'beam' | 'rope';
 export interface Project { size: Point; beams: Beam[]; ropes: Rope[]; joints: Record<string, JointType>; anchors: Record<string, JointType> }
 // Bump this after every application change; the status bar and exported project metadata use it.
-export const GAME_VERSION = '0.7.1';
+export const GAME_VERSION = '0.8.0';
 export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 10, rope: 20 };
 
 /** Resolve a snapped drawing target without changing import/member validation. */
@@ -62,6 +62,26 @@ export function resizeProject(project: Project, size: Point): Project {
 }
 export const cloneProject = (p: Project): Project => structuredClone(p);
 export function canonical(m: Member): Member { return m[0] < m[2] || (m[0] === m[2] && m[1] <= m[3]) ? [...m] : [m[2], m[3], m[0], m[1]]; }
+/** Direction-independent identity shared by beams and ropes. */
+export const memberKey = (m: Member): string => canonical(m).join(',');
+
+/** Reject ambiguous incoming groups and duplicates created by beam splitting. */
+export function assertUniqueMembers(p: Pick<Project, 'beams' | 'ropes'>): void {
+  const seen = new Set<string>();
+  // Both material lists share one namespace: a span can carry only one element.
+  for (const member of [...p.beams, ...p.ropes]) {
+    const id = memberKey(member.endpoints);
+    if (seen.has(id)) throw new Error('Duplicate or overlapping elements are not allowed.');
+    seen.add(id);
+  }
+}
+
+/** Replace exact stationary spans; keep incoming conflicts visible for invalid previews. */
+export function replaceMembers(p: Project, incoming: Pick<Project, 'beams' | 'ropes'>): void {
+  const ids = new Set([...incoming.beams, ...incoming.ropes].map(m => memberKey(m.endpoints)));
+  p.beams = [...p.beams.filter(b => !ids.has(memberKey(b.endpoints))), ...incoming.beams];
+  p.ropes = [...p.ropes.filter(r => !ids.has(memberKey(r.endpoints))), ...incoming.ropes];
+}
 const compare = (a: number[], b: number[]) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] - b[i]; return 0; };
 export function nodes(p: Project): Map<string, Point> { const out = new Map<string, Point>(); for (const m of [...p.beams.map(b => b.endpoints), ...p.ropes.map(r => r.endpoints)]) { const a: Point = [m[0], m[1]], b: Point = [m[2], m[3]]; out.set(key(a), a); out.set(key(b), b); } return out; }
 export function pointOnMember(p: Point, m: Member, interior = false): boolean {
@@ -93,7 +113,7 @@ export function normalizeProject(source: Project): Project {
     }
   }
   p.beams = split.sort((a, b) => compare(a.endpoints, b.endpoints)); p.ropes = p.ropes.map(r => ({ ...r, endpoints: canonical(r.endpoints) })).sort((a,b) => compare(a.endpoints,b.endpoints));
-  for (const list of [p.beams.map(b => b.endpoints), p.ropes.map(r => r.endpoints)]) { const seen = new Set<string>(); for (const m of list) { const id = m.join(','); if (seen.has(id)) throw new Error('Duplicate or overlapping elements are not allowed.'); seen.add(id); } }
+  assertUniqueMembers(p);
   const active = nodes(p);
   for (const id of Object.keys(p.joints)) if (!active.has(id) || p.joints[id] === 'x') delete p.joints[id];
   for (const id of Object.keys(p.anchors)) if (!active.has(id) || !boundary(fromKey(id), p.size) || p.anchors[id] === 'x') delete p.anchors[id];
@@ -105,15 +125,22 @@ export function validateMember(p: Project, material: Material, m: Member): strin
   if (l < 1e-8) return 'Choose a different endpoint.';
   if (l > MAX_LENGTH[material] + 1e-8) return `Maximum ${material} length is ${MAX_LENGTH[material]} grid units.`;
   const list = material === 'beam' ? p.beams.map(b => b.endpoints) : p.ropes.map(r => r.endpoints);
-  const id = canonical(m).join(',');
-  if (list.some(e => canonical(e).join(',') === id)) return 'This element already exists.';
-  if (material === 'beam' && list.some(e => membersOverlap(m, e))) return 'This beam overlaps an existing beam.';
+  const id = memberKey(m);
+  if (material === 'beam' && list.some(e => memberKey(e) !== id && membersOverlap(m, e))) return 'This beam overlaps an existing beam.';
+  // Exact replacement happens before splitting. Any later collision is invalid,
+  // including a new beam segment that would duplicate a rope's complete span.
+  const candidate = cloneProject(p);
+  replaceMembers(candidate, material === 'beam' ? {beams:[{endpoints:m,profile:'s'}],ropes:[]}
+    : {beams:[],ropes:[{endpoints:m,profile:'s'}]});
+  try { normalizeProject(candidate); } catch (error) { return (error as Error).message; }
   return null;
 }
 export function addMember(p: Project, material: Material, m: Member, type: JointType = 'x', profile: BeamProfile = 's'): Project {
   const error = validateMember(p, material, m); if (error) throw new Error(error);
   const next = cloneProject(p), before = nodes(p);
-  if (material === 'beam') next.beams.push({ endpoints: m, profile }); else { if (profile === 'l') throw new Error('Rope profile must be s or h.'); next.ropes.push({ endpoints: m, profile }); }
+  if (material === 'rope' && profile === 'l') throw new Error('Rope profile must be s or h.');
+  replaceMembers(next, material === 'beam' ? {beams:[{endpoints:m,profile}],ropes:[]}
+    : {beams:[],ropes:[{endpoints:m,profile:profile as RopeProfile}]});
   for (const pt of [[m[0], m[1]], [m[2], m[3]]] as Point[]) if (!before.has(key(pt)) && type === 'o') {
     next.joints[key(pt)] = 'o'; if (boundary(pt, next.size)) next.anchors[key(pt)] = 'o';
   }
@@ -144,20 +171,17 @@ function movedNodesPreview(project: Project, moves: readonly NodeMove[]): Projec
     ...(destinations.get(key([m[0],m[1]])) ?? [m[0],m[1]]),
     ...(destinations.get(key([m[2],m[3]])) ?? [m[2],m[3]]),
   ] as Member);
-  // Stationary members retain their profiles when a move produces duplicates.
   const touchesSource = (m: Member) => destinations.has(key([m[0],m[1]])) || destinations.has(key([m[2],m[3]]));
-  const seenBeams = new Set<string>(), seenRopes = new Set<string>();
-  next.beams = [...project.beams].sort((a,b) => Number(touchesSource(a.endpoints)) - Number(touchesSource(b.endpoints)))
-    .flatMap(b => {
-      const endpoints = relocate(b.endpoints), id = endpoints.join(',');
-      if (!length(endpoints) || seenBeams.has(id)) return [];
-      seenBeams.add(id); return [{ endpoints, profile: b.profile }];
-    });
-  next.ropes = [...project.ropes].sort((a,b) => Number(touchesSource(a.endpoints)) - Number(touchesSource(b.endpoints))).flatMap(r => {
-    const endpoints = relocate(r.endpoints), id = endpoints.join(',');
-    if (!length(endpoints) || seenRopes.has(id)) return [];
-    seenRopes.add(id); return [{ endpoints, profile: r.profile }];
-  });
+  // Separate changed members from stationary spans before applying the common
+  // displacement. Collapsed members vanish; incoming spans replace either material.
+  const relocated = <T extends Beam | Rope>(members: T[]): T[] => members
+    .filter(member => touchesSource(member.endpoints))
+    .map(member => ({...member,endpoints:relocate(member.endpoints)}))
+    .filter(member => length(member.endpoints) > 0);
+  const incoming = {beams:relocated(project.beams),ropes:relocated(project.ropes)};
+  next.beams = next.beams.filter(b => !touchesSource(b.endpoints));
+  next.ropes = next.ropes.filter(r => !touchesSource(r.endpoints));
+  replaceMembers(next,incoming);
   for (const [sourceId,target] of destinations) {
     const targetId = key(target);
     if (stationary.has(targetId)) continue;
@@ -202,6 +226,7 @@ function moveNodes(project: Project, moves: readonly NodeMove[]): Project {
     if (!target.every(Number.isSafeInteger) || !inside(target,project.size)) throw new Error('Stay inside the build area.');
   }
   const next = movedNodesPreview(project,moves);
+  assertUniqueMembers(next);
   for (const [material,list] of [['beam',next.beams.map(b => b.endpoints)],['rope',next.ropes.map(r => r.endpoints)]] as const) {
     for (let i=0;i<list.length;i++) {
       if (length(list[i]) > MAX_LENGTH[material]+1e-8) throw new Error(`Maximum ${material} length is ${MAX_LENGTH[material]} grid units.`);
@@ -273,6 +298,11 @@ export function projectChecksumWarning(text: string): string | null {
 }
 
 export function importProject(text: string): Project {
+  return importProjectWithWarnings(text).project;
+}
+
+/** Read file order before normalization so later rows replace earlier exact spans. */
+export function importProjectWithWarnings(text: string): { project: Project; warnings: string[] } {
   if (new TextEncoder().encode(text).length > 1024 * 1024) throw new Error('Project text must be smaller than 1 MiB.');
   let data: unknown; try { data = JSON.parse(text); } catch { throw new Error('Invalid JSON. Check commas, brackets, and quotation marks.'); }
   const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -291,7 +321,10 @@ export function importProject(text: string): Project {
     return fromCentered([x, y], p.size);
   };
   const rows = (name: string): unknown[][] => { if (objects[name] === undefined) return []; if (!Array.isArray(objects[name]) || !(objects[name] as unknown[]).every(Array.isArray)) throw new Error(`${name} must be an array of rows.`); return objects[name] as unknown[][]; };
-  for (const name of ['b', 'r'] as const) for (const row of rows(name)) {
+  let replacements = 0;
+  const imported = new Map<string, {material:'beam';member:Beam} | {material:'rope';member:Rope}>();
+  // Object.keys preserves the textual order of these nonnumeric material keys.
+  for (const name of Object.keys(objects).filter((name): name is 'b' | 'r' => name === 'b' || name === 'r')) for (const row of rows(name)) {
     if (row.length !== (name === 'b' || meta.formatVersion === 4 ? 5 : 4)) throw new Error(name === 'b' ? 'Beams must be [x1, y1, x2, y2, profile].' : 'Ropes need four coordinates in format 3, or four coordinates and a profile in format 4.');
     if (name === 'b' && !['l', 's', 'h'].includes(row[4] as string)) throw new Error('Beam profile must be l, s, or h.');
     if (name === 'r' && meta.formatVersion === 4 && !['s', 'h'].includes(row[4] as string)) throw new Error('Rope profile must be s or h.');
@@ -299,9 +332,16 @@ export function importProject(text: string): Project {
     if (!inside([m[0], m[1]], p.size) || !inside([m[2], m[3]], p.size)) throw new Error('An element is outside the build area.');
     const material = name === 'b' ? 'beam' : 'rope';
     if (length(m) <= 0 || length(m) > MAX_LENGTH[material] + 1e-8) throw new Error(`${material} length must be greater than 0 and at most ${MAX_LENGTH[material]} grid units.`);
-    if (name === 'b') p.beams.push({ endpoints: m, profile: row[4] as BeamProfile }); else p.ropes.push({ endpoints: m, profile: meta.formatVersion === 3 ? 's' : row[4] as RopeProfile });
+    const id = memberKey(m);
+    if (imported.has(id)) replacements++;
+    imported.set(id, name === 'b' ? {material:'beam',member:{endpoints:m,profile:row[4] as BeamProfile}}
+      : {material:'rope',member:{endpoints:m,profile:meta.formatVersion === 3 ? 's' : row[4] as RopeProfile}});
   }
-  for (const list of [p.beams.map(b => b.endpoints), p.ropes.map(r => r.endpoints)]) if (new Set(list.map(m => canonical(m).join(','))).size !== list.length) throw new Error('Duplicate elements are not allowed.');
+  // Materialize only the final row for each span. Map lookup keeps duplicate
+  // resolution linear even for large imports; normalization sorts the result.
+  for (const entry of imported.values()) {
+    if (entry.material === 'beam') p.beams.push(entry.member); else p.ropes.push(entry.member);
+  }
   const active = nodes(normalizeProject(p));
   for (const name of ['j', 'a'] as const) {
     const settings = name === 'j' ? p.joints : p.anchors;
@@ -314,7 +354,7 @@ export function importProject(text: string): Project {
       settings[id] = row[2] as JointType;
     }
   }
-  return normalizeProject(p);
+  return {project:normalizeProject(p), warnings:replacements ? [`Warning: ${replacements} duplicate element${replacements === 1 ? ' was' : 's were'} replaced. Elements appearing later in the file were kept.`] : []};
 }
 export class History {
   private past: Project[] = []; private future: Project[] = [];
