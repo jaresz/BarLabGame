@@ -1,5 +1,8 @@
 # Larger Seri Wawasan: rejected stability trials
 
+**Historical report (0.4.79):** the diagnosis and proposal below describe the separate-particle solver. Version 0.5.0 implements shared translational points. See the [current comparison](../../solvers/shared-point.md): the small gallery example now passes all criteria, while none of these larger candidates does. [measurements.json](measurements.json) contains the rerun with shared points; [separate-particles-baseline.json](separate-particles-baseline.json) preserves the original values shown below.
+
+
 The requested larger replacement **has not passed acceptance and is not in the gallery**. The gallery keeps the existing 24 × 14 design and its documented limitations. No application geometry, material, gravity, iteration count, initial imperfection, project format or game version was changed in this experiment.
 
 ![Actual geometry of the three rejected 48 by 32 designs](candidates.svg)
@@ -34,7 +37,7 @@ Acceptance requires no fractures, peak displacement at most 2.5 units, exactly s
 | Fork: Heavy front | 0 / 6 | 0.700–0.967 s | 25.021 | 17–34 | All six runs |
 | Wider lattice | 0 / 6 | 0.450–0.758 s | 25.445 | 40–100 | All six runs |
 
-All support particles remained exactly fixed, and all trajectories remained finite. Large displacement and boundary contacts occur after the first structural failures; they are not successful load paths. Exact values are in [measurements.json](measurements.json).
+All support particles remained exactly fixed, and all trajectories remained finite. Large displacement and boundary contacts occur after the first structural failures; they are not successful load paths. Exact historical values are in [separate-particles-baseline.json](separate-particles-baseline.json).
 
 Exploration also varied pylon height and inclination, two- versus four-unit lattice panels, two- to four-unit deck depth, bank width, independent front/rear rope profiles and joint alignment. Short screening runs stopped at the first violated criterion. Those screens are not included as complete acceptance trajectories, and the saved three-candidate matrix is not claimed to exhaust every possible geometry.
 
@@ -62,4 +65,4 @@ $env:FRAME_LAB_CHROMIUM = 'C:\Program Files\Google\Chrome\Application\chrome.exe
 npm run test:browser
 ```
 
-The first command regenerates the rejected-candidate report from the three checked-in JSON designs. The second refreshes the gallery measurements. Passing the application's regression suite does not change any failed candidate into an accepted design.
+The first command regenerates the current-engine candidate report from the three checked-in JSON designs. The second refreshes the gallery measurements. Passing the application's regression suite does not change any failed candidate into an accepted design.

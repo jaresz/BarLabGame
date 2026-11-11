@@ -1,0 +1,371 @@
+{
+  "gameVersion": "0.4.79",
+  "formatVersion": 4,
+  "seconds": 20,
+  "dt": 0.008333333333333333,
+  "gravity": 9.81,
+  "iterations": 12,
+  "acceptanceDisplacement": 2.5,
+  "runs": [
+    {
+      "name": "fork-standard-front",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 24.834544629747793,
+      "newBoundaryContacts": 477413,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.975,
+      "brokenMembers": 15,
+      "stable": false
+    },
+    {
+      "name": "fork-standard-front",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 24.834727464245653,
+      "newBoundaryContacts": 477778,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.975,
+      "brokenMembers": 15,
+      "stable": false
+    },
+    {
+      "name": "fork-standard-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 25.015802821291118,
+      "newBoundaryContacts": 731155,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.7083333333333334,
+      "brokenMembers": 32,
+      "stable": false
+    },
+    {
+      "name": "fork-standard-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 25.015899902608588,
+      "newBoundaryContacts": 732910,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.7083333333333334,
+      "brokenMembers": 32,
+      "stable": false
+    },
+    {
+      "name": "fork-standard-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 25.13446271236625,
+      "newBoundaryContacts": 563108,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.6916666666666667,
+      "brokenMembers": 30,
+      "stable": false
+    },
+    {
+      "name": "fork-standard-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 25.134607894794854,
+      "newBoundaryContacts": 563176,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.6916666666666667,
+      "brokenMembers": 30,
+      "stable": false
+    },
+    {
+      "name": "fork-heavy-front",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 25.020506416827537,
+      "newBoundaryContacts": 593895,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9666666666666667,
+      "brokenMembers": 17,
+      "stable": false
+    },
+    {
+      "name": "fork-heavy-front",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 25.020647857788216,
+      "newBoundaryContacts": 593834,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9666666666666667,
+      "brokenMembers": 17,
+      "stable": false
+    },
+    {
+      "name": "fork-heavy-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 24.924542953857035,
+      "newBoundaryContacts": 655263,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.7,
+      "brokenMembers": 34,
+      "stable": false
+    },
+    {
+      "name": "fork-heavy-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 24.92470896549439,
+      "newBoundaryContacts": 655067,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.7,
+      "brokenMembers": 34,
+      "stable": false
+    },
+    {
+      "name": "fork-heavy-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 24.873116138942834,
+      "newBoundaryContacts": 681670,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9249999999999999,
+      "brokenMembers": 33,
+      "stable": false
+    },
+    {
+      "name": "fork-heavy-front",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 189,
+      "ropes": 19,
+      "maximumDisplacement": 24.87326820601921,
+      "newBoundaryContacts": 681605,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9249999999999999,
+      "brokenMembers": 33,
+      "stable": false
+    },
+    {
+      "name": "wide-lattice",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 372,
+      "ropes": 18,
+      "maximumDisplacement": 24.760529770686784,
+      "newBoundaryContacts": 280026,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.7583333333333333,
+      "brokenMembers": 40,
+      "stable": false
+    },
+    {
+      "name": "wide-lattice",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 372,
+      "ropes": 18,
+      "maximumDisplacement": 24.760567482685964,
+      "newBoundaryContacts": 280102,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.7583333333333333,
+      "brokenMembers": 40,
+      "stable": false
+    },
+    {
+      "name": "wide-lattice",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 372,
+      "ropes": 18,
+      "maximumDisplacement": 25.444566011045943,
+      "newBoundaryContacts": 652625,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.45,
+      "brokenMembers": 100,
+      "stable": false
+    },
+    {
+      "name": "wide-lattice",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 372,
+      "ropes": 18,
+      "maximumDisplacement": 25.22213881744506,
+      "newBoundaryContacts": 644922,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.45,
+      "brokenMembers": 92,
+      "stable": false
+    },
+    {
+      "name": "wide-lattice",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 372,
+      "ropes": 18,
+      "maximumDisplacement": 24.342447898527922,
+      "newBoundaryContacts": 598164,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.6416666666666666,
+      "brokenMembers": 99,
+      "stable": false
+    },
+    {
+      "name": "wide-lattice",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        48,
+        32
+      ],
+      "beams": 372,
+      "ropes": 18,
+      "maximumDisplacement": 24.340812978121264,
+      "newBoundaryContacts": 584031,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.6416666666666666,
+      "brokenMembers": 97,
+      "stable": false
+    }
+  ]
+}

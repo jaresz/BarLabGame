@@ -1,0 +1,489 @@
+{
+  "gameVersion": "0.4.79",
+  "seconds": 20,
+  "dt": 0.008333333333333333,
+  "gravity": 9.81,
+  "iterations": 12,
+  "runs": [
+    {
+      "name": "ponteLuisI",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        16
+      ],
+      "beams": 69,
+      "ropes": 0,
+      "maximumDisplacement": 1.1078588916142105,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "ponteLuisI",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        16
+      ],
+      "beams": 69,
+      "ropes": 0,
+      "maximumDisplacement": 1.10800076573977,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "ponteLuisI",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        16
+      ],
+      "beams": 69,
+      "ropes": 0,
+      "maximumDisplacement": 0.9952369079487757,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "ponteLuisI",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        16
+      ],
+      "beams": 69,
+      "ropes": 0,
+      "maximumDisplacement": 0.9953905325543281,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "ponteLuisI",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        16
+      ],
+      "beams": 69,
+      "ropes": 0,
+      "maximumDisplacement": 1.0212847920478447,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "ponteLuisI",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        16
+      ],
+      "beams": 69,
+      "ropes": 0,
+      "maximumDisplacement": 1.0214774735260672,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "rtcnKolowo",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        28,
+        20
+      ],
+      "beams": 65,
+      "ropes": 6,
+      "maximumDisplacement": 1.3934519041075335,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "rtcnKolowo",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        28,
+        20
+      ],
+      "beams": 65,
+      "ropes": 6,
+      "maximumDisplacement": 1.393388761793767,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "rtcnKolowo",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        28,
+        20
+      ],
+      "beams": 65,
+      "ropes": 6,
+      "maximumDisplacement": 1.6089384891780565,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "rtcnKolowo",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        28,
+        20
+      ],
+      "beams": 65,
+      "ropes": 6,
+      "maximumDisplacement": 1.6089578561432187,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "rtcnKolowo",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        28,
+        20
+      ],
+      "beams": 65,
+      "ropes": 6,
+      "maximumDisplacement": 1.624855913819792,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "rtcnKolowo",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        28,
+        20
+      ],
+      "beams": 65,
+      "ropes": 6,
+      "maximumDisplacement": 1.6249131690971685,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 69,
+      "ropes": 5,
+      "maximumDisplacement": 3.075206013562113,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 69,
+      "ropes": 5,
+      "maximumDisplacement": 3.0760539140809886,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 69,
+      "ropes": 5,
+      "maximumDisplacement": 3.249358005277213,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9166666666666666,
+      "brokenMembers": 1,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 69,
+      "ropes": 5,
+      "maximumDisplacement": 3.25025023156278,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": 0.9166666666666666,
+      "brokenMembers": 1,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 69,
+      "ropes": 5,
+      "maximumDisplacement": 3.3910939951879753,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "seriWawasan",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        24,
+        14
+      ],
+      "beams": 69,
+      "ropes": 5,
+      "maximumDisplacement": 3.392378764129135,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": false
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.1892291442455554,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.187756705424248,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.118070232051136,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.1189957305686697,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.1340963468202727,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    },
+    {
+      "name": "goldenGate",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "size": [
+        32,
+        18
+      ],
+      "beams": 36,
+      "ropes": 15,
+      "maximumDisplacement": 1.1355367757511272,
+      "newBoundaryContacts": 0,
+      "maximumSupportMotion": 0,
+      "firstBreak": null,
+      "brokenMembers": 0,
+      "stable": true
+    }
+  ]
+}

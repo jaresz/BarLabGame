@@ -24,11 +24,11 @@ The 24 × 14 board uses a forward-inclined lattice pylon, a shallow triangulated
 
 The real bridge's asymmetric cable-stayed design and inclined pylon are described in [CIDB's Beautiful Bridges](https://www.cidb.gov.my/wp-content/uploads/2022/11/CIDB-full-layout-12.54pm-lowres_compressed.pdf). The game's lattice pylon and deepened deck deliberately simplify the real structure's materials and cross-sections.
 
-This example **still does not meet the full stability criteria**. Reinforcement reduces the worst displacement from 8.896 to 3.393 units and eliminates new ground contacts. However, a left-start Serpentine run breaks one rope at about 0.92 seconds, and every schedule exceeds the 2.5-unit displacement limit. It is not advertised as stable.
+Since version 0.5.0, this example **meets the full stability criteria in all six runs**. Shared translational particles reduce the worst displacement from 3.393 to 2.138 units and eliminate the two left-start rope fractures, with no new boundary contacts. Its geometry and material profiles are unchanged. See the [shared-point comparison](../solvers/shared-point.md).
 
 ## Golden Gate Bridge
 
-The original 32 × 18 geometry, curve-defining cable segments, hanger attachments and supports are unchanged. Main-cable segments use Heavy rope; vertical hangers remain Standard to avoid unnecessary suspended mass. All beams use the existing Heavy section. The peak displacement falls from 1.343 to 1.190 units, with no breaks or new boundary contacts in any of the six runs.
+The original 32 × 18 geometry, curve-defining cable segments, hanger attachments and supports are unchanged. Main-cable segments use Heavy rope; vertical hangers remain Standard to avoid unnecessary suspended mass. All beams use the existing Heavy section. The peak displacement falls from 1.343 units before Heavy reinforcement to 1.190 in 0.4.79, then to 1.005 with shared particles in 0.5.0, with no breaks or new boundary contacts in any of the six runs.
 
 ## Rope profiles and limitations
 
@@ -36,7 +36,7 @@ Heavy models four times the rope cross-sectional area: line density rises from 0
 
 ## Twenty-second checks
 
-All runs use the same physics as normal play: gravity 9.81, 12 iterations per 1/120-second step, profile-specific mass/stiffness and unchanged breaking parameters, and the controlled initial horizontal imperfection. Since version 0.4.78, the global rope length limit is 20 units; the beam limit remains six. Standard properties and solver accuracy are unchanged; Heavy is an explicit additional section.
+All runs use the same physics as normal play: gravity 9.81, 12 iterations per 1/120-second step, profile-specific mass/stiffness and unchanged breaking parameters, and the controlled initial horizontal imperfection. Since version 0.4.78, the global rope length limit is 20 units; the beam limit remains six. Standard material properties are unchanged; Heavy is an explicit additional section. Version 0.5.0 improves joint translation by using a shared physical particle rather than iterated endpoint weld constraints.
 
 Each example is tested with Basic XPBD, Serpentine starting left, and Serpentine starting right. Every schedule is run separately with perturbation amplitude +0.001 and −0.001, making six trajectories per example (24 trajectories total). Every particle is checked at initialization and after each of 2,400 steps, including interiors of beams and ropes.
 
@@ -44,12 +44,12 @@ Stability requires no broken members at any time, a maximum displacement of at m
 
 | Example | Stable in all six runs | Peak displacement across runs | Breaking and boundary contacts |
 | --- | --- | ---: | --- |
-| Ponte Luís I | Yes | 1.109 units or less | No breaks or new contacts |
-| RTCN Kołowo | Yes | 1.625 units or less | No breaks or new contacts |
-| Golden Gate Bridge | Yes | 1.190 units or less | No breaks or new contacts |
-| Seri Wawasan Bridge | No | 3.393 units or less | A rope breaks at about 0.92 s with a left Serpentine start; no new contacts |
+| Ponte Luís I | Yes | 0.442 units or less | No breaks or new contacts |
+| RTCN Kołowo | Yes | 0.923 units or less | No breaks or new contacts |
+| Golden Gate Bridge | Yes | 1.005 units or less | No breaks or new contacts |
+| Seri Wawasan Bridge | Yes | 2.138 units or less | No breaks or new contacts |
 
-The values were measured with version 0.4.79. Exact results for each schedule and disturbance sign are stored in [measurements.json](measurements.json). No support particle moved in any run. Ponte Luís I, Kołowo and Golden Gate meet all criteria. Seri Wawasan remains an unmet acceptance criterion; passing the regression suite does not imply it is stable. The original bridge measurements and format-3 designs are preserved in [rope-baseline.json](rope-baseline.json).
+The values describe the shared-particle solver released as version 0.5.0. The report metadata uses the same release version. Exact results for each schedule and disturbance sign are stored in [measurements.json](measurements.json). No support particle moved in any run. All four examples meet all criteria. The previous shared-point-free measurements are preserved in [shared-joints-baseline.json](shared-joints-baseline.json), and the original bridge measurements and format-3 designs in [rope-baseline.json](rope-baseline.json).
 
 Reproduce the report from the project root:
 
@@ -57,9 +57,11 @@ Reproduce the report from the project root:
 node --import tsx scripts/measure-landmarks.ts
 ```
 
-`npm test` independently runs the same checks, requiring Ponte Luís I, RTCN Kołowo and Golden Gate to remain stable in every variant, and Seri Wawasan to remain finite, free of new boundary contacts and below its improved 3.4-unit regression ceiling. The ceiling is not a relaxation of the 2.5-unit acceptance criterion. The browser suite checks all eight gallery cards, actual thumbnail geometry, canvas dimensions, simulation startup, JSON round trips, Undo, and access on desktop and mobile.
+`npm test` independently runs the same full checks for all four examples. There is no longer an exception allowing Seri Wawasan to fracture or exceed 2.5 units. The browser suite checks all eight gallery cards, actual thumbnail geometry, canvas dimensions, simulation startup, JSON round trips, Undo, and access on desktop and mobile.
 
-## Unsuccessful reinforcement trials and proposed next step
+## Historical reinforcement trials (before shared particles)
+
+The measurements and pretension proposal below predate 0.5.0. Shared translational points subsequently stabilized the existing small example without pretension. The larger candidates still fail acceptance; see the [current solver report](../solvers/shared-point.md).
 
 Trials used the normal 12 iterations and gravity 9.81. The following exploratory positive-perturbation, right-start Serpentine trajectories were measured for the full twenty seconds (these are not the complete six-variant acceptance matrix):
 

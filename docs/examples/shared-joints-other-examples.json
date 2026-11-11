@@ -1,0 +1,872 @@
+{
+  "beforeVersion": "0.4.79",
+  "afterVersion": "0.5.0",
+  "seconds": 20,
+  "dt": 0.008333333333333333,
+  "runs": [
+    {
+      "name": "bridge",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "bridge",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 6.152266326397874,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      },
+      "after": {
+        "name": "bridge",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 3.979830846871605,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      }
+    },
+    {
+      "name": "bridge",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "bridge",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 6.152272038766312,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      },
+      "after": {
+        "name": "bridge",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 3.9797351834702894,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      }
+    },
+    {
+      "name": "bridge",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 7.56025348848521,
+        "newBoundaryContacts": 2600,
+        "maximumSupportMotion": 0,
+        "firstBreak": 1.175,
+        "brokenMembers": 3,
+        "stable": false
+      },
+      "after": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 4.113049679906463,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      }
+    },
+    {
+      "name": "bridge",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 7.560324842651041,
+        "newBoundaryContacts": 2599,
+        "maximumSupportMotion": 0,
+        "firstBreak": 1.175,
+        "brokenMembers": 3,
+        "stable": false
+      },
+      "after": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 4.113020360511161,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      }
+    },
+    {
+      "name": "bridge",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 7.623565329050259,
+        "newBoundaryContacts": 2585,
+        "maximumSupportMotion": 0,
+        "firstBreak": 1.0583333333333333,
+        "brokenMembers": 2,
+        "stable": false
+      },
+      "after": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 3.9487182966004606,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      }
+    },
+    {
+      "name": "bridge",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 7.623561125396917,
+        "newBoundaryContacts": 2585,
+        "maximumSupportMotion": 0,
+        "firstBreak": 1.0583333333333333,
+        "brokenMembers": 2,
+        "stable": false
+      },
+      "after": {
+        "name": "bridge",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 31,
+        "ropes": 0,
+        "maximumDisplacement": 3.948676685367072,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": false
+      }
+    },
+    {
+      "name": "eiffel",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "eiffel",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.7549687839272551,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "eiffel",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.34540566831939373,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "eiffel",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "eiffel",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.754968018346048,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "eiffel",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.3454288579077636,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "eiffel",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 1.0188694516837173,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.35139444384195634,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "eiffel",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 1.0186799294118065,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.3514417484851618,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "eiffel",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.7714994509243193,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.3532800383642474,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "eiffel",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.7715374551126001,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "eiffel",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          18,
+          32
+        ],
+        "beams": 38,
+        "ropes": 0,
+        "maximumDisplacement": 0.3533042659005682,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "sydneyHarbour",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 1.2296556952539324,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 0.5325735906467992,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "sydneyHarbour",
+      "options": {
+        "solver": "original",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 1.2296931295766806,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "original",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 0.532603887509622,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "sydneyHarbour",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 1.124365838270831,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 0.5282783355290973,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "sydneyHarbour",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": false,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 1.1243503742245944,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": false,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 0.5283542420085416,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "sydneyHarbour",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": 0.001
+      },
+      "before": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 1.1347689163644388,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": 0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 0.5396550141401656,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    },
+    {
+      "name": "sydneyHarbour",
+      "options": {
+        "solver": "serpentine",
+        "serpentineFromRight": true,
+        "initialPerturbation": -0.001
+      },
+      "before": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 1.1347313683132387,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      },
+      "after": {
+        "name": "sydneyHarbour",
+        "options": {
+          "solver": "serpentine",
+          "serpentineFromRight": true,
+          "initialPerturbation": -0.001
+        },
+        "size": [
+          32,
+          18
+        ],
+        "beams": 46,
+        "ropes": 0,
+        "maximumDisplacement": 0.5395868867801735,
+        "newBoundaryContacts": 0,
+        "maximumSupportMotion": 0,
+        "firstBreak": null,
+        "brokenMembers": 0,
+        "stable": true
+      }
+    }
+  ]
+}

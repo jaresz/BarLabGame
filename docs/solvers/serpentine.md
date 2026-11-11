@@ -61,7 +61,7 @@ The left-start order is **b1, b2, b3, b4**; the right-start order is **b3, b2, b
 
 ## 3. Change the reference at joint C
 
-The b1–b3 endpoints at C are separate particles joined by constraints, as described in [Basic XPBD Solver](original.md#1-convert-beams-to-particles-and-constraints). The first beam at C acts as the reference for the other angle constraints.
+The b1–b3 endpoints at C share one translational particle, as described in [Basic XPBD Solver](original.md#1-convert-beams-to-particles-and-constraints). The first beam at C acts as the reference for the other angle constraints.
 
 - With a left start, **b1** is the reference.
 - With a right start, **b3** is the reference.
@@ -82,7 +82,9 @@ The P–Q correction still uses Δλ = (−C − αλ)/(Σ wi |∇i C|² + α). 
 
 A right-start run is not necessarily the exact mirror image of a left-start run. The scan does not reverse particle indexing within every beam or all other discretization details. Randomizing the starting side distributes the two schedules across runs; it does not remove order dependence or guarantee that the structure stays upright.
 
-## Animation
+## Historical animation
+
+The animation and numeric trajectories below predate 0.5.0. Both current solvers use [shared translational particles](shared-point.md), which change the measured response.
 
 For a measured comparison of braced and unbraced columns, including the effect of 12 versus 120 iterations, see [Stability, Symmetry, and Iteration Count](stability.md).
 

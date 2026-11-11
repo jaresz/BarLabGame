@@ -2,7 +2,7 @@
 
 [All solvers and labels A–E](README.md) · [Serpentine](serpentine.md)
 
-Basic XPBD Solver (internal ID: original) preserves the game's established behavior. It uses extended position-based dynamics (XPBD): instead of finding the global equilibrium of the whole structure at once, it repeatedly adjusts particle positions to satisfy length and angle constraints. Neighboring corrections affect one another, so a finite iteration count leaves some dependence on processing order.
+Basic XPBD Solver (internal ID: original) retains the game's established constraint order. It uses extended position-based dynamics (XPBD): instead of finding the global equilibrium of the whole structure at once, it repeatedly adjusts particle positions to satisfy length and angle constraints. Neighboring corrections affect one another, so a finite iteration count leaves some dependence on processing order.
 
 ![Tower with nodes A–E and beams b1–b4](../images/solvers/tower.png)
 
@@ -10,11 +10,11 @@ In the shared example, **b1 = DC**, **b2 = CB**, **b3 = CE**, and **b4 = BA**. S
 
 ## 1. Convert beams to particles and constraints
 
-For a beam of length L, the initial segment count is n = max(4, ceil(L / 0.5)); an odd n is increased by one. Each segment has length h = L/n. The beam consists of two halves, each containing n/2 + 1 particles. Two particles coincide at the midpoint and are joined by a zero-length weld. Breaking the beam disables this weld and the central angle constraint.
+For a beam of length L, the initial segment count is n = max(4, ceil(L / 0.5)); an odd n is increased by one. Each segment has length h = L/n. The beam consists of two halves, each containing n/2 + 1 particles. Two rendering samples coincide at the midpoint and address one physical particle. Breaking the beam splits that particle into independent half-member tips and disables the central angle constraint.
 
-For example, **b4** has L = 6, n = 12, h = 0.5, and 14 particles. Each half contains seven particles. A segment contributes half of its mass, ρh/2, to each endpoint. For the Light profile, ρ = 0.9, so each segment contributes 0.225 to each endpoint; an ordinary interior particle has mass 0.45.
+For example, **b4** has L = 6, n = 12, h = 0.5, and 14 rendering samples representing 13 physical particles before fracture. Each half contains seven samples. A segment contributes half of its mass, ρh/2, to each endpoint. For the Light profile, ρ = 0.9, so each segment contributes 0.225 to each endpoint; an ordinary interior particle has mass 0.45.
 
-Even when beams share a visible endpoint, their endpoint particles remain separate. At **C**, three particles occupy the same initial position: the end of b1 and the starts of b2 and b3. Zero-length constraints join the latter two to the first. Because C is rigid, angle constraints also preserve each beam's angle relative to the first beam, b1 in the Basic XPBD order.
+Connected endpoints share one physical particle. At **C**, the end of b1 and the starts of b2 and b3 use the same position, velocity and summed mass. Because C is rigid, angle constraints also preserve each beam's angle relative to the first beam, b1 in the Basic XPBD order. Hinges share translation in exactly the same way, but omit those angular constraints. See [Shared Positional Points](shared-point.md).
 
 ## 2. Predict motion under gravity
 
@@ -78,7 +78,9 @@ For example, a Light beam with local angle θ = 0.05 rad and h = 0.5 has bending
 
 An indicator greater than 1 for at least 0.05 s breaks the member. At Δt = 1/120 s, that is six consecutive steps. A return to 1 or below resets the overload timer. A large overall lean need not break a beam if its local limits are not exceeded.
 
-## Animation
+## Historical animation
+
+The animation and values in this section predate the 0.5.0 shared-particle change. They are retained as historical measurements, not current trajectory predictions.
 
 ![Basic XPBD Solver simulation of tower A–E](../images/solvers/original.gif)
 
@@ -88,4 +90,4 @@ Increasing the iteration count changes the effective response of the structure. 
 
 For a measured comparison of braced and unbraced columns, see [Stability, Symmetry, and Iteration Count](stability.md).
 
-Implementation: [World, solveDistance, solveAngle, step, and measureDamage](../../src/physics.ts). The Basic XPBD trajectory regression test retains a reference from version 0.4.53 in [physics.test.ts](../../tests/physics.test.ts).
+Implementation: [World, solveDistance, solveAngle, step, and measureDamage](../../src/physics.ts). Current topology, mass, angular-gradient and fracture regressions are in [physics.test.ts](../../tests/physics.test.ts).

@@ -101,8 +101,8 @@ function runSymmetricTower(options: PhysicsOptions = {}, reverseInternalBeams = 
   const world = new World(project, { initialPerturbation: 0, ...options });
   const top: number[] = [], support: number[] = [];
   // The solver uses top-left coordinates (Y down). Exported (0,5) is (6,1),
-  // and the bottom clamp at exported (0,-6) is (6,12). A welded node currently
-  // has multiple particles; track all original copies instead of one beam's copy.
+  // and the bottom clamp at exported (0,-6) is (6,12). A joint has multiple rendering
+  // samples of one physical particle; track all samples to verify their layout.
   for (let i = 0; i < world.x.length; i++) {
     if (world.x[i] === 6 && world.y[i] === 1) top.push(i);
     if (world.x[i] === 6 && world.y[i] === 12) support.push(i);
@@ -123,59 +123,27 @@ function runSymmetricTower(options: PhysicsOptions = {}, reverseInternalBeams = 
   return { world, offsetAtFiveSeconds, offsetAtTenSeconds: topOffset() };
 }
 
-// Characterization of a known defect, not desired physical behavior. These tests
-// deliberately pass for the current solver. Replace the bias assertions with
-// symmetry/order-invariance and convergence checks when the solver is corrected.
-test('Known solver bias: the symmetric tower repeatedly collapses left', () => {
-  const first = runSymmetricTower(), repeat = runSymmetricTower();
-  assert.ok(first.offsetAtFiveSeconds < -0.4, `Expected visible left drift at 5 s, got ${first.offsetAtFiveSeconds}`);
-  assert.ok(first.offsetAtTenSeconds < -5.5, `Expected collapse toward the left boundary at 10 s, got ${first.offsetAtTenSeconds}`);
-  assert.deepEqual(first.world.x, repeat.world.x, 'Identical starts reproduce every horizontal position');
-  assert.deepEqual(first.world.y, repeat.world.y, 'Identical starts reproduce every vertical position');
-});
-
-test('Known solver bias: reordering JSON rows does not change the imported collapse', () => {
+// Exact translations remove joint opening, but angular XPBD corrections still
+// have finite-iteration order sensitivity. Keep reproducibility and convergence
+// checks without requiring the historical 0.4.53 direction or collapse time.
+test('Shared-particle tower trajectories are repeatable and JSON row order is normalized', () => {
   const reordered = JSON.parse(symmetricTowerText);
-  reordered.objects.b.reverse();
-  // The checksum covers row order; omit the stale checksum for this deliberate permutation.
-  delete reordered.checksum;
-  const original = runSymmetricTower(), permuted = runSymmetricTower({}, false, JSON.stringify(reordered));
-  assert.deepEqual(original.world.project, permuted.world.project, 'Import canonicalizes the row permutation');
-  assert.deepEqual(original.world.x, permuted.world.x);
-  assert.deepEqual(original.world.y, permuted.world.y);
+  reordered.objects.b.reverse(); delete reordered.checksum;
+  const first = runSymmetricTower(), repeat = runSymmetricTower({}, false, JSON.stringify(reordered));
+  assert.deepEqual(first.world.project, repeat.world.project);
+  assert.deepEqual(first.world.x, repeat.world.x);
+  assert.deepEqual(first.world.y, repeat.world.y);
 });
 
-test('Known solver bias: reversing internal beam order changes collapse from left to right', () => {
-  const original = runSymmetricTower(), reversed = runSymmetricTower({}, true);
-  // Compare unordered geometry to ensure only solver ordering changed, not the structure.
-  const geometry = (world: World) => world.project.beams.map(b => JSON.stringify(b)).sort();
-  assert.deepEqual(geometry(original.world), geometry(reversed.world));
-  assert.ok(original.offsetAtTenSeconds < -5.5, `Original top offset: ${original.offsetAtTenSeconds}`);
-  assert.ok(reversed.offsetAtFiveSeconds > 0.2, `Expected right drift at 5 s, got ${reversed.offsetAtFiveSeconds}`);
-  assert.ok(reversed.offsetAtTenSeconds > 5.5, `Expected right collapse at 10 s, got ${reversed.offsetAtTenSeconds}`);
-});
-
-test('Known solver bias: increasing iterations from 12 to 192 strongly delays collapse', () => {
+test('Higher iteration count still reduces angular solver drift with exact translational joints', () => {
   const standard = runSymmetricTower(), accurate = runSymmetricTower({ iterations: 192 });
-  assert.ok(Math.abs(standard.offsetAtTenSeconds) > 5.5, `Basic XPBD Solver offset: ${standard.offsetAtTenSeconds}`);
-  // Broad bounds document the large sensitivity without freezing floating-point snapshots.
-  assert.ok(Math.abs(accurate.offsetAtTenSeconds) < 0.05, `192-iteration offset: ${accurate.offsetAtTenSeconds}`);
+  assert.ok(Math.abs(accurate.offsetAtTenSeconds) < 0.05);
+  assert.ok(Math.abs(accurate.offsetAtTenSeconds) < Math.abs(standard.offsetAtTenSeconds));
+  assert.ok(standard.world.members.every(m => !m.broken));
 });
 
-test('Known solver bias: the symmetric tower collapses without any member breaking', () => {
-  const standard = runSymmetricTower(), damageDisabled = runSymmetricTower({ damage: false });
-  assert.ok(standard.world.members.every(m => !m.broken), 'The Basic XPBD Solver collapse is deformation, not fracture');
-  assert.ok(standard.offsetAtTenSeconds < -5.5);
-  assert.deepEqual(standard.world.x, damageDisabled.world.x, 'Disabling fracture does not change horizontal deformation');
-  assert.deepEqual(standard.world.y, damageDisabled.world.y, 'Disabling fracture does not change vertical deformation');
-});
-
-test('Explicit Basic XPBD Solver matches the implicit original trajectory', () => {
+test('Explicit Basic XPBD matches the default with shared particles', () => {
   const implicit = runSymmetricTower(), explicit = runSymmetricTower({ solver: 'original' });
-  // Recorded with 0.4.53 before introducing solver selection. A small coordinate
-  // tolerance accommodates platform math while preserving the legacy trajectory.
-  assert.ok(Math.abs(implicit.offsetAtFiveSeconds - (-0.5197413384369831)) < 1e-6);
-  assert.ok(Math.abs(implicit.offsetAtTenSeconds - (-5.995179457282439)) < 1e-6);
   assert.deepEqual(implicit.world.x, explicit.world.x);
   assert.deepEqual(implicit.world.y, explicit.world.y);
   assert.deepEqual(implicit.world.frame().stresses, explicit.world.frame().stresses);
@@ -250,8 +218,10 @@ test('Both Serpentine starting sides run with stable member IDs and fixed suppor
   const right = runSymmetricTower({ solver: 'serpentine', serpentineFromRight: true });
   assert.deepEqual(left.world.project, right.world.project, 'Sweep order must not change export or rendering IDs');
   assert.notDeepEqual(left.world.x,right.world.x, 'The starting side must change actual solving, not just its label');
-  assert.ok(left.offsetAtTenSeconds < -5.5, 'Left-first scan reproduces the left collapse');
-  assert.ok(right.offsetAtTenSeconds > 5.5, 'Right-first scan must also change joint references and reverse this fixture collapse');
+  for (const world of [left.world, right.world]) for (let i = 0; i < world.x.length; i++) {
+    assert.equal(world.x[i], world.x[world.particleIds[i]], 'Every joint sample must use its common particle');
+    assert.equal(world.y[i], world.y[world.particleIds[i]]);
+  }
 });
 
 test('Impact sounds identify material and surface, then stop at rest', () => {
@@ -366,4 +336,112 @@ test('Heavy rope scales density and axial rigidity without changing failure stra
   (w as unknown as {measureDamage():void}).measureDamage();
   assert.ok(Math.abs(w.members[0].stress-1.2)<1e-10);
  }
+});
+
+// Unequal incident profiles make accidental averaging or repeated integration
+// observable: a joint must sum masses and receive gravity exactly once.
+function sharedJointProject() {
+  const p = emptyProject();
+  p.beams = [{ endpoints: [2,4,6,4], profile: 'l' }, { endpoints: [6,4,9,6], profile: 'h' }];
+  p.ropes = [{ endpoints: [6,4,6,7], profile: 'h' }];
+  return p;
+}
+
+test('Mixed beam/rope joints sum masses and integrate once, including at hinges', () => {
+  for (const hinge of [false, true]) {
+    const p = sharedJointProject(); if (hinge) p.joints['6,4'] = 'o';
+    const w = new World(p, { initialPerturbation: 0, iterations: 0 });
+    const samples = [w.members[0].start + w.members[0].count - 1, w.members[1].start, w.members[2].start];
+    const id = w.particleIds[samples[0]], mass = samples.reduce((sum, i) => sum + w.mass[i], 0);
+    for (const i of samples) {
+      assert.equal(w.particleIds[i], id);
+      assert.ok(Math.abs(w.invMass[i] - 1 / mass) < 1e-12);
+    }
+    assert.equal(w.angles.filter(c => c.owner === -1).length, hinge ? 0 : 1);
+    assert.ok(w.distances.every(c => c.rest > 0), 'No iterative translational welds remain');
+    w.step();
+    for (const i of samples) {
+      assert.equal(w.vy[i], w.vy[id]);
+      assert.ok(Math.abs(w.vy[i] - 9.81 * DT) < 1e-12);
+      assert.equal(w.y[i], w.y[id]);
+    }
+    const constrained = new World(p);
+    for (let step = 0; step < 120; step++) {
+      constrained.step();
+      for (const i of samples) {
+        assert.equal(constrained.x[i], constrained.x[id]);
+        assert.equal(constrained.y[i], constrained.y[id]);
+      }
+    }
+  }
+});
+
+test('Angular correction sums gradients for the common endpoint before squaring them', () => {
+  const w = new World(sharedJointProject(), { gravity: 0, initialPerturbation: 0 });
+  const c = w.angles.find(c => c.owner === -1)!;
+  const ids = [...new Set([c.a,c.b,c.c,c.d].map(i => w.particleIds[i]))];
+  w.y[w.particleIds[c.b]] += .1;
+  const angle = () => Math.atan2(w.y[w.particleIds[c.d]] - w.y[w.particleIds[c.c]], w.x[w.particleIds[c.d]] - w.x[w.particleIds[c.c]])
+    - Math.atan2(w.y[w.particleIds[c.b]] - w.y[w.particleIds[c.a]], w.x[w.particleIds[c.b]] - w.x[w.particleIds[c.a]]) - c.rest;
+  const wrapAngle = (v: number) => Math.atan2(Math.sin(v), Math.cos(v));
+  const value = wrapAngle(angle()), epsilon = 1e-6;
+  const gradients = ids.map(id => {
+    const result = [];
+    for (const axis of [w.x,w.y]) {
+      const before = axis[id]; axis[id] = before + epsilon; const plus = angle();
+      axis[id] = before - epsilon; const minus = angle(); axis[id] = before;
+      result.push(wrapAngle(plus - minus) / (2 * epsilon));
+    }
+    return result;
+  });
+  const weight = ids.reduce((sum,id,i) => sum + w.invMass[id] * (gradients[i][0] ** 2 + gradients[i][1] ** 2), 0);
+  const expected = ids.map((id,i) => [w.x[id] - value / weight * w.invMass[id] * gradients[i][0], w.y[id] - value / weight * w.invMass[id] * gradients[i][1]]);
+  (w as unknown as { solveAngle(c: unknown): void }).solveAngle(c);
+  for (const [i,id] of ids.entries()) {
+    assert.ok(Math.abs(w.x[id] - expected[i][0]) < 1e-9);
+    assert.ok(Math.abs(w.y[id] - expected[i][1]) < 1e-9);
+  }
+});
+
+test('Cable crossings and coincident interiors do not acquire unintended joints', () => {
+  const p = emptyProject();
+  p.ropes = [{endpoints:[2,4,10,4],profile:'s'}, {endpoints:[6,2,6,6],profile:'s'}];
+  const w = new World(p, {initialPerturbation:0});
+  const midpoints = w.members.map(m => m.start + m.half - 1);
+  assert.equal(w.x[midpoints[0]], w.x[midpoints[1]]);
+  assert.equal(w.y[midpoints[0]], w.y[midpoints[1]]);
+  assert.notEqual(w.particleIds[midpoints[0]], w.particleIds[midpoints[1]]);
+});
+
+test('Fracture splits only the midpoint and preserves mass, velocity and endpoint attachments', () => {
+  for (const material of ['beam', 'rope'] as const) {
+    const p = emptyProject();
+    if (material === 'beam') p.beams = [{endpoints:[2,4,6,4],profile:'s'}];
+    else p.ropes = [{endpoints:[2,4,6,4],profile:'s'}];
+    // A second incident member verifies that breaking does not release endpoints.
+    p.ropes.push({endpoints:[6,4,8,4],profile:'s'});
+    const w = new World(p, {gravity:0, damping:0, iterations:0, initialPerturbation:0});
+    const m = w.members[0], left = m.start + m.half - 1, right = left + 1;
+    const end = m.start + m.count - 1, attached = w.members[1].start;
+    const mass = w.mass.reduce((sum,m) => sum + m, 0), points = w.frame().points;
+    w.x[1] += 1; w.vx.fill(.3); w.vy.fill(.4);
+    for (let step = 0; step < 6; step++) w.step();
+    assert.equal(m.broken, true);
+    assert.notEqual(w.particleIds[left], w.particleIds[right]);
+    assert.equal(w.particleIds[end], w.particleIds[attached]);
+    assert.equal(w.frame().points, points + 1);
+    assert.equal(w.x[left], w.x[right]); assert.equal(w.y[left], w.y[right]);
+    assert.equal(w.vx[left], w.vx[right]); assert.equal(w.vy[left], w.vy[right]);
+    assert.equal(w.invMass[left], 1 / w.mass[left]); assert.equal(w.invMass[right], 1 / w.mass[right]);
+    assert.equal(w.mass.reduce((sum,m) => sum + m, 0), mass);
+    const momentum = () => w.mass.reduce((sum,m,i) => sum + m * w.vx[i], 0);
+    const before = momentum(); w.vx[right] += 1;
+    const delta = w.mass[right];
+    w.step();
+    assert.ok(w.x[right] > w.x[left], 'Broken halves must move independently');
+    assert.ok(Math.abs(momentum() - before - delta) < 1e-10);
+    const frame = w.frame();
+    assert.notEqual(frame.positions[2*left], frame.positions[2*right]);
+    assert.equal(frame.broken[0], 1);
+  }
 });

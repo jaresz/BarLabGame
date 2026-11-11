@@ -12,7 +12,7 @@ The board is a grid with one unit per square. Its origin `(0, 0)` is at the cent
 
 Use the toolbar to choose Select, Beam, Rope or Erase. The inspector shows the current design, beam and rope counts, and cost. Undo and Redo reverse edits. Load an example to explore a ready-made structure, or Clear the canvas to start over.
 
-The examples include Ponte Luís I, the two RTCN Kołowo masts, and Seri Wawasan Bridge. They are simplified 2D interpretations of real landmarks. Ponte Luís I and Kołowo pass the 20-second stability checks; Seri Wawasan is a flexible comparison that can deform substantially or break depending on the solver's starting side. See the [landmark examples and measured results](examples/README.md).
+The examples include Ponte Luís I, the two RTCN Kołowo masts, and Seri Wawasan Bridge. They are simplified 2D interpretations of real landmarks. Ponte Luís I, Kołowo, Golden Gate and the current small Seri Wawasan pass all six 20-second stability checks. Since version 0.5.0, connected members share an exact positional node in both solvers. See the [landmark examples and measured results](examples/README.md).
 
 ## Build a structure
 
@@ -72,7 +72,7 @@ Each run starts with a tiny, repeatable sideways displacement to test how the st
 
 Open **Settings** (the gear icon) to choose a simulation solver and change the canvas dimensions. Solver choice takes effect immediately and lasts until the page reloads. Canvas dimensions change only when you select **Apply size**; closing Settings discards unsubmitted dimensions. Click **Run simulation** or press Space to start the selected solver directly.
 
-- **1 · Basic XPBD Solver** retains the original XPBD behavior.
+- **1 · Basic XPBD Solver** uses the original XPBD constraint order.
 - **2 · Serpentine** is selected on every page load. It visits members from the highest occupied row downward, reversing horizontal direction on each grid row. Each start independently draws top left or top right with equal probability; repeating the same side is possible. Pause/resume keeps the direction of the current run.
 
 

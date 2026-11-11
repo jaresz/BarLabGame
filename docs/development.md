@@ -48,7 +48,17 @@ Detailed solver explanations include labelled figures, worked numerical examples
 
 ## Configuration and versions
 
-`src/model.ts` is the source of truth for beam profile properties, material prices, length limits, project model, and `GAME_VERSION`. The status bar and exported project metadata use `GAME_VERSION`; increment it after every application change. `vite.config.js` sets relative asset URLs and the generated output directory. `index.html` is the HTML build template. Dependencies and common commands are declared in `package.json`.
+`src/model.ts` is the source of truth for beam profile properties, material prices, length limits, project model, and `GAME_VERSION`. The status bar and exported project metadata use `GAME_VERSION`; increment it after every application change. Version numbers follow Semantic Versioning (often called SemVer), as described below. `vite.config.js` sets relative asset URLs and the generated output directory. `index.html` is the HTML build template. Dependencies and common commands are declared in `package.json`.
+
+### Semantic Versioning (SemVer)
+
+We use **Semantic Versioning**, often called **SemVer**, with the form `MAJOR.MINOR.PATCH`:
+
+- **MAJOR** identifies incompatible changes to the stable public interface after version 1.0.0.
+- **MINOR** identifies backward-compatible functionality. Significant solver changes also require a MINOR increment, because they materially change simulation behavior.
+- **PATCH** identifies backward-compatible fixes and small corrections.
+
+Increasing MINOR resets PATCH to zero; increasing MAJOR resets both MINOR and PATCH. The current `0.x.y` series is initial development, so behavior and interfaces can still change. During this phase, significant solver changes advance MINOR: for example, the shared-particle solver moves the application from `0.4.79` to `0.5.0`. Documentation-only edits do not change the application version.
 
 ## Checks and build
 
@@ -90,3 +100,11 @@ Screenshots committed to the repository belong in `docs/images/`; the root `scre
 Bar Lab is a static site. Upload the **contents** of `public_html/` to a static web host that serves `index.html`, JavaScript, CSS, fonts, icons, the manifest, and `sw.js` with standard MIME types. HTTPS is required for service workers and offline PWA features. Relative asset URLs allow hosting at a domain root or a URL subdirectory. Node.js is needed to build the site, not on the production web server.
 
 The repository includes `scripts/deploy.ps1` for PowerShell and `scripts/deploy.sh` for Linux or Ubuntu in WSL2. Both build and publish to a configured SSH/SCP server. Copy `scripts/deploy.local.example.json` to the ignored `scripts/deploy.local.json` and fill in the server settings; never commit local credentials or deployment configuration. Run `./scripts/deploy.ps1` in PowerShell or `bash scripts/deploy.sh` in Bash. Both require Node.js/npm and OpenSSH `scp` and `ssh`. Public hosting setup is separate from using the app at [barlab.jakubreiter.pl](https://barlab.jakubreiter.pl/).
+
+## Shared translational particles (0.5.0)
+
+Both solvers eliminate intact zero-length weld constraints by sharing one positional degree of freedom. Member rendering indices remain stable; `World.particleIds` maps each sample to its physical representative. Only representatives are integrated, corrected and collided. `mass` retains the individual material contributions, while `invMass` contains the inverse of their summed joint mass (zero at supports). Sample positions and velocities are synchronized for damage measurements and frame transfer. The status counts active physical points rather than rendering samples.
+
+Angular constraints combine all derivatives belonging to the same physical ID before calculating the XPBD denominator. On fracture, only the reserved right midpoint sample becomes independent; both halves retain their positions and velocities, recover their separate material masses and keep their endpoint attachments. Incidental crossings remain disconnected. Gravity, material properties, damage thresholds, initial imperfection, twelve iterations and format 4 are unchanged.
+
+See [shared-point measurements and limitations](solvers/shared-point.md). Historical solver animations predate this topology change and do not represent current trajectories. The physics tests now verify topology, summed mass, exact translations, the angular gradient against numerical differentiation, and fracture separation rather than requiring a legacy collapse direction or timestamp.

@@ -15,18 +15,11 @@ for (const name of landmarks) {
         const result=measureLandmark(name,{solver,serpentineFromRight,initialPerturbation});
         const label=`${name}/${solver}/${serpentineFromRight}/${initialPerturbation}`;
         assert.equal(result.maximumSupportMotion,0,`${label}: supports must remain fixed`);
-        // Seri Wawasan remains an explicitly documented unmet acceptance criterion.
-        // Keep the three stable examples strict; never hide its measured failure.
-        if (name === 'seriWawasan') {
-          assert.ok(result.maximumDisplacement < 3.4, `${label}: reinforcement must improve on the 8.896-unit baseline`);
-          assert.equal(result.newBoundaryContacts,0);
-        } else {
-          assert.equal(result.firstBreak,null,`${label}: no fracture during the trajectory`);
-          assert.ok(result.maximumDisplacement<=2.5,`${label}: displacement ${result.maximumDisplacement}`);
-          assert.equal(result.newBoundaryContacts,0,`${label}: no new boundary contacts`);
-          assert.equal(result.stable,true);
-          if (name === 'goldenGate') assert.ok(result.maximumDisplacement < 1.3420670192987172, 'Improve on the worst format-3 baseline trajectory');
-        }
+        assert.equal(result.firstBreak,null,`${label}: no fracture during the trajectory`);
+        assert.ok(result.maximumDisplacement<=2.5,`${label}: displacement ${result.maximumDisplacement}`);
+        assert.equal(result.newBoundaryContacts,0,`${label}: no new boundary contacts`);
+        assert.equal(result.stable,true);
+        if (name === 'goldenGate') assert.ok(result.maximumDisplacement < 1.1892291442082106, 'Improve on the separate-particle baseline');
       }
     }
   });
