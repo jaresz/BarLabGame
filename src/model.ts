@@ -21,7 +21,7 @@ export type Material = 'beam' | 'rope';
 export interface Project { size: Point; beams: Beam[]; ropes: Rope[]; joints: Record<string, JointType>; anchors: Record<string, JointType>; ropePrestrain?: number }
 export const ROPE_PRESTRAIN_LEVELS = [0.001, 0.0025, 0.005, 0.01, 0.02, 0.03, 0.04, 0.05] as const;
 // Bump this after every application change; the status bar and exported project metadata use it.
-export const GAME_VERSION = '0.9.0';
+export const GAME_VERSION = '0.10.0';
 export const MAX_LENGTH: Readonly<Record<Material, number>> = { beam: 10, rope: 20 };
 
 /** Resolve a snapped drawing target without changing import/member validation. */

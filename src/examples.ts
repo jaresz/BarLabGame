@@ -1,10 +1,11 @@
 import { emptyProject, normalizeProject, type Project, type Member, type BeamProfile } from './model';
 import { fromCentered } from './coordinates';
 
-export type Example = 'bridge' | 'eiffel' | 'goldenGate' | 'sydneyHarbour' | 'ponteLuisI' | 'rtcnKolowo' | 'seriWawasan' | 'blank';
+export type Example = 'bridge' | 'eiffel' | 'eiffelDetailed' | 'goldenGate' | 'sydneyHarbour' | 'ponteLuisI' | 'rtcnKolowo' | 'seriWawasan' | 'blank';
 export const exampleNames: Record<Example, string> = {
   bridge: 'Warren bridge',
   eiffel: 'Eiffel Tower',
+  eiffelDetailed: 'Eiffel Tower — detailed',
   goldenGate: 'Golden Gate Bridge',
   sydneyHarbour: 'Sydney Harbour Bridge',
   ponteLuisI: 'Ponte Luís I',
@@ -28,6 +29,7 @@ export function starterProject(): Project {
 export function example(name: Example): Project {
   const p = emptyProject();
   if (name === 'eiffel') p.size = [18, 32];
+  else if (name === 'eiffelDetailed') p.size = [28, 40];
   else if (name === 'ponteLuisI') p.size = [24, 16];
   else if (name === 'rtcnKolowo') p.size = [28, 20];
   else if (name === 'seriWawasan') p.size = [24, 14];
@@ -59,6 +61,58 @@ export function example(name: Example): Project {
     for (const [lowerY, upperY] of [[32, 27], [27, 22], [22, 17], [17, 12], [12, 8], [8, 4]] as const) {
       beam(9, lowerY, 9, upperY);
     }
+  } else if (name === 'eiffelDetailed') {
+    // Editor coordinates use grid units with Y downward. Only the four feet
+    // touch the ground boundary; the opening below the first deck stays clear.
+    const heavy = (...m: Member) => p.beams.push({ endpoints: m, profile: 'h' });
+    const outer: [number, number][] = [[2,40],[4,36],[6,32],[8,28]];
+    const inner: [number, number][] = [[6,40],[7,36],[9,32],[11,28]];
+    // Mirror the two-chord legs about X = 14. Cross braces transfer each
+    // tapered panel's load into the feet without a hidden central support.
+    for (const mirror of [false, true]) {
+      const side = ([x,y]: [number,number]): [number,number] => [mirror ? 28-x : x,y];
+      for (let i = 0; i < outer.length - 1; i++) {
+        heavy(...side(outer[i]), ...side(outer[i+1]));
+        heavy(...side(inner[i]), ...side(inner[i+1]));
+        beam(...side(outer[i]), ...side(inner[i]));
+        beam(...side(outer[i]), ...side(inner[i+1]));
+        beam(...side(inner[i]), ...side(outer[i+1]));
+      }
+    }
+    // The upper shaft has two lattice bays per level. Its center chord starts
+    // at the first platform, so it does not fill the arch opening underneath.
+    const shaft: [number,number][] = [[8,28],[9,24],[10,20],[11,16],[12,12],[13,8],[13,6]];
+    for (let i = 0; i < shaft.length; i++) {
+      const [x,y] = shaft[i];
+      heavy(x,y,14,y); heavy(14,y,28-x,y);
+      if (i === shaft.length - 1) continue;
+      const [nextX,nextY] = shaft[i+1];
+      heavy(x,y,nextX,nextY); heavy(28-x,y,28-nextX,nextY);
+      heavy(14,y,14,nextY);
+      beam(x,y,14,nextY); beam(14,y,nextX,nextY);
+      beam(28-x,y,14,nextY); beam(14,y,28-nextX,nextY);
+    }
+    // One-unit-deep projecting decks distinguish the three observation levels.
+    // Existing shaft ties form their upper edges; normalization joins the posts
+    // wherever a deck edge passes through another member's endpoint.
+    for (const [y,left,right,shaftX] of [[28,7,21,8],[16,10,18,11],[6,12,16,13]] as const) {
+      heavy(left,y,shaftX,y); heavy(28-shaftX,y,right,y);
+      for (let x: number = left; x < right; x++) {
+        heavy(x,y+1,x+1,y+1);
+        // Shaft chords already supply the upper decks' center posts and the
+        // top deck's side posts. The lower deck's center stays open beneath
+        // the arch apex, which meets the shaft directly at Y = 28.
+        if (x !== 14 && !(y === 6 && (x === 13 || x === 15))) beam(x,y,x,y+1);
+      }
+      beam(right,y,right,y+1);
+    }
+    // A shallow polygonal arch ties the inner legs into the first deck, leaving
+    // the ground-level center open. The short antenna crowns the top platform.
+    const arch: [number,number][] = [[7,36],[9,33],[11,31],[14,28],[17,31],[19,33],[21,36]];
+    for (let i = 0; i < arch.length - 1; i++) heavy(...arch[i], ...arch[i+1]);
+    beam(9,33,9,32); beam(11,31,11,29);
+    beam(17,31,17,29); beam(19,33,19,32);
+    heavy(14,6,14,3); beam(14,3,14,1);
   } else if (name === 'goldenGate') {
     // These coordinates match the exported project format: the origin is at the
     // board center and positive Y points upward. Convert them to editor space.

@@ -5,6 +5,18 @@ import { example } from '../src/examples';
 import { boundary, importProject, nodes } from '../src/model';
 import { landmarks, measureLandmark } from '../scripts/measure-landmarks';
 
+test('Detailed Eiffel retains the original option and leaves the ground-level arch open', () => {
+  const original = example('eiffel'), detailed = example('eiffelDetailed');
+  assert.deepEqual(original.size, [18, 32]);
+  assert.equal(original.beams.length, 38);
+  assert.ok(detailed.size[0] > original.size[0] && detailed.size[1] > original.size[1]);
+  assert.ok(detailed.beams.length > original.beams.length * 4);
+  // Only the two chords of each leg meet the boundary; a central ground pin
+  // would change both the open silhouette and the simulated load path.
+  const supports = [...nodes(detailed)].filter(([,point]) => boundary(point,detailed.size)).map(([id]) => id).sort();
+  assert.deepEqual(supports, ['2,40','22,40','26,40','6,40']);
+});
+
 for (const name of landmarks) {
   test(`${name}: valid geometry and 20-second simulations with both disturbance signs`, () => {
     // Use the same three correction schedules as the app, with independently

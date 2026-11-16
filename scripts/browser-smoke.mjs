@@ -536,7 +536,7 @@ try {
     await page.locator('#examples').tap();
     const dialogBounds = await page.locator('#examples-dialog').boundingBox();
     assert.ok(dialogBounds.x >= 0 && dialogBounds.y >= 0 && dialogBounds.x + dialogBounds.width <= viewport.width && dialogBounds.y + dialogBounds.height <= viewport.height, `${name}: examples dialog fits viewport`);
-    assert.equal(await page.locator('[data-example]').count(), 8);
+    assert.equal(await page.locator('[data-example]').count(), 9);
     await page.screenshot({ path: join(tmpdir(), `frame-lab-${name}-examples.png`) });
     await page.locator('[data-example="blank"]').tap();
     assert.equal(await page.locator('#beam-count').textContent(), '0', `${name}: touch loads example`);
@@ -1556,7 +1556,7 @@ async function testExamples(page, original) {
   const open = async () => { await page.locator('#examples').click(); assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), true); };
   const read = async () => { await page.locator('#project-text').click(); const value = await page.locator('#project-json').inputValue(); await page.locator('#close-text').click(); return value; };
   await open();
-  assert.equal(await page.locator('[data-example]').count(), 8);
+  assert.equal(await page.locator('[data-example]').count(), 9);
   assert.equal(await page.locator('[data-example="suspension"], [data-example="cantilever"]').count(), 0);
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#examples-dialog').evaluate(el => el.open), false);
@@ -1566,6 +1566,7 @@ async function testExamples(page, original) {
   const expected = {
     bridge: { beams: 31, ropes: 0, size: [32, 18], title: 'Warren bridge' },
     eiffel: { beams: 38, ropes: 0, size: [18, 32], title: 'Eiffel Tower' },
+    eiffelDetailed: { beams: 176, ropes: 0, size: [28, 40], title: 'Eiffel Tower — detailed' },
     goldenGate: { beams: 36, ropes: 15, size: [32, 18], title: 'Golden Gate Bridge' },
     sydneyHarbour: { beams: 46, ropes: 0, size: [32, 18], title: 'Sydney Harbour Bridge' },
     ponteLuisI: { beams: 69, ropes: 0, size: [24, 16], title: 'Ponte Luís I' },

@@ -4,7 +4,7 @@ import { example, type Example } from '../src/examples';
 import { exportProject, importProject, GAME_VERSION, validateMember, type Project } from '../src/model';
 import { DT, World, type PhysicsOptions } from '../src/physics';
 
-export const landmarks = ['ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'goldenGate'] as const;
+export const landmarks = ['ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'goldenGate', 'eiffelDetailed'] as const;
 
 /** Measure the entire trajectory, not just the final frame or intact endpoints. */
 export function measureLandmark(name: Example, options: PhysicsOptions) {

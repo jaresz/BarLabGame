@@ -222,7 +222,7 @@ function exampleThumbnail(name: Example): string {
   const lines = (members: Member[]) => members.map(member => `<polyline points="${segment(member)}"/>`).join('');
   return `<svg viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect x="${left}" y="${top}" width="${width * scale}" height="${height * scale}" class="example-board"/><g class="example-grid">${grid}</g><g class="example-beams">${lines(project.beams.map(beam => beam.endpoints))}</g><g class="example-ropes">${project.ropes.map(r => lines([r.endpoints]).replace('<polyline ', `<polyline data-profile="${r.profile}" style="stroke-width:${r.profile === 'h' ? 2 : 1}" `)).join('')}</g></svg>`;
 }
-const exampleChoices: Example[] = ['bridge', 'eiffel', 'goldenGate', 'sydneyHarbour', 'ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'blank'];
+const exampleChoices: Example[] = ['bridge', 'eiffel', 'eiffelDetailed', 'goldenGate', 'sydneyHarbour', 'ponteLuisI', 'rtcnKolowo', 'seriWawasan', 'blank'];
 const DEFAULT_ROPE_PRESTRAIN = 0.005;
 const prestrainChoices = ROPE_PRESTRAIN_LEVELS.map(strain => `<option value="${strain}" ${strain === DEFAULT_ROPE_PRESTRAIN ? 'selected' : ''}>${strain * 100}%</option>`).join('');
 const solverChoices = Object.entries(SOLVERS).map(([id, name]) => `<label class="solver-option"><input type="radio" name="solver" value="${id}" ${id === 'serpentine' ? 'checked' : ''}><span>${name}</span></label>`).join('');
